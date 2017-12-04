@@ -8,20 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		9B9C8D251FD58CBF000F16E5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B9C8D241FD58CBF000F16E5 /* AppDelegate.swift */; };
-		9B9C8D271FD58CBF000F16E5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B9C8D261FD58CBF000F16E5 /* ViewController.swift */; };
 		9B9C8D2A1FD58CBF000F16E5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B9C8D281FD58CBF000F16E5 /* Main.storyboard */; };
 		9B9C8D2C1FD58CBF000F16E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B9C8D2B1FD58CBF000F16E5 /* Assets.xcassets */; };
 		9B9C8D2F1FD58CBF000F16E5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B9C8D2D1FD58CBF000F16E5 /* LaunchScreen.storyboard */; };
+		9B9C8D371FD59287000F16E5 /* SpaceWar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B9C8D361FD59287000F16E5 /* SpaceWar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9B9C8D211FD58CBF000F16E5 /* SpaceKill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceKill.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B9C8D241FD58CBF000F16E5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		9B9C8D261FD58CBF000F16E5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		9B9C8D291FD58CBF000F16E5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9B9C8D2B1FD58CBF000F16E5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9B9C8D2E1FD58CBF000F16E5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9B9C8D301FD58CBF000F16E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9B9C8D361FD59287000F16E5 /* SpaceWar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceWar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,14 +54,46 @@
 		9B9C8D231FD58CBF000F16E5 /* SpaceKill */ = {
 			isa = PBXGroup;
 			children = (
-				9B9C8D241FD58CBF000F16E5 /* AppDelegate.swift */,
-				9B9C8D261FD58CBF000F16E5 /* ViewController.swift */,
-				9B9C8D281FD58CBF000F16E5 /* Main.storyboard */,
-				9B9C8D2B1FD58CBF000F16E5 /* Assets.xcassets */,
-				9B9C8D2D1FD58CBF000F16E5 /* LaunchScreen.storyboard */,
-				9B9C8D301FD58CBF000F16E5 /* Info.plist */,
+				9B9C8D3B1FD5930C000F16E5 /* Assets */,
+				9B9C8D3A1FD592E5000F16E5 /* Interfaces */,
+				9B9C8D391FD592D8000F16E5 /* Classes */,
+				9B9C8D381FD592B5000F16E5 /* Controllers */,
 			);
 			path = SpaceKill;
+			sourceTree = "<group>";
+		};
+		9B9C8D381FD592B5000F16E5 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				9B9C8D361FD59287000F16E5 /* SpaceWar.swift */,
+			);
+			name = Controllers;
+			sourceTree = "<group>";
+		};
+		9B9C8D391FD592D8000F16E5 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		9B9C8D3A1FD592E5000F16E5 /* Interfaces */ = {
+			isa = PBXGroup;
+			children = (
+				9B9C8D2D1FD58CBF000F16E5 /* LaunchScreen.storyboard */,
+				9B9C8D281FD58CBF000F16E5 /* Main.storyboard */,
+			);
+			name = Interfaces;
+			sourceTree = "<group>";
+		};
+		9B9C8D3B1FD5930C000F16E5 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				9B9C8D241FD58CBF000F16E5 /* AppDelegate.swift */,
+				9B9C8D2B1FD58CBF000F16E5 /* Assets.xcassets */,
+				9B9C8D301FD58CBF000F16E5 /* Info.plist */,
+			);
+			name = Assets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,8 +168,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9B9C8D271FD58CBF000F16E5 /* ViewController.swift in Sources */,
 				9B9C8D251FD58CBF000F16E5 /* AppDelegate.swift in Sources */,
+				9B9C8D371FD59287000F16E5 /* SpaceWar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
