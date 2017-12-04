@@ -11,22 +11,29 @@ import UIKit
 class SpaceWar: UIViewController
 {
 	//------------- Outlets -------------
-	@IBOutlet weak var normandy: UISlider!
 	@IBOutlet weak var view_mothership: UIView!
 	@IBOutlet weak var img_mothership: UIImageView!
 	@IBOutlet weak var view_laquais1: UIView!
 	@IBOutlet weak var img_laquais1: UIImageView!
 	
-	
+	@IBOutlet weak var view_normandy: UIView!
+	@IBOutlet weak var img_normandy: UIImageView!
+	@IBOutlet weak var slider_normandy: UISlider!
 	//-----------------------------------
     override func viewDidLoad()
 	{
         super.viewDidLoad()
 
 		
+		
+		
     }
 
-
+	@IBAction func shifting_normandy(_ sender: UISlider)
+	{
+		
+	}
+	
 
 	
 
