@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9B143E991FD6DA2500FA54F5 /* ship0.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B143E981FD6DA2500FA54F5 /* ship0.png */; };
 		9B9C8D251FD58CBF000F16E5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B9C8D241FD58CBF000F16E5 /* AppDelegate.swift */; };
 		9B9C8D2A1FD58CBF000F16E5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B9C8D281FD58CBF000F16E5 /* Main.storyboard */; };
 		9B9C8D2C1FD58CBF000F16E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B9C8D2B1FD58CBF000F16E5 /* Assets.xcassets */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9B143E981FD6DA2500FA54F5 /* ship0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ship0.png; sourceTree = "<group>"; };
 		9B9C8D211FD58CBF000F16E5 /* SpaceKill.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SpaceKill.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9B9C8D241FD58CBF000F16E5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9B9C8D291FD58CBF000F16E5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -35,6 +37,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9B143E971FD6D9DC00FA54F5 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				9B143E981FD6DA2500FA54F5 /* ship0.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
 		9B9C8D181FD58CBF000F16E5 = {
 			isa = PBXGroup;
 			children = (
@@ -54,6 +64,7 @@
 		9B9C8D231FD58CBF000F16E5 /* SpaceKill */ = {
 			isa = PBXGroup;
 			children = (
+				9B143E971FD6D9DC00FA54F5 /* Images */,
 				9B9C8D3B1FD5930C000F16E5 /* Assets */,
 				9B9C8D3A1FD592E5000F16E5 /* Interfaces */,
 				9B9C8D391FD592D8000F16E5 /* Classes */,
@@ -155,6 +166,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9B143E991FD6DA2500FA54F5 /* ship0.png in Resources */,
 				9B9C8D2F1FD58CBF000F16E5 /* LaunchScreen.storyboard in Resources */,
 				9B9C8D2C1FD58CBF000F16E5 /* Assets.xcassets in Resources */,
 				9B9C8D2A1FD58CBF000F16E5 /* Main.storyboard in Resources */,

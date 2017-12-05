@@ -55,13 +55,11 @@
                                 <rect key="frame" x="369" y="892" width="30" height="63"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pNd-dU-Drf">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="ship0.png" translatesAutoresizingMaskIntoConstraints="NO" id="pNd-dU-Drf">
                                         <rect key="frame" x="0.0" y="0.0" width="30" height="63"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     </imageView>
                                 </subviews>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="40" minValue="40" maxValue="728" translatesAutoresizingMaskIntoConstraints="NO" id="jRc-8N-a2w">
                                 <rect key="frame" x="549" y="955" width="201" height="30"/>
@@ -92,7 +90,10 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1104.6875" y="-408.3984375"/>
+            <point key="canvasLocation" x="850" y="-408"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="ship0.png" width="60" height="126"/>
+    </resources>
 </document>
