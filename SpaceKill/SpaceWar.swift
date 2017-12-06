@@ -23,13 +23,13 @@ class SpaceWar: UIViewController
 	
 	@IBOutlet weak var slider_normandy: UISlider!
 	@IBOutlet weak var button_startGame: UIButton!
-	
 	//-----------------------------------
 	//------------ Variables ------------
 	var shotX, shotY: Float!
 	var arrayBullets: [UIView]!
 	
 	//-----------------------------------
+	//============================ The loader =============================
     override func viewDidLoad()
 	{
         super.viewDidLoad()
@@ -37,7 +37,7 @@ class SpaceWar: UIViewController
 		startPlaceSpaceship(); sliderConfig(); startPlaceEnemies(); spaceshipBulletsCreation()
 		//-----
     }
-	
+	//=====================================================================
 	//========================== Game Fonctions ===========================
 	func shot(_ arrayShots: [UIView])
 	{	/* Infinit shots */
@@ -51,7 +51,6 @@ class SpaceWar: UIViewController
 			}
 		}
 	}
-	
 	//=====================================================================
 	//======================== Loading Fonctions ==========================
 	//------------- Shots creations -------------
@@ -87,13 +86,14 @@ class SpaceWar: UIViewController
 		/* Initial var value */
 		shotY = Float(view.frame.height * 0.9017)
 	}
-	
+	//-------------------------------------------
+	//---------- Slider Configuration -----------
 	func sliderConfig()
 	{	/* Initial value to slider */
 		slider_normandy.value = Float(view.frame.width * 0.5)
 		/* Initial shot value */
 		shotX = slider_normandy.value
-		
+		/* Actualization of max and min slider values by mobiles screen sizes*/
 		if view.frame.width <= 414				/* All iPhones*/
 		{
 			slider_normandy.maximumValue = Float(view.frame.width - 18)
@@ -115,6 +115,7 @@ class SpaceWar: UIViewController
 			slider_normandy.minimumValue = Float(54)
 		}
 	}
+	//-------------------------------------------
 	func startPlaceEnemies()
 	{
 		
