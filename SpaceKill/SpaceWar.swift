@@ -22,43 +22,63 @@ class SpaceWar: UIViewController
 	@IBOutlet weak var img_normandy: UIImageView!
 	
 	@IBOutlet weak var slider_normandy: UISlider!
+	@IBOutlet weak var button_startGame: UIButton!
+	
 	//-----------------------------------
 	//------------ Variables ------------
-	var shotX: Float!
-	var shotY: Float!
+	var shotX, shotY: Float!
+	var arrayBullets: [UIView]!
 	
 	//-----------------------------------
     override func viewDidLoad()
 	{
         super.viewDidLoad()
 		//-----
-		startPlaceSpaceship(); sliderConfig(); startPlaceEnemies()
+		startPlaceSpaceship(); sliderConfig(); startPlaceEnemies(); spaceshipBulletsCreation()
 		//-----
-		
-		
-		
-		
     }
 	
 	//========================== Game Fonctions ===========================
-	func spaceshipShot()
-	{
-		let view_gunShot1 = UIView(frame: CGRect(x: (CGFloat(shotX - 2.5)),	/* less half width */
-												 y: CGFloat(shotY - 45),	/* less 45 pixels */
-												 width: 5, height: 10))		/* View creation */
-		
-		let view_gunShot2 = UIView(frame: CGRect(x: (CGFloat(shotX - 2.5)),
-												 y: CGFloat(shotY - 45),
-												 width: 5, height: 10))
-		
-		view_gunShot1.backgroundColor = UIColor.white						/* color */
-		
-		self.view.addSubview(view_gunShot1)									/* Add to Main View the view*/
-		
-		
+	func shot(_ arrayShots: [UIView])
+	{	/* Infinit shots */
+		let i = 0; while i < 1
+		{
+			for shots in arrayShots
+			{	/* UIview adds on view */
+				self.view.addSubview(shots)
+				
+				//animation
+			}
+		}
 	}
+	
 	//=====================================================================
 	//======================== Loading Fonctions ==========================
+	//------------- Shots creations -------------
+	func spaceshipBulletsCreation()
+	{
+		let viewBullet1 = UIView(frame: CGRect(x: (CGFloat(shotX - 2.5)),		/* To spacehipCenter: less half viewShot width */
+											   y: CGFloat(shotY - 45),			/* less 45 pixels */
+											   width: 5, height: 10))			/* ViewBullet creation */
+		let viewBullet2 = UIView(frame: CGRect(x: (CGFloat(shotX - 2.5)),
+											   y: CGFloat(shotY - 45),
+											   width: 5, height: 10))
+		let viewBullet3 = UIView(frame: CGRect(x: (CGFloat(shotX - 2.5)),
+											   y: CGFloat(shotY - 45),
+											   width: 5, height: 10))
+		let viewBullet4 = UIView(frame: CGRect(x: (CGFloat(shotX - 2.5)),
+											   y: CGFloat(shotY - 45),
+											   width: 5, height: 10))
+		let viewBullet5 = UIView(frame: CGRect(x: (CGFloat(shotX - 2.5)),
+											   y: CGFloat(shotY - 45),
+											   width: 5, height: 10))
+		
+		arrayBullets = [viewBullet1, viewBullet2, viewBullet3, viewBullet4, viewBullet5]
+		/* Loop to add colors to viewBullets */
+		for bullet in arrayBullets { bullet.backgroundColor = UIColor.white}
+	}
+	//-------------------------------------------
+	//------------- Inital position -------------
 	func startPlaceSpaceship()
 	{	/* To position in x mid frame */
 		view_normandy.center.x = view.frame.width * 0.5
@@ -71,7 +91,7 @@ class SpaceWar: UIViewController
 	func sliderConfig()
 	{	/* Initial value to slider */
 		slider_normandy.value = Float(view.frame.width * 0.5)
-		/* Initial var value */
+		/* Initial shot value */
 		shotX = slider_normandy.value
 		
 		if view.frame.width <= 414				/* All iPhones*/
@@ -94,20 +114,30 @@ class SpaceWar: UIViewController
 			slider_normandy.maximumValue = Float(view.frame.width - 54)
 			slider_normandy.minimumValue = Float(54)
 		}
-		
 	}
 	func startPlaceEnemies()
 	{
 		
 	}
 	//=====================================================================
-	@IBAction func shifting_normandy(_ sender: UISlider)
+	//=========================== Game Actions ============================
+	//------------ Normandy's shifting ----------
+	@IBAction func start_game(_ sender: UIButton)
 	{
+		
+	}
+	//-------------------------------------------
+	//------------ Normandy's shifting ----------
+	@IBAction func shifting_normandy(_ sender: UISlider)
+	{	/* Dinamics values to shotX */
 		shotX = sender.value
 		view_normandy.center.x = CGFloat(shotX)
 		
-		spaceshipShot()
+		//spaceshipShots() for tests
 	}
+	//-------------------------------------------
+	
+	//=====================================================================
 	
 }
 
