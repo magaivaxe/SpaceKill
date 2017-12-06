@@ -32,14 +32,16 @@ class SpaceWar: UIViewController
 	var class_maxDistance: Int!		/* Internal max distance */
 	var bulletPossition: CGFloat!	/* Real bullet position */
 	var distance = 0				/* Incremental distance */
-	var shotAnimating = 
+	var nBullets: Int!				/* Bullets number to shot, the game can change the value */
+	//var shotAnimating =
 	//-----------------------------------
 	//============================ The loader =============================
     override func viewDidLoad()
 	{
         super.viewDidLoad()
 		//-----
-		startPlaceSpaceship(); sliderConfig(); startPlaceEnemies()
+		startPlaceSpaceship(); sliderConfig()
+		startPlaceEnemies(); spaceshipBulletsCreation(nBullets)
 		//-----
     }
 	//=====================================================================
@@ -75,35 +77,27 @@ class SpaceWar: UIViewController
 		distance = distance + 1
 		/* Stop the animation */
 		if distance >= class_maxDistance { animationTimer.invalidate(); animationTimer = nil }
-		
-		
-		
 	}
 	
 	//=====================================================================
 	//======================== Loading Fonctions ==========================
 	//------------- Shots creations -------------
-	func spaceshipBulletsCreation()
+	func spaceshipBulletsCreation(_ nBullets: Int)
 	{
-		let viewBullet1 = UIView(frame: CGRect(x: CGFloat(shotX - 2.5),		/* To spacehipCenter: less half viewShot width */
-											   y: CGFloat(shotY - 45),			/* less 45 pixels */
-											   width: 5, height: 10))			/* ViewBullet creation */
-		let viewBullet2 = UIView(frame: CGRect(x: CGFloat(shotX - 2.5),
-											   y: CGFloat(shotY - 45),
-											   width: 5, height: 10))
-		let viewBullet3 = UIView(frame: CGRect(x: CGFloat(shotX - 2.5),
-											   y: CGFloat(shotY - 45),
-											   width: 5, height: 10))
-		let viewBullet4 = UIView(frame: CGRect(x: CGFloat(shotX - 2.5),
-											   y: CGFloat(shotY - 45),
-											   width: 5, height: 10))
-		let viewBullet5 = UIView(frame: CGRect(x: CGFloat(shotX - 2.5),
-											   y: CGFloat(shotY - 45),
-											   width: 5, height: 10))
+		for _ in 0...nBullets
+		{
+			let bullet = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 10))
+			
+			bullet.backgroundColor = UIColor.white
+			
+			arrayBullets.append(bullet)
+		}
 		
-		arrayBullets = [viewBullet1, viewBullet2, viewBullet3, viewBullet4, viewBullet5]
+		
+		
 		/* Loop to add colors to viewBullets */
-		for bullet in arrayBullets { bullet.backgroundColor = UIColor.white}
+		
+		//viewBullet.frame.intersection(<#T##r2: CGRect##CGRect#>) conditions to destroid
 	}
 	//-------------------------------------------
 	//------------- Inital position -------------
@@ -151,6 +145,16 @@ class SpaceWar: UIViewController
 	}
 	//=====================================================================
 	//=========================== Game Actions ============================
+	//----------- Place bullets on shot ---------
+	func placeBulletsForShot(_ arrayBullets: [UIView])
+	{
+		for bullet in arrayBullets
+		{
+			bullet.center.x = CGFloat(shotX - 2.5)			/* To spacehipCenter: less half viewShot width */
+			bullet.center.y = CGFloat(shotY - 45)			/* less 45 pixels de la normandy */
+		}
+	}
+	//-------------------------------------------
 	//------------ Normandy's shifting ----------
 	@IBAction func start_game(_ sender: UIButton)
 	{
@@ -162,13 +166,9 @@ class SpaceWar: UIViewController
 	{	/* Dinamics values to shotX */
 		shotX = sender.value
 		view_normandy.center.x = CGFloat(shotX)
-		
-		spaceshipBulletsCreation()
 	}
 	//-------------------------------------------
-	
 	//=====================================================================
-	
 }
 
 
