@@ -30,7 +30,9 @@ class SpaceWar: UIViewController
 	let lackey = "lackey"
 	let mothership = "mothership"
 	var shotX, shotY: Float!
-	var arrayBullets, arrayLaquais: [UIView]!
+	var arrayBullets = [UIView]()
+	var arrayLackeys = [UIView]()
+	var arrayMotherShip = [UIView]()
 	
 	var animationTimer: Timer!		/* Variable of time animation */
 	var distance = 0				/* Incremental distance to animate */
@@ -71,7 +73,7 @@ class SpaceWar: UIViewController
 		shotSpeed = 0.001
 	}
 	//-------------------------------------------
-	//---------- Slider Configuration ----------- 	SET HERE THE MAX DISTANCE TO ANIMATION
+	//----------- Game vonfiguration ------------ 	SET HERE THE MAX DISTANCE TO ANIMATION
 	func gameConfig()
 	{
 		//-- Slider loader --
@@ -113,7 +115,8 @@ class SpaceWar: UIViewController
 	//-------------------------------------------
 	func startPlaceEnemies()
 	{
-		
+		arrayLackeys = [view_laquais1, view_laquais2]
+		arrayMotherShip = [view_mothership]
 	}
 	//=====================================================================
 	//=========================== Game Actions ============================
@@ -176,43 +179,53 @@ class SpaceWar: UIViewController
 											  repeats: true)
 	}
 	
-	@objc func animationNS()
-	{	/* distance incremental */
+	@objc func animationNS()		/* AnimationNormandyShot */
+	{
+		//- distance incremental -
 		distance += 1
-		/* Stop the animation */
+		//-- Stop the animation --
 		if distance >= maxDistance { animationTimer.invalidate(); animationTimer = nil }
-		
-		/* Animation */
-		//aShot.center.y += animationY
+		//--- Bullet animation ---
 		for i in 0..<arrayBullets.count
 		{
-			arrayBullets[i].center.y -= animationY
-			
-			for laquais in arrayLaquais
+			arrayBullets[i].center.y -= animationY			/* Bullet animation on screen */
+			//--- Bullet kill the lackeys ---
+			for element in arrayLackeys
 			{
-				if arrayBullets[i].frame.intersects(laquais.frame) == true
+				//-- Frames intersections conditions --
+				if arrayBullets[i].frame.intersects(element.frame) == true
 				{
-					death(lackey)
+					death(lackey, element, arrayBullets[i])	/* Call death's function */
+				}
+			}
+			//-- Bullet kill the mothership --
+			for element in arrayMotherShip
+			{
+				//-- Frames intersections conditions --
+				if arrayBullets[i].frame.intersects(element.frame)
+				{
+					death(mothership, element, arrayBullets[i])
 				}
 			}
 		}
 	}
-	func death(_ whoIsDead: String)
+	func death(_ whoIsDead: String,_ theDead: UIView,_ theBullet: UIView)
 	{
-		switch whoIsDead
+		switch whoIsDead			//Do and call the animations before remove
 		{
 		case lackey:
+			theDead.removeFromSuperview()			/* Remove the UIView from the main view */
+			theBullet.removeFromSuperview()			/* Remove the bullet */
 			
 			break
-			
 		case normandy:
 			
 			break
 			
 		case mothership:
-			
+			theDead.removeFromSuperview()
+			theBullet.removeFromSuperview()
 			break
-			
 		default:
 			break
 		}
