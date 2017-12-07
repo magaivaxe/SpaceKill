@@ -29,10 +29,10 @@ class SpaceWar: UIViewController
 	var arrayBullets: [UIView]!
 	
 	var animationTimer: Timer!		/* Variable of time animation */
-	var class_maxDistance: Int!		/* Internal max distance */
-	var bulletPossition: CGFloat!	/* Real bullet position */
-	var distance = 0				/* Incremental distance */
+	var distance = 0				/* Incremental distance to animate */
+	var maxDistanceByScreen: Int!	/* Max distance to animate by screen */
 	var nBullets: Int!				/* Bullets number to shot, the game can change the value */
+	var mode_animationY: CGFloat!	/* Distance on pixels to animate */
 	//var shotAnimating =
 	//-----------------------------------
 	//============================ The loader =============================
@@ -40,7 +40,7 @@ class SpaceWar: UIViewController
 	{
         super.viewDidLoad()
 		//-----
-		startPlaceSpaceship(); sliderConfig()
+		gameConfig(); gameMode()
 		startPlaceEnemies(); spaceshipBulletsCreation(nBullets)
 		//-----
     }
@@ -50,33 +50,48 @@ class SpaceWar: UIViewController
 	{	/* Infinit shots */
 		let i = 0; while i < 1
 		{
+			placeBulletsForShot(arrayShots)
+			
 			for shots in arrayShots
-			{	/* UIview adds on view */
+			{
+				/* UIview adds on view */
 				self.view.addSubview(shots)
 				
-				//animation
+				animateShot(arrayBullets, 0.001, maxDistanceByScreen, 1)
 			}
 		}
 	}
-	func animateShot(_ shots: UIView,
+	//----------- Place bullets for shot ---------
+	func placeBulletsForShot(_ arrayBullets: [UIView])
+	{
+		for bullet in arrayBullets
+		{
+			bullet.center.x = CGFloat(shotX - 2.5)			/* To spacehipCenter: less half viewShot width */
+			bullet.center.y = CGFloat(shotY - 45)			/* less 45 pixels de la normandy */
+		}
+	}
+	//--------------------------------------------
+	func animateShot(_ bulletsToShot: [UIView],
 					 _ timeInterval: Double,
-					 _ bulletInitialPosition: CGFloat,
-					 _ maxAnimationDistance: Int)
-	{	/* Distace for shot animation */
-		class_maxDistance = maxAnimationDistance
+					 _ maxDistance: Int,
+					 _ animationY: CGFloat)			/* Distace for shot animation */
+	{
 		/* Animation timer execution */
 		animationTimer = Timer.scheduledTimer(timeInterval: timeInterval,
 											  target: self,
 											  selector: #selector(animation),
-											  userInfo: nil,
+											  userInfo: (bulletsToShot, maxDistance, animationY),
 											  repeats: true)
 	}
 	
-	@objc func animation()
+	@objc func animation(bulletsToShot: [UIView], maxDistance: Int, animationY: CGFloat)
 	{	/* distance incremental */
-		distance = distance + 1
+		distance += 1
 		/* Stop the animation */
-		if distance >= class_maxDistance { animationTimer.invalidate(); animationTimer = nil }
+		if distance >= maxDistance { animationTimer.invalidate(); animationTimer = nil }
+		
+		/* Animation */
+		for i in 0..<bulletsToShot.count { bulletsToShot[i].center.y += animationY }
 	}
 	
 	//=====================================================================
@@ -92,31 +107,32 @@ class SpaceWar: UIViewController
 			
 			arrayBullets.append(bullet)
 		}
-		
-		
-		
-		/* Loop to add colors to viewBullets */
-		
-		//viewBullet.frame.intersection(<#T##r2: CGRect##CGRect#>) conditions to destroid
+	}
+	func gameMode()
+	{
+		//to test
+		nBullets = 1
+		mode_animationY = 1
 	}
 	//-------------------------------------------
-	//------------- Inital position -------------
-	func startPlaceSpaceship()
-	{	/* To position in x mid frame */
-		view_normandy.center.x = view.frame.width * 0.5
-		/* To position in y frame proportional position */
-		view_normandy.center.y = view.frame.height * 0.9017
-		/* Initial var value */
-		shotY = Float(view.frame.height * 0.9017)
-	}
-	//-------------------------------------------
-	//---------- Slider Configuration -----------
-	func sliderConfig()
-	{	/* Initial value to slider */
-		slider_normandy.value = Float(view.frame.width * 0.5)
-		/* Initial shot value */
-		shotX = slider_normandy.value
-		/* Actualization of max and min slider values by mobiles screen sizes*/
+	//---------- Slider Configuration ----------- 	SET HERE THE MAX DISTANCE TO ANIMATION
+	func gameConfig()
+	{
+		//-- Slider loader --
+		slider_normandy.value = Float(view.frame.width * 0.5)	/* Initial value to slider */
+		//-------------------
+		//-- Initial position --
+		view_normandy.center.x = view.frame.width * 0.5			/* To position in x mid frame */
+		view_normandy.center.y = view.frame.height * 0.9017		/* To position in y frame proportional position */
+		//----------------------
+		//-- Shot's start --
+		shotX = slider_normandy.value							/* Initial shot X value */
+		shotY = Float(view.frame.height * 0.9017)				/* Initial shot Y value */
+		//------------------
+		//-- Animations config -
+		maxDistanceByScreen = Int(view.frame.height - view.frame.height * 0.0983)
+		//----------------------
+		/* Actualization of max and min slider values by mobiles screen sizes */
 		if view.frame.width <= 414				/* All iPhones*/
 		{
 			slider_normandy.maximumValue = Float(view.frame.width - 18)
@@ -145,27 +161,22 @@ class SpaceWar: UIViewController
 	}
 	//=====================================================================
 	//=========================== Game Actions ============================
-	//----------- Place bullets on shot ---------
-	func placeBulletsForShot(_ arrayBullets: [UIView])
-	{
-		for bullet in arrayBullets
-		{
-			bullet.center.x = CGFloat(shotX - 2.5)			/* To spacehipCenter: less half viewShot width */
-			bullet.center.y = CGFloat(shotY - 45)			/* less 45 pixels de la normandy */
-		}
-	}
-	//-------------------------------------------
+	
 	//------------ Normandy's shifting ----------
 	@IBAction func start_game(_ sender: UIButton)
 	{
-		//start the game
+		shot(arrayBullets)
+		
+		
+		
+		//viewBullet.frame.intersection(<#T##r2: CGRect##CGRect#>) conditions to destroid
 	}
 	//-------------------------------------------
 	//------------ Normandy's shifting ----------
 	@IBAction func shifting_normandy(_ sender: UISlider)
-	{	/* Dinamics values to shotX */
-		shotX = sender.value
-		view_normandy.center.x = CGFloat(shotX)
+	{
+		shotX = sender.value							/* Dinamics values to shotX */
+		view_normandy.center.x = CGFloat(shotX)			/* Dinamics values to move the normandy */
 	}
 	//-------------------------------------------
 	//=====================================================================
