@@ -22,12 +22,15 @@ class SpaceWar: UIViewController
 	@IBOutlet weak var img_normandy: UIImageView!
 	
 	@IBOutlet weak var slider_normandy: UISlider!
-	@IBOutlet weak var button_shot: UIButton!
+	@IBOutlet weak var button_startGame: UIButton!
 	
 	//-----------------------------------
 	//------------ Variables ------------
+	let normandy = "normandy"
+	let lackey = "lackey"
+	let mothership = "mothership"
 	var shotX, shotY: Float!
-	var arrayBullets = [UIView]()
+	var arrayBullets, arrayLaquais: [UIView]!
 	
 	var animationTimer: Timer!		/* Variable of time animation */
 	var distance = 0				/* Incremental distance to animate */
@@ -114,12 +117,17 @@ class SpaceWar: UIViewController
 	}
 	//=====================================================================
 	//=========================== Game Actions ============================
-	
 	//------------ Normandy's shifting ----------
-	@IBAction func shot_button(_ sender: UIButton)
+	@IBAction func start_game(_ sender: UIButton)
 	{
+		//-- One shot condition --
+		if animationTimer != nil
+		{ return }
+		//-- Shot --
 		shot()
-	}
+		//--
+		
+    }
 	
 		//viewBullet.frame.intersection(<#T##r2: CGRect##CGRect#>) conditions to destroid
 	
@@ -134,9 +142,7 @@ class SpaceWar: UIViewController
 	//=====================================================================
 	//========================== Game Fonctions ===========================
 	func shot()
-	{	/* Infinit shots */
-		//		let i = 0; while i < 1
-		//		{
+	{
 		placeBulletsForShot(arrayBullets)
 		
 		for shot in arrayBullets
@@ -144,41 +150,72 @@ class SpaceWar: UIViewController
 			/* UIview adds on view */
 			self.view.addSubview(shot)
 			
-			animateShot(shot)
+			animateNormandyShot()
 		}
-		//		}
+		
 	}
 	//----------- Place bullets for shot ---------
 	func placeBulletsForShot(_ arrayBullets: [UIView])
 	{
 		for bullet in arrayBullets
 		{
-			bullet.center.x = CGFloat(shotX - 2.5)			/* To spacehipCenter: less half viewShot width */
-			bullet.center.y = CGFloat(shotY - 45)			/* less 45 pixels de la normandy */
+			bullet.center.x = CGFloat(shotX)			/* To spacehipCenter: less half viewShot width */
+			bullet.center.y = CGFloat(shotY - 39)				/* less 45 pixels de la normandy */
 		}
 	}
 	//--------------------------------------------
-	func animateShot(_ shot: UIView)
+	func animateNormandyShot()
 	{
 		//- Inicial distace for shot animation
 		distance = 0
 		//- Animation timer execution -
 		animationTimer = Timer.scheduledTimer(timeInterval: shotSpeed,
 											  target: self,
-											  selector: #selector(animation),
-											  userInfo: shot,
+											  selector: #selector(animationNS),
+											  userInfo: nil,
 											  repeats: true)
 	}
 	
-	@objc func animation(_ aShot: UIView)
+	@objc func animationNS()
 	{	/* distance incremental */
 		distance += 1
 		/* Stop the animation */
 		if distance >= maxDistance { animationTimer.invalidate(); animationTimer = nil }
 		
 		/* Animation */
-		aShot.center.y += animationY
-		//for i in 0..<arrayBullets.count { arrayBullets[i].center.y += animationY }
+		//aShot.center.y += animationY
+		for i in 0..<arrayBullets.count
+		{
+			arrayBullets[i].center.y -= animationY
+			
+			for laquais in arrayLaquais
+			{
+				if arrayBullets[i].frame.intersects(laquais.frame) == true
+				{
+					death(lackey)
+				}
+			}
+		}
+	}
+	func death(_ whoIsDead: String)
+	{
+		switch whoIsDead
+		{
+		case lackey:
+			
+			break
+			
+		case normandy:
+			
+			break
+			
+		case mothership:
+			
+			break
+			
+		default:
+			break
+		}
 	}
 	
 	//=====================================================================
