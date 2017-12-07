@@ -132,8 +132,6 @@ class SpaceWar: UIViewController
 		
     }
 	
-		//viewBullet.frame.intersection(<#T##r2: CGRect##CGRect#>) conditions to destroid
-	
 	//-------------------------------------------
 	//------------ Normandy's shifting ----------
 	@IBAction func shifting_normandy(_ sender: UISlider)
