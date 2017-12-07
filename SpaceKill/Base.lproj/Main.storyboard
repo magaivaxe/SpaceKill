@@ -72,14 +72,15 @@
                                     <action selector="shifting_normandy:" destination="BYZ-38-t0r" eventType="valueChanged" id="c0w-Jy-2FX"/>
                                 </connections>
                             </slider>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mld-g9-PO7">
-                                <rect key="frame" x="20" y="20" width="728" height="864"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VbL-4K-Lz2">
+                                <rect key="frame" x="20" y="944" width="100" height="50"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <state key="normal">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
-                                    <action selector="start_game:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4wt-G4-Ezu"/>
+                                    <action selector="shot_button:" destination="BYZ-38-t0r" eventType="touchUpInside" id="QXL-PS-sUt"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -87,7 +88,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="button_startGame" destination="Mld-g9-PO7" id="3Ti-ES-cDb"/>
+                        <outlet property="button_shot" destination="VbL-4K-Lz2" id="wg2-E2-S0T"/>
                         <outlet property="img_laquais1" destination="J7F-8p-aSg" id="EM5-2G-U2D"/>
                         <outlet property="img_laquais2" destination="7bJ-0a-jXi" id="60I-jt-VFN"/>
                         <outlet property="img_mothership" destination="f8N-gU-krg" id="vVf-p5-wPw"/>
@@ -101,7 +102,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="901" y="-447"/>
+            <point key="canvasLocation" x="1270.3125" y="-449.41406249999994"/>
         </scene>
     </scenes>
     <resources>
