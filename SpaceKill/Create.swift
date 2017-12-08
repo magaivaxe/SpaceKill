@@ -89,11 +89,11 @@ class Create
 												  y: 0,
 												  width: sws * 50/768,
 												  height: shs * 50/1024))
+			
+			aUIImgView.image = UIImage(named: "lackey.png")
 			arrayToReturn.append(aUIImgView)
 			
 		}
-		
-		
 		return arrayToReturn as! [UIImageView]
 	}
 }

@@ -192,8 +192,6 @@ class SpaceWar: UIViewController
 		{ return }
 		//-- Shot --
 		shot()
-		//--
-		
     }
 	
 	//-------------------------------------------
