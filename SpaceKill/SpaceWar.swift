@@ -175,6 +175,8 @@ class SpaceWar: UIViewController
 						   imgView_lackey17,imgView_lackey18,imgView_lackey19,imgView_lackey20,
 						   imgView_lackey21,imgView_lackey22,imgView_lackey23,imgView_lackey24]
 		
+		arrayMotherShip = [view_mothership]
+		
 		//-- Set images to imgViews lackeys
 		for element in arrayImgLackeys { element.image = UIImage.init(named: "lackey.png") }
 		//-- Set image to mothership
@@ -244,25 +246,26 @@ class SpaceWar: UIViewController
 		//-- Stop the animation --
 		if distance >= maxDistance { animationTimer.invalidate(); animationTimer = nil }
 		//--- Bullet animation ---
-		for i in 0..<arrayBullets.count
+		for bullet in arrayBullets
 		{
-			arrayBullets[i].center.y -= animationY			/* Bullet animation on screen */
+			bullet.center.y -= animationY			/* Bullet animation on screen */
 			//--- Bullet kill the lackeys ---
 			for element in arrayLackeys
 			{
 				//-- Frames intersections conditions --
-				if arrayBullets[i].frame.intersects(element.frame) == true
+				if bullet.frame.intersects(element.frame) == true
 				{
-					death(lackey, element, arrayBullets[i])	/* Call death's function */
+					death(lackey, element, bullet)	/* Call death's function */
+					//remove the view from the array... this will resolve the problem?
 				}
 			}
 			//-- Bullet kill the mothership --
 			for element in arrayMotherShip
 			{
 				//-- Frames intersections conditions --
-				if arrayBullets[i].frame.intersects(element.frame)
+				if bullet.frame.intersects(element.frame)
 				{
-					death(mothership, element, arrayBullets[i])
+					death(mothership, element, bullet)
 				}
 			}
 		}
@@ -274,6 +277,7 @@ class SpaceWar: UIViewController
 		case lackey:
 			theDead.removeFromSuperview()			/* Remove the UIView from the main view */
 			theBullet.removeFromSuperview()			/* Remove the bullet */
+			distance = Int(view.frame.height)
 			break
 		case normandy:
 			
