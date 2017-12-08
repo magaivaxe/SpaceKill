@@ -223,10 +223,11 @@ class SpaceWar: UIViewController
 		for bullet in arrayBullets
 		{
 			bullet.center.x = CGFloat(shotX)			/* To spacehipCenter: less half viewShot width */
-			bullet.center.y = CGFloat(shotY - 39)				/* less 45 pixels de la normandy */
+			bullet.center.y = CGFloat(shotY - 39)		/* less 45 pixels de la normandy */
 		}
 	}
 	//--------------------------------------------
+    //=================== Normandy's Animations shots =====================
 	func animateNormandyShot()
 	{
 		//- Inicial distace for shot animation
@@ -238,8 +239,8 @@ class SpaceWar: UIViewController
 											  userInfo: nil,
 											  repeats: true)
 	}
-	
-	@objc func animationNS()		/* AnimationNormandyShot */
+	//-- Normandy shot animation --
+	@objc func animationNS()
 	{
 		//- distance incremental -
 		distance += 1
@@ -248,7 +249,7 @@ class SpaceWar: UIViewController
 		//--- Bullet animation ---
 		for bullet in arrayBullets
 		{
-			bullet.center.y -= animationY			/* Bullet animation on screen */
+			bullet.center.y -= animationY					/* Bullet animation on screen */
 			//--- Bullet kill the lackeys ---
 			for i in 0..<arrayLackeys.count
 			{
@@ -269,6 +270,19 @@ class SpaceWar: UIViewController
 			}
 		}
 	}
+    //=====================================================================
+    //==================== Lackey's Animations moves ======================
+    func move()
+    {
+         
+    }
+    
+    
+    
+    
+    
+    //=====================================================================
+    
     func death(_ whoIsDead: String,_ theDead: UIView,_ theBullet: UIView)
 	{
 		switch whoIsDead							//Do and call the animations before remove
