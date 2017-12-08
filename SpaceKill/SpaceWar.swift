@@ -115,8 +115,19 @@ class SpaceWar: UIViewController
 	//-------------------------------------------
 	func startPlaceEnemies()
 	{
-		arrayLackeys = [view_laquais1, view_laquais2]
-		arrayMotherShip = [view_mothership]
+		let create = Create()
+		//-- Create the UIView with UIImgView inside
+		arrayLackeys = create.createLackeys(numberOfLackeys: 24,
+											lackeysByLine: 6,
+											screenWidthSize: view.frame.width,
+											screemHeightSize: view.frame.height,
+											distanceViewsX: 0.130208 * view.frame.width,	/* 0.130208 = 100/768 */
+											distanceViewsY: 0.097656 * view.frame.height)	/* 0.097656 = 100/1024 */
+		
+		for element in arrayLackeys { view.addSubview(element) }
+		
+		//arrayLackeys = [view_laquais1, view_laquais2]
+		//arrayMotherShip = [view_mothership]
 	}
 	//=====================================================================
 	//=========================== Game Actions ============================
