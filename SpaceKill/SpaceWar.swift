@@ -12,13 +12,11 @@ class SpaceWar: UIViewController
 {
 	//------------- Outlets -------------
 	@IBOutlet weak var view_mothership: UIView!
-	@IBOutlet weak var view_laquais1: UIView!
-	@IBOutlet weak var view_laquais2: UIView!
+
 	@IBOutlet weak var view_normandy: UIView!
 	
 	@IBOutlet weak var img_mothership: UIImageView!
-	@IBOutlet weak var img_laquais1: UIImageView!
-	@IBOutlet weak var img_laquais2: UIImageView!
+
 	@IBOutlet weak var img_normandy: UIImageView!
 	
 	@IBOutlet weak var slider_normandy: UISlider!
@@ -121,10 +119,11 @@ class SpaceWar: UIViewController
 											lackeysByLine: 6,
 											screenWidthSize: view.frame.width,
 											screemHeightSize: view.frame.height,
-											distanceViewsX: 0.130208 * view.frame.width,	/* 0.130208 = 100/768 */
-											distanceViewsY: 0.097656 * view.frame.height)	/* 0.097656 = 100/1024 */
+											distanceViewsX: 100/768 * view.frame.width,	/* 0.130208 = 100/768 */
+											distanceViewsY: 100/1024 * view.frame.height)	/* 0.097656 = 100/1024 */
 		
-		for element in arrayLackeys { view.addSubview(element) }
+		//for element in arrayLackeys { element.backgroundColor = UIColor.white
+		//							  view.addSubview(element) }
 		
 		//arrayLackeys = [view_laquais1, view_laquais2]
 		//arrayMotherShip = [view_mothership]
@@ -225,7 +224,6 @@ class SpaceWar: UIViewController
 		case lackey:
 			theDead.removeFromSuperview()			/* Remove the UIView from the main view */
 			theBullet.removeFromSuperview()			/* Remove the bullet */
-			
 			break
 		case normandy:
 			

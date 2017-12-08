@@ -15,6 +15,8 @@
 		9B9C8D2C1FD58CBF000F16E5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B9C8D2B1FD58CBF000F16E5 /* Assets.xcassets */; };
 		9B9C8D2F1FD58CBF000F16E5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9B9C8D2D1FD58CBF000F16E5 /* LaunchScreen.storyboard */; };
 		9B9C8D371FD59287000F16E5 /* SpaceWar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B9C8D361FD59287000F16E5 /* SpaceWar.swift */; };
+		BF8F6E411FDA7443009D07BC /* lackey.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8F6E3F1FDA7443009D07BC /* lackey.png */; };
+		BF8F6E421FDA7443009D07BC /* mothership.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8F6E401FDA7443009D07BC /* mothership.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		9B9C8D2E1FD58CBF000F16E5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9B9C8D301FD58CBF000F16E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9B9C8D361FD59287000F16E5 /* SpaceWar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceWar.swift; sourceTree = "<group>"; };
+		BF8F6E3F1FDA7443009D07BC /* lackey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lackey.png; sourceTree = "<group>"; };
+		BF8F6E401FDA7443009D07BC /* mothership.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mothership.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +48,8 @@
 		9B143E971FD6D9DC00FA54F5 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				BF8F6E3F1FDA7443009D07BC /* lackey.png */,
+				BF8F6E401FDA7443009D07BC /* mothership.png */,
 				9B143E981FD6DA2500FA54F5 /* ship0.png */,
 			);
 			path = Images;
@@ -174,6 +180,8 @@
 			files = (
 				9B143E991FD6DA2500FA54F5 /* ship0.png in Resources */,
 				9B9C8D2F1FD58CBF000F16E5 /* LaunchScreen.storyboard in Resources */,
+				BF8F6E421FDA7443009D07BC /* mothership.png in Resources */,
+				BF8F6E411FDA7443009D07BC /* lackey.png in Resources */,
 				9B9C8D2C1FD58CBF000F16E5 /* Assets.xcassets in Resources */,
 				9B9C8D2A1FD58CBF000F16E5 /* Main.storyboard in Resources */,
 			);
