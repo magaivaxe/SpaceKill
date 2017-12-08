@@ -7,16 +7,65 @@
 */
 
 import UIKit
+import Foundation
 
 class SpaceWar: UIViewController
 {
 	//------------- Outlets -------------
+	@IBOutlet weak var view_lackey1: UIView!
+	@IBOutlet weak var view_lackey2: UIView!
+	@IBOutlet weak var view_lackey3: UIView!
+	@IBOutlet weak var view_lackey4: UIView!
+	@IBOutlet weak var view_lackey5: UIView!
+	@IBOutlet weak var view_lackey6: UIView!
+	@IBOutlet weak var view_lackey7: UIView!
+	@IBOutlet weak var view_lackey8: UIView!
+	@IBOutlet weak var view_lackey9: UIView!
+	@IBOutlet weak var view_lackey10: UIView!
+	@IBOutlet weak var view_lackey11: UIView!
+	@IBOutlet weak var view_lackey12: UIView!
+	@IBOutlet weak var view_lackey13: UIView!
+	@IBOutlet weak var view_lackey14: UIView!
+	@IBOutlet weak var view_lackey15: UIView!
+	@IBOutlet weak var view_lackey16: UIView!
+	@IBOutlet weak var view_lackey17: UIView!
+	@IBOutlet weak var view_lackey18: UIView!
+	@IBOutlet weak var view_lackey19: UIView!
+	@IBOutlet weak var view_lackey20: UIView!
+	@IBOutlet weak var view_lackey21: UIView!
+	@IBOutlet weak var view_lackey22: UIView!
+	@IBOutlet weak var view_lackey23: UIView!
+	@IBOutlet weak var view_lackey24: UIView!
+	
 	@IBOutlet weak var view_mothership: UIView!
-
 	@IBOutlet weak var view_normandy: UIView!
 	
+	@IBOutlet weak var imgView_lackey1: UIImageView!
+	@IBOutlet weak var imgView_lackey2: UIImageView!
+	@IBOutlet weak var imgView_lackey3: UIImageView!
+	@IBOutlet weak var imgView_lackey4: UIImageView!
+	@IBOutlet weak var imgView_lackey5: UIImageView!
+	@IBOutlet weak var imgView_lackey6: UIImageView!
+	@IBOutlet weak var imgView_lackey7: UIImageView!
+	@IBOutlet weak var imgView_lackey8: UIImageView!
+	@IBOutlet weak var imgView_lackey9: UIImageView!
+	@IBOutlet weak var imgView_lackey10: UIImageView!
+	@IBOutlet weak var imgView_lackey11: UIImageView!
+	@IBOutlet weak var imgView_lackey12: UIImageView!
+	@IBOutlet weak var imgView_lackey13: UIImageView!
+	@IBOutlet weak var imgView_lackey14: UIImageView!
+	@IBOutlet weak var imgView_lackey15: UIImageView!
+	@IBOutlet weak var imgView_lackey16: UIImageView!
+	@IBOutlet weak var imgView_lackey17: UIImageView!
+	@IBOutlet weak var imgView_lackey18: UIImageView!
+	@IBOutlet weak var imgView_lackey19: UIImageView!
+	@IBOutlet weak var imgView_lackey20: UIImageView!
+	@IBOutlet weak var imgView_lackey21: UIImageView!
+	@IBOutlet weak var imgView_lackey22: UIImageView!
+	@IBOutlet weak var imgView_lackey23: UIImageView!
+	@IBOutlet weak var imgView_lackey24: UIImageView!
+	
 	@IBOutlet weak var img_mothership: UIImageView!
-
 	@IBOutlet weak var img_normandy: UIImageView!
 	
 	@IBOutlet weak var slider_normandy: UISlider!
@@ -30,6 +79,7 @@ class SpaceWar: UIViewController
 	var shotX, shotY: Float!
 	var arrayBullets = [UIView]()
 	var arrayLackeys = [UIView]()
+	var arrayImgLackeys = [UIImageView]()
 	var arrayMotherShip = [UIView]()
 	
 	var animationTimer: Timer!		/* Variable of time animation */
@@ -113,20 +163,24 @@ class SpaceWar: UIViewController
 	//-------------------------------------------
 	func startPlaceEnemies()
 	{
-		let create = Create()
-		//-- Create the UIView with UIImgView inside
-		arrayLackeys = create.createLackeys(numberOfLackeys: 24,
-											lackeysByLine: 6,
-											screenWidthSize: view.frame.width,
-											screemHeightSize: view.frame.height,
-											distanceViewsX: 100/768 * view.frame.width,	/* 0.130208 = 100/768 */
-											distanceViewsY: 100/1024 * view.frame.height)	/* 0.097656 = 100/1024 */
+		arrayLackeys = [view_lackey1, view_lackey2, view_lackey3, view_lackey4,
+						view_lackey5, view_lackey6, view_lackey7, view_lackey8,
+						view_lackey9, view_lackey10, view_lackey11, view_lackey12,
+						view_lackey13, view_lackey14, view_lackey15, view_lackey16,
+						view_lackey17, view_lackey18, view_lackey19, view_lackey20,
+						view_lackey21, view_lackey22, view_lackey23, view_lackey24]
+	
+		arrayImgLackeys = [imgView_lackey1,imgView_lackey2,imgView_lackey3,imgView_lackey4,
+						   imgView_lackey5,imgView_lackey6,imgView_lackey7,imgView_lackey8,
+						   imgView_lackey9,imgView_lackey10,imgView_lackey11,imgView_lackey12,
+						   imgView_lackey13,imgView_lackey14,imgView_lackey15,imgView_lackey16,
+						   imgView_lackey17,imgView_lackey18,imgView_lackey19,imgView_lackey20,
+						   imgView_lackey21,imgView_lackey22,imgView_lackey23,imgView_lackey24]
 		
-		//for element in arrayLackeys { element.backgroundColor = UIColor.white
-		//							  view.addSubview(element) }
-		
-		//arrayLackeys = [view_laquais1, view_laquais2]
-		//arrayMotherShip = [view_mothership]
+		//-- Set images to imgViews lackeys
+		for element in arrayImgLackeys { element.image = UIImage.init(named: "lackey.png") }
+		//-- Set image to mothership
+		img_mothership.image = UIImage(named: "mothership.png")
 	}
 	//=====================================================================
 	//=========================== Game Actions ============================

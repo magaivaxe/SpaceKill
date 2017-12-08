@@ -11,16 +11,18 @@ import UIKit
 
 class Create
 {
-	func createLackeys(numberOfLackeys nl: Int,
-					   lackeysByLine lb: Int,
-					   screenWidthSize sws: CGFloat,
-					   screemHeightSize shs: CGFloat,
-					   distanceViewsX dvx: CGFloat,
-					   distanceViewsY dvy: CGFloat) -> [UIView]
+	var arrayToReturn = [AnyObject]()
+	var aUIView: UIView!
+	var aUIImgView: UIImageView!
+	
+	
+	func createArrayOfLackeys(numberOfLackeys nl: Int,
+							  lackeysByLine lb: Int,
+							  screenWidthSize sws: CGFloat,
+							  screemHeightSize shs: CGFloat,
+							  distanceViewsX dvx: CGFloat,
+							  distanceViewsY dvy: CGFloat) -> [UIView]
 	{
-		var arrayToReturn = [UIView]()
-		var aUIView: UIView!
-		var aUIImgView: UIImageView!
 		let constIncrementationX: CGFloat = dvx / sws
 		let constIncrementationY: CGFloat = dvy / shs
 		var incX: CGFloat = 0
@@ -35,11 +37,6 @@ class Create
 											  y: shs * (156/1024 + incY),
 											  width: sws * 50/768,
 											  height: shs * 50/1024))
-
-				aUIImgView = UIImageView(frame: .init(x: 0,
-													  y: 0,
-													  width: sws * 50/768,
-													  height: shs * 50/1024))
 			}
 			//-- Line 2 --
 			if (i > lb && i <= lb * 2)
@@ -50,11 +47,6 @@ class Create
 											  y: shs * (156/1024 + incY),
 											  width: sws * 50/768,
 											  height: shs * 50/1024))
-				
-				aUIImgView = UIImageView(frame: .init(x: 0,
-													  y: 0,
-													  width: sws * 50/768,
-													  height: shs * 50/1024))
 			}
 			//-- Line 3 --
 			if (i > lb * 2 && i <= lb * 3)
@@ -65,11 +57,6 @@ class Create
 											  y: shs * (156/1024 + incY),
 											  width: sws * 50/768,
 											  height: shs * 50/1024))
-				
-				aUIImgView = UIImageView(frame: .init(x: 0,
-													  y: 0,
-													  width: sws * 50/768,
-													  height: shs * 50/1024))
 			}
 			//-- Line 4 --
 			if (i > lb * 3 && i <= nl)
@@ -80,15 +67,8 @@ class Create
 											  y: shs * (156/1024 + incY),
 											  width: sws * 50/768,
 											  height: shs * 50/1024))
-				
-				aUIImgView = UIImageView(frame: .init(x: 0,
-													  y: 0,
-													  width: sws * 50/768,
-													  height: shs * 50/1024))
 			}
 			
-			aUIImgView.image = UIImage(named: "lackey.png")
-			aUIView.addSubview(aUIImgView)
 			arrayToReturn.append(aUIView)
 			//-- X incrementations
 			incX = incX + constIncrementationX
@@ -96,7 +76,50 @@ class Create
 			if (i == lb || i == 2 * lb || i == 3 * lb)
 			{ incY = incY + constIncrementationY }
 		}
-		return arrayToReturn
+		return arrayToReturn as! [UIView]
+	}
+	
+	func createArrayOfImgViewsLackeys(numberOfImgLackeys nl: Int,
+									  screenWidthSize sws: CGFloat,
+									  screemHeightSize shs: CGFloat) -> [UIImageView]
+	{
+		for _ in 1...nl
+		{
+			aUIImgView = UIImageView(frame: .init(x: 0,
+												  y: 0,
+												  width: sws * 50/768,
+												  height: shs * 50/1024))
+			arrayToReturn.append(aUIImgView)
+			
+		}
+		
+		
+		return arrayToReturn as! [UIImageView]
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
