@@ -36,7 +36,6 @@ class SpaceWar: UIViewController
 	@IBOutlet weak var view_lackey22: UIView!
 	@IBOutlet weak var view_lackey23: UIView!
 	@IBOutlet weak var view_lackey24: UIView!
-	
 	@IBOutlet weak var view_mothership: UIView!
 	@IBOutlet weak var view_normandy: UIView!
 	
@@ -64,7 +63,6 @@ class SpaceWar: UIViewController
 	@IBOutlet weak var imgView_lackey22: UIImageView!
 	@IBOutlet weak var imgView_lackey23: UIImageView!
 	@IBOutlet weak var imgView_lackey24: UIImageView!
-	
 	@IBOutlet weak var img_mothership: UIImageView!
 	@IBOutlet weak var img_normandy: UIImageView!
 	
