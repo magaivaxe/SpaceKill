@@ -196,7 +196,7 @@ class SpaceWar: UIViewController
 	
 	//-------------------------------------------
 	//------------ Normandy's shifting ----------
-	@IBAction func shifting_normandy(_ sender: UISlider)
+	@IBAction func shifting_normandy(_ sender: UISlider) //touches move au lieu du slider
 	{
 		shotX = sender.value							/* Dinamics values to shotX */
 		view_normandy.center.x = CGFloat(shotX)			/* Dinamics values to move the normandy */
@@ -250,13 +250,12 @@ class SpaceWar: UIViewController
 		{
 			bullet.center.y -= animationY			/* Bullet animation on screen */
 			//--- Bullet kill the lackeys ---
-			for element in arrayLackeys
+			for i in 0..<arrayLackeys.count
 			{
 				//-- Frames intersections conditions --
-				if bullet.frame.intersects(element.frame) == true
+				if bullet.frame.intersects(arrayLackeys[i].frame) == true
 				{
-					death(lackey, element, bullet)	/* Call death's function */
-					//remove the view from the array... this will resolve the problem?
+					death(lackey, arrayLackeys[i], bullet)	/* Call death's function */
 				}
 			}
 			//-- Bullet kill the mothership --
@@ -270,14 +269,18 @@ class SpaceWar: UIViewController
 			}
 		}
 	}
-	func death(_ whoIsDead: String,_ theDead: UIView,_ theBullet: UIView)
+    func death(_ whoIsDead: String,_ theDead: UIView,_ theBullet: UIView)
 	{
-		switch whoIsDead			//Do and call the animations before remove
+		switch whoIsDead							//Do and call the animations before remove
 		{
 		case lackey:
-			theDead.removeFromSuperview()			/* Remove the UIView from the main view */
-			theBullet.removeFromSuperview()			/* Remove the bullet */
-			distance = Int(view.frame.height)
+			theDead.removeFromSuperview()			/* Remove the lackey from the main view */
+            theDead.frame.origin.x = -500			/* Remove the phanton to position -500 */
+            
+            theBullet.removeFromSuperview()			/* Remove the bullet from the main view */
+			animationTimer.invalidate()				/* Stop animation */
+            animationTimer = nil
+            
 			break
 		case normandy:
 			
@@ -285,7 +288,9 @@ class SpaceWar: UIViewController
 			
 		case mothership:
 			theDead.removeFromSuperview()
-			theBullet.removeFromSuperview()
+            theDead.frame.origin.x = -500
+            
+            theBullet.removeFromSuperview()
 			break
 		default:
 			break
