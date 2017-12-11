@@ -36,6 +36,7 @@ class SpaceWar: UIViewController
 	@IBOutlet weak var view_lackey22: UIView!
 	@IBOutlet weak var view_lackey23: UIView!
 	@IBOutlet weak var view_lackey24: UIView!
+	
 	@IBOutlet weak var view_mothership: UIView!
 	@IBOutlet weak var view_normandy: UIView!
 	
@@ -63,6 +64,7 @@ class SpaceWar: UIViewController
 	@IBOutlet weak var imgView_lackey22: UIImageView!
 	@IBOutlet weak var imgView_lackey23: UIImageView!
 	@IBOutlet weak var imgView_lackey24: UIImageView!
+	
 	@IBOutlet weak var img_mothership: UIImageView!
 	@IBOutlet weak var img_normandy: UIImageView!
 	
@@ -75,17 +77,20 @@ class SpaceWar: UIViewController
 	let lackey = "lackey"
 	let mothership = "mothership"
 	var shotX, shotY: Float!
+	var arrayMothershipBullets = [UIView]()
 	var arrayBullets = [UIView]()
 	var arrayLackeys = [UIView]()
 	var arrayImgLackeys = [UIImageView]()
-	var arrayMotherShip = [UIView]()
+	var tupleMotherShip = [(ms: UIView, life: Int)]()
 	
-	var animationTimer: Timer!		/* Variable of time animation */
-	var distance = 0				/* Incremental distance to animate */
-	var maxDistance: Int!			/* Max distance to animate by screen */
-	var nBullets: Int!				/* Bullets number to shot, the game can change the value */
-	var animationY: CGFloat!		/* Distance on pixels to animate */
-	var shotSpeed: Double!			/* To apply to time interval animation */
+	var mothershipLife: Int!
+	var aniBulletTimer, aniLackeysTimer: Timer!							/* Variable of time animation */
+	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
+	var distanceBullet = 0												/* Incremental distance to animate */
+	var maxDistance, rightOrLeft: Int!									/* Max distance to animate by screen */
+	var nBullets, nMsBullets: Int!										/* Bullets number to shot, the game can change the value */
+	var animationX, animationY: CGFloat!								/* Distance on pixels to animate */
+	var shotSpeed, mothershipSpeed: Double!								/* To apply to time interval animation */
 	//-----------------------------------
 	//============================ The loader =============================
     override func viewDidLoad()
@@ -93,15 +98,17 @@ class SpaceWar: UIViewController
         super.viewDidLoad()
 		//-----
 		gameConfig(); gameMode()
-		startPlaceEnemies(); spaceshipBulletsCreation(nBullets)
+		startPlaceEnemies(); spaceshipsBulletsCreation(nBullets, nMsBullets)
+		enemiesInitialMoveChoices()
 		//-----
     }
 	//=====================================================================
 	
 	//======================== Loading Fonctions ==========================
 	//------------- Shots creations -------------
-	func spaceshipBulletsCreation(_ nBullets: Int)
+	func spaceshipsBulletsCreation(_ nBullets: Int,_ nMsBullets: Int)
 	{
+		//---- Normandy bullets ----
 		for _ in 1...nBullets
 		{
 			let bullet = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 10))
@@ -110,16 +117,57 @@ class SpaceWar: UIViewController
 			
 			arrayBullets.append(bullet)
 		}
+		//---- Mothership bullets ----
+		for _ in 1...nMsBullets
+		{
+			let msBullet = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
+			
+			msBullet.backgroundColor = UIColor.white
+			msBullet.layer.cornerRadius = 5
+			
+			arrayMothershipBullets.append(msBullet)
+		}
 	}
+	//-------------- Mods choiced ---------------
 	func gameMode()
 	{
 		//to test
 		nBullets = 1
+		nMsBullets = 3
 		animationY = 1
+		animationX = 1
 		shotSpeed = 0.001
+		mothershipSpeed = 0.01
+		mothershipLife = 25
+		
 	}
 	//-------------------------------------------
-	//----------- Game vonfiguration ------------ 	SET HERE THE MAX DISTANCE TO ANIMATION
+	//----------- Start place enemies -----------
+	func startPlaceEnemies()
+	{
+		arrayLackeys = [view_lackey1, view_lackey2, view_lackey3, view_lackey4,
+						view_lackey5, view_lackey6, view_lackey7, view_lackey8,
+						view_lackey9, view_lackey10, view_lackey11, view_lackey12,
+						view_lackey13, view_lackey14, view_lackey15, view_lackey16,
+						view_lackey17, view_lackey18, view_lackey19, view_lackey20,
+						view_lackey21, view_lackey22, view_lackey23, view_lackey24]
+		
+		arrayImgLackeys = [imgView_lackey1,imgView_lackey2,imgView_lackey3,imgView_lackey4,
+						   imgView_lackey5,imgView_lackey6,imgView_lackey7,imgView_lackey8,
+						   imgView_lackey9,imgView_lackey10,imgView_lackey11,imgView_lackey12,
+						   imgView_lackey13,imgView_lackey14,imgView_lackey15,imgView_lackey16,
+						   imgView_lackey17,imgView_lackey18,imgView_lackey19,imgView_lackey20,
+						   imgView_lackey21,imgView_lackey22,imgView_lackey23,imgView_lackey24]
+		
+		tupleMotherShip = [(ms: view_mothership, life: mothershipLife)]
+		
+		//-- Set images to imgViews lackeys
+		for element in arrayImgLackeys { element.image = UIImage.init(named: "lackey.png") }
+		//-- Set image to mothership
+		img_mothership.image = UIImage(named: "mothership.png")
+	}
+	//-------------------------------------------
+	//----------- Game configuration ------------ 	SET HERE THE MAX DISTANCE TO ANIMATION
 	func gameConfig()
 	{
 		//-- Slider loader --
@@ -158,37 +206,13 @@ class SpaceWar: UIViewController
 			slider_normandy.minimumValue = Float(54)
 		}
 	}
-	//-------------------------------------------
-	func startPlaceEnemies()
-	{
-		arrayLackeys = [view_lackey1, view_lackey2, view_lackey3, view_lackey4,
-						view_lackey5, view_lackey6, view_lackey7, view_lackey8,
-						view_lackey9, view_lackey10, view_lackey11, view_lackey12,
-						view_lackey13, view_lackey14, view_lackey15, view_lackey16,
-						view_lackey17, view_lackey18, view_lackey19, view_lackey20,
-						view_lackey21, view_lackey22, view_lackey23, view_lackey24]
-	
-		arrayImgLackeys = [imgView_lackey1,imgView_lackey2,imgView_lackey3,imgView_lackey4,
-						   imgView_lackey5,imgView_lackey6,imgView_lackey7,imgView_lackey8,
-						   imgView_lackey9,imgView_lackey10,imgView_lackey11,imgView_lackey12,
-						   imgView_lackey13,imgView_lackey14,imgView_lackey15,imgView_lackey16,
-						   imgView_lackey17,imgView_lackey18,imgView_lackey19,imgView_lackey20,
-						   imgView_lackey21,imgView_lackey22,imgView_lackey23,imgView_lackey24]
-		
-		arrayMotherShip = [view_mothership]
-		
-		//-- Set images to imgViews lackeys
-		for element in arrayImgLackeys { element.image = UIImage.init(named: "lackey.png") }
-		//-- Set image to mothership
-		img_mothership.image = UIImage(named: "mothership.png")
-	}
 	//=====================================================================
 	//=========================== Game Actions ============================
 	//------------ Normandy's shifting ----------
 	@IBAction func start_game(_ sender: UIButton)
 	{
 		//-- One shot condition --
-		if animationTimer != nil
+		if aniBulletTimer != nil
 		{ return }
 		//-- Shot --
 		shot()
@@ -231,9 +255,9 @@ class SpaceWar: UIViewController
 	func animateNormandyShot()
 	{
 		//- Inicial distace for shot animation
-		distance = 0
+		distanceBullet = 0
 		//- Animation timer execution -
-		animationTimer = Timer.scheduledTimer(timeInterval: shotSpeed,
+		aniBulletTimer = Timer.scheduledTimer(timeInterval: shotSpeed,
 											  target: self,
 											  selector: #selector(animationNS),
 											  userInfo: nil,
@@ -243,9 +267,9 @@ class SpaceWar: UIViewController
 	@objc func animationNS()
 	{
 		//- distance incremental -
-		distance += 1
+		distanceBullet += 1
 		//-- Stop the animation --
-		if distance >= maxDistance { animationTimer.invalidate(); animationTimer = nil }
+		if distanceBullet >= maxDistance { aniBulletTimer.invalidate(); aniBulletTimer = nil }
 		//--- Bullet animation ---
 		for bullet in arrayBullets
 		{
@@ -260,27 +284,74 @@ class SpaceWar: UIViewController
 				}
 			}
 			//-- Bullet kill the mothership --
-			for element in arrayMotherShip
+			for element in tupleMotherShip
 			{
 				//-- Frames intersections conditions --
-				if bullet.frame.intersects(element.frame)
+				if bullet.frame.intersects(element.ms.frame)
 				{
-					death(mothership, element, bullet)
+					death(mothership, element.ms, bullet)
 				}
 			}
 		}
 	}
     //=====================================================================
-    //==================== Lackey's Animations moves ======================
-    func move()
+    //=================== Enemies's Animations moves ======================
+	//------- Lackey's animations -------
+    func moveLackeys()
     {
-         
+		
     }
-    
-    
-    
-    
-    
+	func enemiesInitialMoveChoices()
+	{
+		rightOrLeft = Int(arc4random_uniform(2))
+		
+		moveMothership()
+	}
+	//----- Mothership's animations -----
+    func moveMothership()
+	{
+		if rightOrLeft == 0
+		{
+			aniRightMothershipTimer = Timer.scheduledTimer(timeInterval: mothershipSpeed,
+														   target: self,
+													  	   selector: #selector(animationEnemiesToRight),
+													  	   userInfo: nil,
+													  	   repeats: true)
+		}
+		if rightOrLeft == 1
+		{
+			aniLeftMothershipTimer = Timer.scheduledTimer(timeInterval: mothershipSpeed,
+														  target: self,
+														  selector: #selector(animationEnemiesToLeft),
+														  userInfo: nil,
+														  repeats: true)
+		}
+	}
+	//---- Mothership's animations to right -----
+	@objc func animationEnemiesToRight()
+	{
+		if view_mothership.center.x == view.frame.width - view_mothership.frame.width / 2
+		{
+			aniRightMothershipTimer.invalidate()
+			aniRightMothershipTimer = nil
+			rightOrLeft = 1
+			moveMothership()
+		}
+		view_mothership.center.x += animationX
+	}
+	//----- Mothership's animations to left ------
+	@objc func animationEnemiesToLeft()
+	{
+		if view_mothership.center.x == view_mothership.frame.width / 2
+		{
+			aniLeftMothershipTimer.invalidate()
+			aniLeftMothershipTimer = nil
+			rightOrLeft = 0
+			moveMothership()
+		}
+		view_mothership.center.x -= animationX
+	}
+	//--------------------------------------------
     //=====================================================================
     
     func death(_ whoIsDead: String,_ theDead: UIView,_ theBullet: UIView)
@@ -292,8 +363,8 @@ class SpaceWar: UIViewController
             theDead.frame.origin.x = -500			/* Remove the phanton to position -500 */
             
             theBullet.removeFromSuperview()			/* Remove the bullet from the main view */
-			animationTimer.invalidate()				/* Stop animation */
-            animationTimer = nil
+			aniBulletTimer.invalidate()				/* Stop animation */
+            aniBulletTimer = nil
             
 			break
 		case normandy:
