@@ -76,22 +76,28 @@ class SpaceWar: UIViewController
 	let normandy = "normandy"
 	let lackey = "lackey"
 	let mothership = "mothership"
-	var shotX, shotY: Float!
+	var shotX, msShotX, msShotY, shotY: Float!
+	var maxAngle, minAngle, anglesDivised: Double!
+	
 	var arrayMothershipBullets = [UIView]()
 	var arrayBullets = [UIView]()
 	var arrayLackeys = [UIView]()
 	var arrayImgLackeys = [UIImageView]()
 	var tupleMotherShip = [(ms: UIView, life: Int)]()
 	var tupleLackeys = [(lc: UIView, life: Int)]()
+	var arrayCos = [Double]()
+	var arraySin = [Double]()
 	
 	var aniBulletTimer, aniLackeysTimer: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
+	var aniBulletMothership: Timer!
 	var distanceBullet = 0												/* Incremental distance to animate */
 	var maxDistance, rightOrLeft: Int!									/* Max distance to animate by screen */
 	var nBullets, nMsBullets: Int!										/* Bullets number to shot, the game can change the value */
 	var mothershipLife, lackeysLifes: Int!
+	var mothershipProbalityShot, mothershipSpeedShot: Double!
 	var animationX, animationY: CGFloat!								/* Distance on pixels to animate */
-	var shotSpeed, mothershipSpeed: Double!								/* To apply to time interval animation */
+	var shotSpeed, mothershipSpeed : Double!								/* To apply to time interval animation */
 	//-----------------------------------
 	//============================ The loader =============================
     override func viewDidLoad()
@@ -104,7 +110,6 @@ class SpaceWar: UIViewController
 		//-----
     }
 	//=====================================================================
-	
 	//======================== Loading Fonctions ==========================
 	//------------- Shots creations -------------
 	func spaceshipsBulletsCreation(_ nBullets: Int,_ nMsBullets: Int)
@@ -133,13 +138,15 @@ class SpaceWar: UIViewController
 	func gameMode()
 	{
 		//to test
-		nBullets = 1
-		nMsBullets = 3
-		animationY = 1
-		animationX = 1
+		nBullets = 1; nMsBullets = 3
+		animationY = 1; animationX = 1
 		shotSpeed = 0.001
+		
 		mothershipSpeed = 0.01
 		mothershipLife = 3			//3 for tests
+		mothershipProbalityShot = 5
+		mothershipSpeedShot = 0.01
+		
 		lackeysLifes = 1
 		
 	}
@@ -188,6 +195,7 @@ class SpaceWar: UIViewController
 		//-- Shot's start --
 		shotX = slider_normandy.value							/* Initial shot X value */
 		shotY = Float(view.frame.height * 0.9017)				/* Initial shot Y value */
+		msShotY = Float(view.frame.height * 0.09472)			/* Initial shot Y mothership */
 		//------------------
 		//-- Animations config -
 		maxDistance = Int(view.frame.height - view.frame.height * 0.0983)
@@ -314,7 +322,6 @@ class SpaceWar: UIViewController
 				aniBulletTimer.invalidate()									/* Stop animation */
 				aniBulletTimer = nil
 				bullet.removeFromSuperview()								/* Remove the bullet from the main view */
-				
 			}
 		}
 	}
@@ -323,7 +330,37 @@ class SpaceWar: UIViewController
 	//--------- MothershipShot ----------
 	func shotOfMothership()
 	{
+		let shot = Double(arc4random_uniform(101))
 		
+		if shot <= mothershipProbalityShot
+		{
+			placeMothershipShot()
+			animateMothershipShot()
+		}
+	}
+	
+	func placeMothershipShot()
+	{
+		for msBullet in arrayMothershipBullets
+		{
+			msBullet.center.x = CGFloat(msShotX)
+			msBullet.center.y = CGFloat(msShotY)
+		}
+	}
+	
+	func animateMothershipShot()
+	{
+		anglesDivised = (maxAngle - minAngle) / Double(arrayMothershipBullets.count)
+		
+		aniBulletMothership = Timer.scheduledTimer(timeInterval: mothershipSpeedShot,
+												   target: self,
+												   selector: #selector(animationMS),
+												   userInfo: nil,
+												   repeats: true)
+	}
+	@objc func animationMS()
+	{
+		//REPRENDRE D'ICI ANIMATION BULLETS
 	}
 	//-----------------------------------
 	//------- Lackey's animations -------
@@ -368,6 +405,7 @@ class SpaceWar: UIViewController
 			moveMothership()
 		}
 		view_mothership.center.x += animationX
+		msShotX = Float(view_mothership.center.x)
 	}
 	//----- Mothership's animations to left ------
 	@objc func animationEnemiesToLeft()
@@ -380,6 +418,7 @@ class SpaceWar: UIViewController
 			moveMothership()
 		}
 		view_mothership.center.x -= animationX
+		msShotX = Float(view_mothership.center.x)
 	}
 	//--------------------------------------------
     //=====================================================================
