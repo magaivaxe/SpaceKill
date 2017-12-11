@@ -82,13 +82,14 @@ class SpaceWar: UIViewController
 	var arrayLackeys = [UIView]()
 	var arrayImgLackeys = [UIImageView]()
 	var tupleMotherShip = [(ms: UIView, life: Int)]()
+	var tupleLackeys = [(lc: UIView, life: Int)]()
 	
-	var mothershipLife: Int!
 	var aniBulletTimer, aniLackeysTimer: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
 	var distanceBullet = 0												/* Incremental distance to animate */
 	var maxDistance, rightOrLeft: Int!									/* Max distance to animate by screen */
 	var nBullets, nMsBullets: Int!										/* Bullets number to shot, the game can change the value */
+	var mothershipLife, lackeysLifes: Int!
 	var animationX, animationY: CGFloat!								/* Distance on pixels to animate */
 	var shotSpeed, mothershipSpeed: Double!								/* To apply to time interval animation */
 	//-----------------------------------
@@ -138,7 +139,8 @@ class SpaceWar: UIViewController
 		animationX = 1
 		shotSpeed = 0.001
 		mothershipSpeed = 0.01
-		mothershipLife = 25
+		mothershipLife = 3			//3 for tests
+		lackeysLifes = 1
 		
 	}
 	//-------------------------------------------
@@ -158,6 +160,12 @@ class SpaceWar: UIViewController
 						   imgView_lackey13,imgView_lackey14,imgView_lackey15,imgView_lackey16,
 						   imgView_lackey17,imgView_lackey18,imgView_lackey19,imgView_lackey20,
 						   imgView_lackey21,imgView_lackey22,imgView_lackey23,imgView_lackey24]
+		
+		//--- Set the tuple of lackeys
+		for lac in arrayLackeys
+		{
+			tupleLackeys.append((lac, lackeysLifes))
+		}
 		
 		tupleMotherShip = [(ms: view_mothership, life: mothershipLife)]
 		
@@ -275,22 +283,38 @@ class SpaceWar: UIViewController
 		{
 			bullet.center.y -= animationY					/* Bullet animation on screen */
 			//--- Bullet kill the lackeys ---
-			for i in 0..<arrayLackeys.count
+			for i in 0..<tupleLackeys.count
 			{
 				//-- Frames intersections conditions --
-				if bullet.frame.intersects(arrayLackeys[i].frame) == true
+				if bullet.frame.intersects(tupleLackeys[i].lc.frame) == true
 				{
-					death(lackey, arrayLackeys[i], bullet)	/* Call death's function */
+					tupleLackeys[i].life -= 1
+					
+					if tupleLackeys[i].life == 0
+					{
+						death(lackey, tupleLackeys[i].lc, bullet)	/* Call death's function */
+					}
+					
+					aniBulletTimer.invalidate()				/* Stop animation */
+					aniBulletTimer = nil
+					bullet.removeFromSuperview()			/* Remove the bullet from the main view */
 				}
 			}
 			//-- Bullet kill the mothership --
-			for element in tupleMotherShip
+			//-- Frames intersections conditions --
+			if bullet.frame.intersects(tupleMotherShip[0].ms.frame)
 			{
-				//-- Frames intersections conditions --
-				if bullet.frame.intersects(element.ms.frame)
+				tupleMotherShip[0].life -= 1		/* Mothership life dedremantation */
+				
+				if tupleMotherShip[0].life == 0
 				{
-					death(mothership, element.ms, bullet)
+					death(mothership, tupleMotherShip[0].ms, bullet)
 				}
+				
+				aniBulletTimer.invalidate()									/* Stop animation */
+				aniBulletTimer = nil
+				bullet.removeFromSuperview()								/* Remove the bullet from the main view */
+				
 			}
 		}
 	}
@@ -361,11 +385,7 @@ class SpaceWar: UIViewController
 		case lackey:
 			theDead.removeFromSuperview()			/* Remove the lackey from the main view */
             theDead.frame.origin.x = -500			/* Remove the phanton to position -500 */
-            
-            theBullet.removeFromSuperview()			/* Remove the bullet from the main view */
-			aniBulletTimer.invalidate()				/* Stop animation */
-            aniBulletTimer = nil
-            
+			
 			break
 		case normandy:
 			
@@ -374,8 +394,6 @@ class SpaceWar: UIViewController
 		case mothership:
 			theDead.removeFromSuperview()
             theDead.frame.origin.x = -500
-            
-            theBullet.removeFromSuperview()
 			break
 		default:
 			break
