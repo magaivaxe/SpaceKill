@@ -319,7 +319,13 @@ class SpaceWar: UIViewController
 		}
 	}
     //=====================================================================
-    //=================== Enemies's Animations moves ======================
+    //===================== Enemies's Actions moves =======================
+	//--------- MothershipShot ----------
+	func shotOfMothership()
+	{
+		
+	}
+	//-----------------------------------
 	//------- Lackey's animations -------
     func moveLackeys()
     {
