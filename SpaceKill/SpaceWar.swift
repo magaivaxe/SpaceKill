@@ -80,26 +80,30 @@ class SpaceWar: UIViewController
 	var shotX, msShotX, msShotY, shotY: Float!
 	var animationX, animationY: CGFloat!								/* Distance on pixels to animate */
 	var maxAngle, minAngle, anglesDivised: Double!
-	var mothershipProbalityShot, mothershipSpeedShot: Double!
+	var mothershipProbabilityShot, mothershipSpeedShot: Double!
+	var lackeysProbabilityShot, lackeysSpeedShot: Double!
 	var shotSpeed, mothershipSpeed, lackeySpeed : Double!
 	var maxDistance, maxMsDistance, rightOrLeft: Int!									/* Max distance to animate by screen */
-	var nBullets, nMsBullets: Int!										/* Bullets number to shot, the game can change the value */
+	var nBullets, nMsBullets, nLcBullets: Int!										/* Bullets number to shot, the game can change the value */
 	var mothershipLife, lackeysLifes: Int!
 	var distanceBullet = 0												/* Incremental distance to animate normandy's shot */
 	var distanceMsBullet = 0											/* Incremental distance to animate mothership's shot */
 	
 	var arrayMothershipBullets = [UIView]()
 	var arrayBullets = [UIView]()
+	var arrayLackeyBullets = [UIView]()
 	var arrayLackeys = [UIView]()
+	var arrayLackeysToShot = [UIView]()
+	var arrayLackeysDisplaced = [UIView]()
 	var arrayImgLackeys = [UIImageView]()
 	var tupleMotherShip = [(ms: UIView, life: Int)]()
 	var tupleLackeys = [(lc: UIView, life: Int)]()
 	var arrayCos = [Double]()
 	var arraySin = [Double]()
 	
-	var aniBulletTimer, aniLackeysTimer: Timer!							/* Variable of time animation */
+	var aniBulletTimer, aniBulletLackey, aniBulletMothership: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
-	var aniBulletMothership: Timer!
+	var aniRightLackeysTimer, aniLeftLackeysTimer: Timer!
 
 	//-----------------------------------
 	//============================ The loader =============================
@@ -108,16 +112,16 @@ class SpaceWar: UIViewController
         super.viewDidLoad()
 		//-----
 		gameConfig(); gameMode()
-		startPlaceEnemies(); spaceshipsBulletsCreation(nBullets, nMsBullets)
+		startPlaceEnemies(); spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets)
 		moveLackeys(); enemiesInitialMoveChoices()
 		//-----
     }
 	//=====================================================================
 	//======================== Loading Fonctions ==========================
 	//------------- Shots creations -------------
-	func spaceshipsBulletsCreation(_ nBullets: Int,_ nMsBullets: Int)
+	func spaceshipsBulletsCreation(_ nBullets: Int,_ nMsBullets: Int,_ nLcBullets: Int)
 	{
-		//---- Normandy bullets ----
+		//---- Normandy's bullets ----
 		for _ in 1...nBullets
 		{
 			let bullet = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 10))
@@ -126,32 +130,48 @@ class SpaceWar: UIViewController
 			
 			arrayBullets.append(bullet)
 		}
-		//---- Mothership bullets ----
+		//---- Mothership's bullets ----
 		for _ in 1...nMsBullets
 		{
 			let msBullet = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 15))
 			
 			msBullet.backgroundColor = UIColor.white
-			msBullet.layer.cornerRadius = 7.5
+			msBullet.layer.cornerRadius = msBullet.frame.width / 2
 			
 			arrayMothershipBullets.append(msBullet)
+		}
+		//---- Lackey's bullets ----
+		for _ in 1...nLcBullets
+		{
+			let lcBullet = UIView(frame: .init(x: 0, y: 0, width: 10, height: 10))
+			
+			lcBullet.backgroundColor = UIColor.white
+			lcBullet.layer.cornerRadius = lcBullet.frame.width / 2
+			
+			arrayLackeyBullets.append(lcBullet)
 		}
 	}
 	//-------------- Mods choiced ---------------
 	func gameMode()
 	{
-		//to test
-		nBullets = 1; nMsBullets = 10
+		//------ Normandy's modes -------
+		nBullets = 1
 		animationY = 1; animationX = 1
 		shotSpeed = 0.001
 		
+		//------ Mothership's modes -------
+		nMsBullets = 10
+		mothershipLife = 3
+		mothershipProbabilityShot = 1
 		mothershipSpeed = 0.01; mothershipSpeedShot = 0.01
-		mothershipLife = 3			//3 for tests
-		
-		mothershipProbalityShot = 1
 		minAngle = 230; maxAngle = 315
 		
-		lackeysLifes = 1; lackeySpeed = 1
+		//------ Lackey's modes -------
+		nLcBullets = 1
+		lackeysLifes = 1
+		lackeysProbabilityShot = 1
+		lackeySpeed = 2; lackeysSpeedShot = 0.01
+		
 		
 	}
 	//-------------------------------------------
@@ -343,12 +363,12 @@ class SpaceWar: UIViewController
 	//--------- MothershipShot ----------
 	func shotOfMothership()
 	{
-		let shot = Double(arc4random_uniform(101))
+		let shot = Double(arc4random_uniform(100))
 		
-		if (shot <= mothershipProbalityShot && aniBulletMothership == nil)
+		if (shot <= mothershipProbabilityShot && aniBulletMothership == nil)
 		{
 			placeMothershipShot(arrayMothershipBullets)
-			animateMothershipShot()
+			animatedMothershipShot()
 		}
 		else {return}
 	}
@@ -376,7 +396,7 @@ class SpaceWar: UIViewController
 		
 	}
 	
-	func animateMothershipShot()
+	func animatedMothershipShot()
 	{
 		aniBulletMothership = Timer.scheduledTimer(timeInterval: mothershipSpeedShot,
 												   target: self,
@@ -466,14 +486,47 @@ class SpaceWar: UIViewController
 	//--------------------------------------------
 	func moveLackeys()
 	{
-		for i in 0..<arrayLackeys.count
+		
+	}
+	
+	func shotOfLackeys()
+	{
+		let shot = Double(arc4random_uniform(100))
+		let theChosenOne: UIView!
+		
+		if shot <= lackeysProbabilityShot
 		{
-			UIView.animate(withDuration: lackeySpeed, delay: 0,
-						   options: [.autoreverse, .repeat],
-						   animations:
-			{
-				self.arrayLackeys[i].frame.origin.x -= 10
-			})
+			theChosenOne = theChosenLackey()
+			placeLackeyShot(theChosenOne)
+			
+		}
+	}
+	func animatedLackeyShot()
+	{
+		
+		
+	}
+	func theChosenLackey() -> UIView
+	{
+		arrayLackeysToShot = []
+		
+		for lck in arrayLackeys
+		{
+			if lck.frame.origin.x != -500 { arrayLackeysToShot.append(lck) }
+		}
+		
+		let chosen = Int(arc4random_uniform(UInt32(arrayLackeysToShot.count)))
+		
+		return arrayLackeysToShot[chosen]
+	}
+	func placeLackeyShot(_ theChosen: UIView)
+	{
+		for bullet in arrayLackeyBullets
+		{
+			bullet.center.x = theChosen.center.x
+			bullet.center.y = theChosen.center.y
+			
+			self.view.addSubview(bullet)
 		}
 	}
     //=====================================================================
@@ -485,6 +538,7 @@ class SpaceWar: UIViewController
 		case lackey:
 			theDead.removeFromSuperview()			/* Remove the lackey from the main view */
             theDead.frame.origin.x = -500			/* Remove the phanton to position -500 */
+			arrayLackeysDisplaced.append(theDead)	/* Add the dead lackeys to conditions */
 			break
 		case normandy:
 			
