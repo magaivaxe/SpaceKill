@@ -76,8 +76,17 @@ class SpaceWar: UIViewController
 	let normandy = "normandy"
 	let lackey = "lackey"
 	let mothership = "mothership"
+	let mothershipBullet = "mothership bullet"
 	var shotX, msShotX, msShotY, shotY: Float!
+	var animationX, animationY: CGFloat!								/* Distance on pixels to animate */
 	var maxAngle, minAngle, anglesDivised: Double!
+	var mothershipProbalityShot, mothershipSpeedShot: Double!
+	var shotSpeed, mothershipSpeed, lackeySpeed : Double!
+	var maxDistance, maxMsDistance, rightOrLeft: Int!									/* Max distance to animate by screen */
+	var nBullets, nMsBullets: Int!										/* Bullets number to shot, the game can change the value */
+	var mothershipLife, lackeysLifes: Int!
+	var distanceBullet = 0												/* Incremental distance to animate normandy's shot */
+	var distanceMsBullet = 0											/* Incremental distance to animate mothership's shot */
 	
 	var arrayMothershipBullets = [UIView]()
 	var arrayBullets = [UIView]()
@@ -91,13 +100,7 @@ class SpaceWar: UIViewController
 	var aniBulletTimer, aniLackeysTimer: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
 	var aniBulletMothership: Timer!
-	var distanceBullet = 0												/* Incremental distance to animate */
-	var maxDistance, rightOrLeft: Int!									/* Max distance to animate by screen */
-	var nBullets, nMsBullets: Int!										/* Bullets number to shot, the game can change the value */
-	var mothershipLife, lackeysLifes: Int!
-	var mothershipProbalityShot, mothershipSpeedShot: Double!
-	var animationX, animationY: CGFloat!								/* Distance on pixels to animate */
-	var shotSpeed, mothershipSpeed : Double!								/* To apply to time interval animation */
+
 	//-----------------------------------
 	//============================ The loader =============================
     override func viewDidLoad()
@@ -106,7 +109,7 @@ class SpaceWar: UIViewController
 		//-----
 		gameConfig(); gameMode()
 		startPlaceEnemies(); spaceshipsBulletsCreation(nBullets, nMsBullets)
-		enemiesInitialMoveChoices()
+		moveLackeys(); enemiesInitialMoveChoices()
 		//-----
     }
 	//=====================================================================
@@ -126,10 +129,10 @@ class SpaceWar: UIViewController
 		//---- Mothership bullets ----
 		for _ in 1...nMsBullets
 		{
-			let msBullet = UIView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
+			let msBullet = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 15))
 			
 			msBullet.backgroundColor = UIColor.white
-			msBullet.layer.cornerRadius = 5
+			msBullet.layer.cornerRadius = 7.5
 			
 			arrayMothershipBullets.append(msBullet)
 		}
@@ -138,16 +141,17 @@ class SpaceWar: UIViewController
 	func gameMode()
 	{
 		//to test
-		nBullets = 1; nMsBullets = 3
+		nBullets = 1; nMsBullets = 10
 		animationY = 1; animationX = 1
 		shotSpeed = 0.001
 		
-		mothershipSpeed = 0.01
+		mothershipSpeed = 0.01; mothershipSpeedShot = 0.01
 		mothershipLife = 3			//3 for tests
-		mothershipProbalityShot = 5
-		mothershipSpeedShot = 0.01
 		
-		lackeysLifes = 1
+		mothershipProbalityShot = 1
+		minAngle = 230; maxAngle = 315
+		
+		lackeysLifes = 1; lackeySpeed = 1
 		
 	}
 	//-------------------------------------------
@@ -199,6 +203,7 @@ class SpaceWar: UIViewController
 		//------------------
 		//-- Animations config -
 		maxDistance = Int(view.frame.height - view.frame.height * 0.0983)
+		maxMsDistance = Int(view.frame.height)
 		//----------------------
 		/* Actualization of max and min slider values by mobiles screen sizes */
 		if view.frame.width <= 414				/* All iPhones*/
@@ -319,9 +324,17 @@ class SpaceWar: UIViewController
 					death(mothership, tupleMotherShip[0].ms, bullet)
 				}
 				
-				aniBulletTimer.invalidate()									/* Stop animation */
+				aniBulletTimer.invalidate()						/* Stop animation */
 				aniBulletTimer = nil
-				bullet.removeFromSuperview()								/* Remove the bullet from the main view */
+				bullet.removeFromSuperview()					/* Remove the bullet from the main view if don't kill */
+			}
+			//-- Bullet kill the mothership bullets
+			for msBullet in arrayMothershipBullets
+			{
+				if bullet.frame.intersects(msBullet.frame) == true
+				{
+					death(mothershipBullet, msBullet, bullet)		/* Call death's function to kill the mothership bullet*/
+				}
 			}
 		}
 	}
@@ -332,42 +345,66 @@ class SpaceWar: UIViewController
 	{
 		let shot = Double(arc4random_uniform(101))
 		
-		if shot <= mothershipProbalityShot
+		if (shot <= mothershipProbalityShot && aniBulletMothership == nil)
 		{
-			placeMothershipShot()
+			placeMothershipShot(arrayMothershipBullets)
 			animateMothershipShot()
 		}
+		else {return}
 	}
 	
-	func placeMothershipShot()
+	func placeMothershipShot(_ arrayMsBullets: [UIView])
 	{
-		for msBullet in arrayMothershipBullets
+		for msBullet in arrayMsBullets
 		{
 			msBullet.center.x = CGFloat(msShotX)
 			msBullet.center.y = CGFloat(msShotY)
+			
+			self.view.addSubview(msBullet)
 		}
+		anglesDivised = (maxAngle - minAngle) / Double(arrayMsBullets.count)		/* it is the incremantations for each bullet */
+		var angle: Double = 0
+		
+		arraySin = []; arrayCos = []
+		while arrayCos.count != arrayMsBullets.count
+		{
+			let cos = __cospi((minAngle + angle)/180); arrayCos.append(cos)
+			let sin = __sinpi((minAngle + angle)/180); arraySin.append(sin)
+			
+			angle += anglesDivised
+		}
+		
 	}
 	
 	func animateMothershipShot()
 	{
-		anglesDivised = (maxAngle - minAngle) / Double(arrayMothershipBullets.count)
-		
 		aniBulletMothership = Timer.scheduledTimer(timeInterval: mothershipSpeedShot,
 												   target: self,
 												   selector: #selector(animationMS),
 												   userInfo: nil,
 												   repeats: true)
 	}
+	
 	@objc func animationMS()
 	{
-		//REPRENDRE D'ICI ANIMATION BULLETS
+		distanceMsBullet += 1
+		
+		if distanceMsBullet >= maxMsDistance
+		{
+			aniBulletMothership.invalidate()
+			aniBulletMothership = nil
+			distanceMsBullet = 0
+			for b in arrayMothershipBullets { b.removeFromSuperview() }
+		}
+		
+		for i in 0..<arrayMothershipBullets.count
+		{
+			arrayMothershipBullets[i].center.x -= CGFloat(arrayCos[i])
+			arrayMothershipBullets[i].center.y -= CGFloat(arraySin[i])
+		}
 	}
 	//-----------------------------------
 	//------- Lackey's animations -------
-    func moveLackeys()
-    {
-		
-    }
 	func enemiesInitialMoveChoices()
 	{
 		rightOrLeft = Int(arc4random_uniform(2))
@@ -377,6 +414,8 @@ class SpaceWar: UIViewController
 	//----- Mothership's animations -----
     func moveMothership()
 	{
+		//MOVE LACKEYS
+		
 		if rightOrLeft == 0
 		{
 			aniRightMothershipTimer = Timer.scheduledTimer(timeInterval: mothershipSpeed,
@@ -405,7 +444,9 @@ class SpaceWar: UIViewController
 			moveMothership()
 		}
 		view_mothership.center.x += animationX
+		
 		msShotX = Float(view_mothership.center.x)
+		shotOfMothership()
 	}
 	//----- Mothership's animations to left ------
 	@objc func animationEnemiesToLeft()
@@ -418,9 +459,23 @@ class SpaceWar: UIViewController
 			moveMothership()
 		}
 		view_mothership.center.x -= animationX
+		
 		msShotX = Float(view_mothership.center.x)
+		shotOfMothership()
 	}
 	//--------------------------------------------
+	func moveLackeys()
+	{
+		for i in 0..<arrayLackeys.count
+		{
+			UIView.animate(withDuration: lackeySpeed, delay: 0,
+						   options: [.autoreverse, .repeat],
+						   animations:
+			{
+				self.arrayLackeys[i].frame.origin.x -= 10
+			})
+		}
+	}
     //=====================================================================
     
     func death(_ whoIsDead: String,_ theDead: UIView,_ theBullet: UIView)
@@ -430,7 +485,6 @@ class SpaceWar: UIViewController
 		case lackey:
 			theDead.removeFromSuperview()			/* Remove the lackey from the main view */
             theDead.frame.origin.x = -500			/* Remove the phanton to position -500 */
-			
 			break
 		case normandy:
 			
@@ -439,6 +493,13 @@ class SpaceWar: UIViewController
 		case mothership:
 			theDead.removeFromSuperview()
             theDead.frame.origin.x = -500
+			break
+		case mothershipBullet:
+			theDead.removeFromSuperview()
+			theDead.frame.origin.x = -500
+			aniBulletTimer.invalidate()
+			aniBulletTimer = nil
+			theBullet.removeFromSuperview()
 			break
 		default:
 			break
