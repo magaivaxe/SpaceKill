@@ -83,7 +83,7 @@ class SpaceWar: UIViewController
 	var mothershipProbabilityShot, mothershipSpeedShot: Double!
 	var lackeysProbabilityShot, lackeysSpeedShot: Double!
 	var shotSpeed, mothershipSpeed, lackeySpeed : Double!
-	var maxDistance, maxMsDistance, rightOrLeft: Int!									/* Max distance to animate by screen */
+	var maxDistance, maxMsDistance, rightOrLeftMS, rightOrLeftLC: Int!									/* Max distance to animate by screen */
 	var nBullets, nMsBullets, nLcBullets: Int!										/* Bullets number to shot, the game can change the value */
 	var mothershipLife, lackeysLifes: Int!
 	var distanceBullet = 0												/* Incremental distance to animate normandy's shot */
@@ -100,6 +100,7 @@ class SpaceWar: UIViewController
 	var tupleLackeys = [(lc: UIView, life: Int)]()
 	var arrayCos = [Double]()
 	var arraySin = [Double]()
+	var arrayAngles = [Double]()
 	
 	var aniBulletTimer, aniBulletLackey, aniBulletMothership: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
@@ -113,7 +114,7 @@ class SpaceWar: UIViewController
 		//-----
 		gameConfig(); gameMode()
 		startPlaceEnemies(); spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets)
-		moveChoice()
+		moveChoice(); moveMothership(); //moveLackeys()
 		//-----
     }
 	//=====================================================================
@@ -170,7 +171,7 @@ class SpaceWar: UIViewController
 		nLcBullets = 1
 		lackeysLifes = 1
 		lackeysProbabilityShot = 1
-		lackeySpeed = 2; lackeysSpeedShot = 0.01
+		lackeySpeed = 0.01; lackeysSpeedShot = 0.01
 		
 		
 	}
@@ -342,20 +343,34 @@ class SpaceWar: UIViewController
 				if tupleMotherShip[0].life == 0
 				{
 					death(mothership, tupleMotherShip[0].ms, bullet)
+					
+					//--- Stop mothership bullet animation
+					//aniBulletMothership.invalidate()
+					//aniBulletMothership = nil
+					//for msbull in arrayMothershipBullets
+					//{ msbull.removeFromSuperview() }
+					
+					//--- Stop mothership left animation
+					if aniLeftMothershipTimer != nil
+					{ aniLeftMothershipTimer.invalidate()
+						aniLeftMothershipTimer = nil }
+					
+					//--- Stop mothership right animation
+					if aniRightMothershipTimer != nil
+					{ aniRightMothershipTimer.invalidate()
+						aniRightMothershipTimer = nil }
 				}
-				
-				aniBulletTimer.invalidate()						/* Stop animation */
+				//--- Stop normandy bullet animation
+				aniBulletTimer.invalidate()
 				aniBulletTimer = nil
 				bullet.removeFromSuperview()					/* Remove the bullet from the main view if don't kill */
 			}
 			//-- Bullet kill the mothership bullets
-			for msBullet in arrayMothershipBullets
-			{
-				if bullet.frame.intersects(msBullet.frame) == true
-				{
-					death(mothershipBullet, msBullet, bullet)		/* Call death's function to kill the mothership bullet*/
-				}
-			}
+			//for msBullet in arrayMothershipBullets
+			//{
+			//	if bullet.frame.intersects(msBullet.frame) == true /* Call death's function to kill the mothership bullet*/
+			//	{ death(mothershipBullet, msBullet, bullet)	}
+			//}
 		}
 	}
     //=====================================================================
@@ -390,7 +405,8 @@ class SpaceWar: UIViewController
 		{
 			let cos = __cospi((minAngle + angle)/180); arrayCos.append(cos)
 			let sin = __sinpi((minAngle + angle)/180); arraySin.append(sin)
-			
+			//---- Angles to reflection
+			arrayAngles.append(minAngle + angle)
 			angle += anglesDivised
 		}
 		
@@ -419,6 +435,19 @@ class SpaceWar: UIViewController
 		
 		for i in 0..<arrayMothershipBullets.count
 		{
+			//--- Left wall mothership bullets reflections
+			if arrayMothershipBullets[i].center.x < arrayMothershipBullets[i].frame.width / 2
+			{
+				arrayCos[i] = __cospi((540 - arrayAngles[i]) / 180)
+				arraySin[i] = __sinpi((540 - arrayAngles[i]) / 180)
+			}
+			//--- Right wall mothership bullets reflections
+			if arrayMothershipBullets[i].center.x > self.view.frame.width - arrayMothershipBullets[i].frame.width / 2
+			{
+				arrayCos[i] = __cospi((540 - arrayAngles[i]) / 180)
+				arraySin[i] = __sinpi((540 - arrayAngles[i]) / 180)
+			}
+			//--- animation
 			arrayMothershipBullets[i].center.x -= CGFloat(arrayCos[i])
 			arrayMothershipBullets[i].center.y -= CGFloat(arraySin[i])
 		}
@@ -427,41 +456,37 @@ class SpaceWar: UIViewController
 	//------- Lackey's animations -------
 	func moveChoice()
 	{
-		rightOrLeft = Int(arc4random_uniform(2))
-		
-		moveMothership()
-		moveLackeys()
+		rightOrLeftMS = Int(arc4random_uniform(2))
+		rightOrLeftLC = Int(arc4random_uniform(2))
 	}
 	//----- Mothership's animations -----
     func moveMothership()
 	{
-		//MOVE LACKEYS
-		
-		if rightOrLeft == 0
+		if rightOrLeftMS == 0
 		{
 			aniRightMothershipTimer = Timer.scheduledTimer(timeInterval: mothershipSpeed,
 														   target: self,
-													  	   selector: #selector(animationEnemiesToRight),
+													  	   selector: #selector(animationMothershipToRight),
 													  	   userInfo: nil,
 													  	   repeats: true)
 		}
-		if rightOrLeft == 1
+		if rightOrLeftMS == 1
 		{
 			aniLeftMothershipTimer = Timer.scheduledTimer(timeInterval: mothershipSpeed,
 														  target: self,
-														  selector: #selector(animationEnemiesToLeft),
+														  selector: #selector(animationMothershipToLeft),
 														  userInfo: nil,
 														  repeats: true)
 		}
 	}
 	//---- Mothership's animations to right -----
-	@objc func animationEnemiesToRight()
+	@objc func animationMothershipToRight()
 	{
-		if view_mothership.center.x == view.frame.width - view_mothership.frame.width / 2
+		if view_mothership.center.x == self.view.frame.width - view_mothership.frame.width / 2
 		{
 			aniRightMothershipTimer.invalidate()
 			aniRightMothershipTimer = nil
-			rightOrLeft = 1
+			rightOrLeftMS = 1
 			moveMothership()
 		}
 		view_mothership.center.x += animationX
@@ -470,13 +495,13 @@ class SpaceWar: UIViewController
 		shotOfMothership()
 	}
 	//----- Mothership's animations to left ------
-	@objc func animationEnemiesToLeft()
+	@objc func animationMothershipToLeft()
 	{
 		if view_mothership.center.x == view_mothership.frame.width / 2
 		{
 			aniLeftMothershipTimer.invalidate()
 			aniLeftMothershipTimer = nil
-			rightOrLeft = 0
+			rightOrLeftMS = 0
 			moveMothership()
 		}
 		view_mothership.center.x -= animationX
@@ -487,16 +512,53 @@ class SpaceWar: UIViewController
 	//--------------------------------------------
 	func moveLackeys()
 	{
-		if rightOrLeft == 0 //left
+		if rightOrLeftLC == 0 //right
 		{
-			aniLeftLackeysTimer = Timer.scheduledTimer(timeInterval: <#T##TimeInterval#>, target: <#T##Any#>, selector: <#T##Selector#>, userInfo: <#T##Any?#>, repeats: <#T##Bool#>)
+			aniRightLackeysTimer = Timer.scheduledTimer(timeInterval: lackeySpeed,
+														target: self,
+														selector: #selector(animationLackeysToRight),
+														userInfo: nil,
+														repeats: true)
 		}
-		if rightOrLeft == 1 //right
+		if rightOrLeftLC == 1 //left
 		{
-			aniRightLackeysTimer = Timer.scheduledTimer(timeInterval: <#T##TimeInterval#>, target: <#T##Any#>, selector: <#T##Selector#>, userInfo: <#T##Any?#>, repeats: <#T##Bool#>)
+			aniLeftLackeysTimer = Timer.scheduledTimer(timeInterval: lackeySpeed,
+													   target: self,
+													   selector: #selector(animationLackeysToLeft),
+													   userInfo: nil,
+													   repeats: true)
 		}
 	}
-	
+	@objc func animationLackeysToRight()
+	{
+		for lck in arrayLackeys
+		{
+			if lck.center.x == self.view.frame.width - lck.frame.width / 2		/* Condition right to stop */
+			{
+				aniRightLackeysTimer.invalidate()
+				aniRightLackeysTimer = nil
+				rightOrLeftLC = 1
+				moveLackeys()
+			}
+			//--- Animations lackeys
+			lck.center.x += animationX
+		}
+	}
+	@objc func animationLackeysToLeft()
+	{
+		for lck in arrayLackeys
+		{
+			if lck.center.x == lck.frame.width / 2								/* Condition left to stop */
+			{
+				aniLeftLackeysTimer.invalidate()
+				aniLeftLackeysTimer = nil
+				rightOrLeftLC = 0
+				moveLackeys()
+			}
+			//--- Animations lackeys
+			lck.center.x -= animationX
+		}
+	}
 	func shotOfLackeys()
 	{
 		let shot = Double(arc4random_uniform(100))
@@ -544,25 +606,31 @@ class SpaceWar: UIViewController
 		switch whoIsDead							//Do and call the animations before remove
 		{
 		case lackey:
+			
 			theDead.removeFromSuperview()			/* Remove the lackey from the main view */
             theDead.frame.origin.x = -500			/* Remove the phanton to position -500 */
 			arrayLackeysDisplaced.append(theDead)	/* Add the dead lackeys to conditions */
 			break
+			
 		case normandy:
 			
 			break
 			
 		case mothership:
+			
 			theDead.removeFromSuperview()
             theDead.frame.origin.x = -500
 			break
+			
 		case mothershipBullet:
+			
 			theDead.removeFromSuperview()
 			theDead.frame.origin.x = -500
 			aniBulletTimer.invalidate()
 			aniBulletTimer = nil
 			theBullet.removeFromSuperview()
 			break
+			
 		default:
 			break
 		}
