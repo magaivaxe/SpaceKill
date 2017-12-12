@@ -113,7 +113,7 @@ class SpaceWar: UIViewController
 		//-----
 		gameConfig(); gameMode()
 		startPlaceEnemies(); spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets)
-		moveLackeys(); enemiesInitialMoveChoices()
+		moveChoice()
 		//-----
     }
 	//=====================================================================
@@ -425,11 +425,12 @@ class SpaceWar: UIViewController
 	}
 	//-----------------------------------
 	//------- Lackey's animations -------
-	func enemiesInitialMoveChoices()
+	func moveChoice()
 	{
 		rightOrLeft = Int(arc4random_uniform(2))
 		
 		moveMothership()
+		moveLackeys()
 	}
 	//----- Mothership's animations -----
     func moveMothership()
@@ -486,7 +487,14 @@ class SpaceWar: UIViewController
 	//--------------------------------------------
 	func moveLackeys()
 	{
-		
+		if rightOrLeft == 0 //left
+		{
+			aniLeftLackeysTimer = Timer.scheduledTimer(timeInterval: <#T##TimeInterval#>, target: <#T##Any#>, selector: <#T##Selector#>, userInfo: <#T##Any?#>, repeats: <#T##Bool#>)
+		}
+		if rightOrLeft == 1 //right
+		{
+			aniRightLackeysTimer = Timer.scheduledTimer(timeInterval: <#T##TimeInterval#>, target: <#T##Any#>, selector: <#T##Selector#>, userInfo: <#T##Any?#>, repeats: <#T##Bool#>)
+		}
 	}
 	
 	func shotOfLackeys()
