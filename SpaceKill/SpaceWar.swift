@@ -80,6 +80,7 @@ class SpaceWar: UIViewController
 	var shotX, msShotX, msShotY, shotY: Float!
 	var animationX, animationY: CGFloat!								/* Distance on pixels to animate */
 	var maxAngle, minAngle, anglesDivised: Double!
+	var maxAngleLc, minAngleLc, anglesDivisedLc: Double!
 	var mothershipProbabilityShot, mothershipSpeedShot: Double!
 	var lackeysProbabilityShot, lackeysSpeedShot: Double!
 	var shotSpeed, mothershipSpeed, lackeySpeed : Double!
@@ -88,6 +89,7 @@ class SpaceWar: UIViewController
 	var mothershipLife, lackeysLifes: Int!
 	var distanceBullet = 0												/* Incremental distance to animate normandy's shot */
 	var distanceMsBullet = 0											/* Incremental distance to animate mothership's shot */
+	var distanceLcBullet = 0
 	
 	var arrayMothershipBullets = [UIView]()
 	var arrayBullets = [UIView]()
@@ -101,6 +103,9 @@ class SpaceWar: UIViewController
 	var arrayCos = [Double]()
 	var arraySin = [Double]()
 	var arrayAngles = [Double]()
+	var arrayCosLc = [Double]()
+	var arraySinLc = [Double]()
+	var arrayAnglesLc = [Double]()
 	
 	var aniBulletTimer, aniBulletLackey, aniBulletMothership: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
@@ -114,7 +119,7 @@ class SpaceWar: UIViewController
 		//-----
 		gameConfig(); gameMode()
 		startPlaceEnemies(); spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets)
-		moveChoice(); moveMothership(); //moveLackeys()
+		moveChoice(); moveMothership(); moveLackeys()
 		//-----
     }
 	//=====================================================================
@@ -164,14 +169,14 @@ class SpaceWar: UIViewController
 		nMsBullets = 10
 		mothershipLife = 3
 		mothershipProbabilityShot = 1
-		mothershipSpeed = 0.01; mothershipSpeedShot = 0.01
+		mothershipSpeed = 0.003; mothershipSpeedShot = 0.003
 		minAngle = 230; maxAngle = 315
 		
 		//------ Lackey's modes -------
-		nLcBullets = 1
+		nLcBullets = 5
 		lackeysLifes = 1
 		lackeysProbabilityShot = 1
-		lackeySpeed = 0.01; lackeysSpeedShot = 0.01
+		lackeySpeed = 0.01; lackeysSpeedShot = 0.005
 		
 		
 	}
@@ -224,7 +229,7 @@ class SpaceWar: UIViewController
 		//------------------
 		//-- Animations config -
 		maxDistance = Int(view.frame.height - view.frame.height * 0.0983)
-		maxMsDistance = Int(view.frame.height)
+		maxMsDistance = Int(1.2 * view.frame.height)
 		//----------------------
 		/* Actualization of max and min slider values by mobiles screen sizes */
 		if view.frame.width <= 414				/* All iPhones*/
@@ -344,12 +349,6 @@ class SpaceWar: UIViewController
 				{
 					death(mothership, tupleMotherShip[0].ms, bullet)
 					
-					//--- Stop mothership bullet animation
-					//aniBulletMothership.invalidate()
-					//aniBulletMothership = nil
-					//for msbull in arrayMothershipBullets
-					//{ msbull.removeFromSuperview() }
-					
 					//--- Stop mothership left animation
 					if aniLeftMothershipTimer != nil
 					{ aniLeftMothershipTimer.invalidate()
@@ -365,12 +364,6 @@ class SpaceWar: UIViewController
 				aniBulletTimer = nil
 				bullet.removeFromSuperview()					/* Remove the bullet from the main view if don't kill */
 			}
-			//-- Bullet kill the mothership bullets
-			//for msBullet in arrayMothershipBullets
-			//{
-			//	if bullet.frame.intersects(msBullet.frame) == true /* Call death's function to kill the mothership bullet*/
-			//	{ death(mothershipBullet, msBullet, bullet)	}
-			//}
 		}
 	}
     //=====================================================================
@@ -493,6 +486,7 @@ class SpaceWar: UIViewController
 		
 		msShotX = Float(view_mothership.center.x)
 		shotOfMothership()
+		shotOfLackeys()
 	}
 	//----- Mothership's animations to left ------
 	@objc func animationMothershipToLeft()
@@ -508,81 +502,83 @@ class SpaceWar: UIViewController
 		
 		msShotX = Float(view_mothership.center.x)
 		shotOfMothership()
+		shotOfLackeys()
 	}
 	//--------------------------------------------
 	func moveLackeys()
 	{
-		if rightOrLeftLC == 0 //right
+		UIView.animate(withDuration: lackeySpeed,
+					   delay: 0,
+					   options: [.autoreverse, .repeat], animations: {
+		for (tc, _) in self.tupleLackeys
 		{
-			aniRightLackeysTimer = Timer.scheduledTimer(timeInterval: lackeySpeed,
-														target: self,
-														selector: #selector(animationLackeysToRight),
-														userInfo: nil,
-														repeats: true)
+			tc.center.y += 5
 		}
-		if rightOrLeftLC == 1 //left
-		{
-			aniLeftLackeysTimer = Timer.scheduledTimer(timeInterval: lackeySpeed,
-													   target: self,
-													   selector: #selector(animationLackeysToLeft),
-													   userInfo: nil,
-													   repeats: true)
-		}
+		})
 	}
-	@objc func animationLackeysToRight()
-	{
-		for lck in arrayLackeys
-		{
-			if lck.center.x == self.view.frame.width - lck.frame.width / 2		/* Condition right to stop */
-			{
-				aniRightLackeysTimer.invalidate()
-				aniRightLackeysTimer = nil
-				rightOrLeftLC = 1
-				moveLackeys()
-			}
-			//--- Animations lackeys
-			lck.center.x += animationX
-		}
-	}
-	@objc func animationLackeysToLeft()
-	{
-		for lck in arrayLackeys
-		{
-			if lck.center.x == lck.frame.width / 2								/* Condition left to stop */
-			{
-				aniLeftLackeysTimer.invalidate()
-				aniLeftLackeysTimer = nil
-				rightOrLeftLC = 0
-				moveLackeys()
-			}
-			//--- Animations lackeys
-			lck.center.x -= animationX
-		}
-	}
+	
+	//---- Lackeys Fonctions ----
 	func shotOfLackeys()
 	{
 		let shot = Double(arc4random_uniform(100))
 		let theChosenOne: UIView!
-		
-		if shot <= lackeysProbabilityShot
+		//----- Condition to call the fonction
+		if shot <= lackeysProbabilityShot && aniBulletLackey == nil
 		{
 			theChosenOne = theChosenLackey()
 			placeLackeyShot(theChosenOne)
-			
+			lackeyShot()
 		}
 	}
-	func animatedLackeyShot()
+	func lackeyShot()
 	{
-		
-		
+		aniBulletLackey = Timer.scheduledTimer(timeInterval: lackeysSpeedShot,
+											   target: self,
+											   selector: #selector(animationLackeyShot),
+											   userInfo: nil,
+											   repeats: true)
 	}
+	@objc func animationLackeyShot()
+	{
+		distanceLcBullet += 1
+		
+		if distanceLcBullet >= maxMsDistance
+		{
+			aniBulletLackey.invalidate()
+			aniBulletLackey = nil
+			distanceLcBullet = 0
+		}
+		
+		for i in 0..<arrayLackeyBullets.count
+		{
+			//--- Left wall lackey bullets reflections
+			if arrayLackeyBullets[i].center.x < arrayLackeyBullets[i].frame.width / 2
+			{
+				arrayCosLc[i] = __cospi((540 - arrayAnglesLc[i]) / 180)
+				arraySinLc[i] = __sinpi((540 - arrayAnglesLc[i]) / 180)
+			}
+			//--- Right wall lackey bullets reflections
+			if arrayLackeyBullets[i].center.x > self.view.frame.width - arrayLackeyBullets[i].frame.width / 2
+			{
+				arrayCosLc[i] = __cospi((540 - arrayAnglesLc[i]) / 180)
+				arraySinLc[i] = __sinpi((540 - arrayAnglesLc[i]) / 180)
+			}
+			
+			arrayLackeyBullets[i].center.x -= CGFloat(arrayCosLc[i])
+			arrayLackeyBullets[i].center.y -= CGFloat(arraySinLc[i])
+		}
+	}
+	
 	func theChosenLackey() -> UIView
 	{
 		arrayLackeysToShot = []
 		
-		for lck in arrayLackeys
+		for i in 0..<tupleLackeys.count
 		{
-			if lck.frame.origin.x != -500 { arrayLackeysToShot.append(lck) }
+			if tupleLackeys[i].lc.frame.origin.x != -500		/* Condition to remove the dead lackeys */
+			{
+				arrayLackeysToShot.append(tupleLackeys[i].lc)
+			}
 		}
 		
 		let chosen = Int(arc4random_uniform(UInt32(arrayLackeysToShot.count)))
@@ -597,6 +593,19 @@ class SpaceWar: UIViewController
 			bullet.center.y = theChosen.center.y
 			
 			self.view.addSubview(bullet)
+		}
+		
+		anglesDivisedLc = (maxAngle - minAngle) / Double(arrayLackeyBullets.count)		/* it is the incremantations for each bullet */
+		var angle: Double = 0
+		
+		arraySinLc = []; arrayCosLc = []
+		while arrayCosLc.count != arrayLackeyBullets.count
+		{
+			let cos = __cospi((minAngle + angle)/180); arrayCosLc.append(cos)
+			let sin = __sinpi((minAngle + angle)/180); arraySinLc.append(sin)
+			//---- Angles to reflection
+			arrayAnglesLc.append(minAngle + angle)
+			angle += anglesDivisedLc
 		}
 	}
     //=====================================================================
