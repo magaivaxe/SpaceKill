@@ -93,6 +93,8 @@ class SpaceWar: UIViewController
 	var distanceMsBullet = 0											/* Incremental distance to animate mothership's shot */
 	var distanceLcBullet = 0
 	var dificultyMode: String!
+	var sampleSpace, sampleSpaceLc: UInt32!
+	var multipleShotLc: Bool!
 	
 	var arrayMothershipBullets = [UIView]()
 	var arrayBullets = [UIView]()
@@ -167,26 +169,64 @@ class SpaceWar: UIViewController
 	//-------------- Mods choiced ---------------
 	func gameMode()
 	{
-		
 		//------ Normandy's modes -------
 		nBullets = 1
 		animationY = 1; animationX = 1
 		shotSpeed = 0.001
+		//-------------------------------
 		
-		//------ Mothership's modes -------
-		nMsBullets = 10
-		mothershipLife = 3
-		mothershipProbabilityShot = 1
-		mothershipSpeed = 0.003; mothershipSpeedShot = 0.003
-		minAngle = 230; maxAngle = 315
+		dificultyMode = object_saveLoad.loadData(fileName: "fileMode") as! String /* load the mode */
 		
-		//------ Lackey's modes -------
-		nLcBullets = 5
-		lackeysLifes = 1
-		lackeysProbabilityShot = 1
-		lackeySpeed = 0.01; lackeysSpeedShot = 0.005
-		animationLackeysY = 5
-		
+		switch dificultyMode
+		{
+		case "captain":
+			//------ Mothership's modes -------
+			nMsBullets = 5; mothershipLife = 15
+			mothershipProbabilityShot = 1; sampleSpace = 300
+			mothershipSpeed = 0.01; mothershipSpeedShot = 0.008
+			minAngle = 230; maxAngle = 315
+			
+			//------ Lackey's modes -------
+			nLcBullets = 3; lackeysLifes = 1
+			lackeysProbabilityShot = 1; sampleSpaceLc = 300
+			lackeySpeed = 0.01; lackeysSpeedShot = 0.005
+			minAngleLc = 245; maxAngleLc = 320
+			animationLackeysY = 5; multipleShotLc = false
+			
+			break
+		case "hero":
+			//------ Mothership's modes -------
+			nMsBullets = 10; mothershipLife = 20
+			mothershipProbabilityShot = 1; sampleSpace = 200
+			mothershipSpeed = 0.005; mothershipSpeedShot = 0.004		//FAIRE LE MULTIPLE SHOT
+			minAngle = 230; maxAngle = 315
+			
+			//------ Lackey's modes -------
+			nLcBullets = 6; lackeysLifes = 2
+			lackeysProbabilityShot = 1; sampleSpaceLc = 200
+			lackeySpeed = 0.01; lackeysSpeedShot = 0.003
+			minAngleLc = 230; maxAngleLc = 315
+			animationLackeysY = 5; multipleShotLc = true
+			break
+			
+		case "god":
+			//------ Mothership's modes -------
+			nMsBullets = 15; mothershipLife = 25
+			mothershipProbabilityShot = 1; sampleSpace = 100
+			mothershipSpeed = 0.002; mothershipSpeedShot = 0.002
+			minAngle = 230; maxAngle = 315
+			
+			//------ Lackey's modes -------
+			nLcBullets = 9; lackeysLifes = 3
+			lackeysProbabilityShot = 1; sampleSpaceLc = 100
+			lackeySpeed = 0.01; lackeysSpeedShot = 0.001
+			minAngleLc = 230; maxAngleLc = 315
+			animationLackeysY = 5; multipleShotLc = true
+			break
+			
+		default:
+			break
+		}
 		
 	}
 	//-------------------------------------------
@@ -290,8 +330,7 @@ class SpaceWar: UIViewController
 		
 		for shot in arrayBullets
 		{
-			/* UIview adds on view */
-			self.view.addSubview(shot)
+			self.view.addSubview(shot) /* UIview adds on view */
 			
 			animateNormandyShot()
 		}
@@ -380,7 +419,7 @@ class SpaceWar: UIViewController
 	//--------- MothershipShot ----------
 	func shotOfMothership()
 	{
-		let shot = Double(arc4random_uniform(100))
+		let shot = Double(arc4random_uniform(sampleSpace))
 		
 		if (shot <= mothershipProbabilityShot && aniBulletMothership == nil)
 		{
@@ -496,6 +535,8 @@ class SpaceWar: UIViewController
 		msShotX = Float(view_mothership.center.x)
 		shotOfMothership()
 		shotOfLackeys()
+		
+		if multipleShotLc == true { shotOfLackeys() }
 	}
 	//----- Mothership's animations to left ------
 	@objc func animationMothershipToLeft()
@@ -512,6 +553,8 @@ class SpaceWar: UIViewController
 		msShotX = Float(view_mothership.center.x)
 		shotOfMothership()
 		shotOfLackeys()
+		
+		if multipleShotLc == true { shotOfLackeys() }
 	}
 	//--------------------------------------------
 	func moveLackeys()
@@ -529,7 +572,7 @@ class SpaceWar: UIViewController
 	//---- Lackeys Fonctions ----
 	func shotOfLackeys()
 	{
-		let shot = Double(arc4random_uniform(100))
+		let shot = Double(arc4random_uniform(sampleSpaceLc))
 		let theChosenOne: UIView!
 		//----- Condition to call the fonction
 		if shot <= lackeysProbabilityShot && aniBulletLackey == nil
@@ -604,16 +647,16 @@ class SpaceWar: UIViewController
 			self.view.addSubview(bullet)
 		}
 		
-		anglesDivisedLc = (maxAngle - minAngle) / Double(arrayLackeyBullets.count)		/* it is the incremantations for each bullet */
+		anglesDivisedLc = (maxAngleLc - minAngleLc) / Double(arrayLackeyBullets.count)		/* it is the incremantations for each bullet */
 		var angle: Double = 0
 		
 		arraySinLc = []; arrayCosLc = []
 		while arrayCosLc.count != arrayLackeyBullets.count
 		{
-			let cos = __cospi((minAngle + angle)/180); arrayCosLc.append(cos)
-			let sin = __sinpi((minAngle + angle)/180); arraySinLc.append(sin)
+			let cos = __cospi((minAngleLc + angle)/180); arrayCosLc.append(cos)
+			let sin = __sinpi((minAngleLc + angle)/180); arraySinLc.append(sin)
 			//---- Angles to reflection
-			arrayAnglesLc.append(minAngle + angle)
+			arrayAnglesLc.append(minAngleLc + angle)
 			angle += anglesDivisedLc
 		}
 	}
@@ -653,9 +696,7 @@ class SpaceWar: UIViewController
 			break
 		}
 	}
-	
 	//=====================================================================
-	
 }
 
 
