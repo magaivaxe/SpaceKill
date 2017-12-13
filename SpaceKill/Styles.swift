@@ -43,8 +43,9 @@ class Styles
 	{
 		for b in buttons
 		{
+			b.titleLabel?.adjustsFontSizeToFitWidth = true
 			b.clipsToBounds = true
-			b.titleLabel?.font = fontN!
+			b.titleLabel?.font = fontN
 			b.titleLabel?.textColor = fontColor
 			b.layer.cornerRadius = radius
 			b.layer.borderWidth = borderWidthN
