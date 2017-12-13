@@ -78,7 +78,7 @@ class SpaceWar: UIViewController
 	let mothership = "mothership"
 	let mothershipBullet = "mothership bullet"
 	var shotX, msShotX, msShotY, shotY: Float!
-	var animationX, animationY: CGFloat!								/* Distance on pixels to animate */
+	var animationX, animationY, animationLackeysY: CGFloat!								/* Distance on pixels to animate */
 	var maxAngle, minAngle, anglesDivised: Double!
 	var maxAngleLc, minAngleLc, anglesDivisedLc: Double!
 	var mothershipProbabilityShot, mothershipSpeedShot: Double!
@@ -177,6 +177,7 @@ class SpaceWar: UIViewController
 		lackeysLifes = 1
 		lackeysProbabilityShot = 1
 		lackeySpeed = 0.01; lackeysSpeedShot = 0.005
+		animationLackeysY = 5
 		
 		
 	}
@@ -212,7 +213,7 @@ class SpaceWar: UIViewController
 		img_mothership.image = UIImage(named: "mothership.png")
 	}
 	//-------------------------------------------
-	//----------- Game configuration ------------ 	SET HERE THE MAX DISTANCE TO ANIMATION
+	//----------- Game configuration ------------ 	
 	func gameConfig()
 	{
 		//-- Slider loader --
@@ -512,7 +513,7 @@ class SpaceWar: UIViewController
 					   options: [.autoreverse, .repeat], animations: {
 		for (tc, _) in self.tupleLackeys
 		{
-			tc.center.y += 5
+			tc.center.y += self.animationLackeysY
 		}
 		})
 	}
