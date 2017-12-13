@@ -8,6 +8,7 @@
 
 import UIKit
 import Foundation
+import AVFoundation
 
 class SpaceWar: UIViewController
 {
@@ -111,6 +112,16 @@ class SpaceWar: UIViewController
 	var arrayCosLc = [Double]()
 	var arraySinLc = [Double]()
 	var arrayAnglesLc = [Double]()
+	var arrayMusics = [AVFileType]()
+	
+	var music1 = AVAudioPlayer(); var music2 = AVAudioPlayer()
+	var music3 = AVAudioPlayer(); var music4 = AVAudioPlayer()
+	var music5 = AVAudioPlayer(); var music6 = AVAudioPlayer()
+	var music7 = AVAudioPlayer(); var music8 = AVAudioPlayer()
+	var mus_endgame = AVAudioPlayer(); var mus_gameover = AVAudioPlayer()
+	var sound_deathLackey = AVAudioPlayer(); var sound_explosion = AVAudioPlayer()
+	var sound_shotLackey = AVAudioPlayer(); var sound_shotMothership = AVAudioPlayer()
+	var sound_shot = AVAudioPlayer()
 	
 	var aniBulletTimer, aniBulletLackey, aniBulletMothership: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
@@ -132,7 +143,23 @@ class SpaceWar: UIViewController
 		//-----
     }
 	//=====================================================================
-	//======================== Loading Fonctions ==========================
+	/*********************************************************************************************************
+	*																										 *
+	*											LOADING FUNCTIONS											 *
+	*																										 *
+	**********************************************************************************************************/
+	//------------- Musics creation	-------------
+	func musics()
+	{
+		do
+		{
+			try
+		}
+		catch { print(error) }
+	}
+	
+	
+	//-------------------------------------------
 	//------------- Shots creations -------------
 	func spaceshipsBulletsCreation(_ nBullets: Int,_ nMsBullets: Int,_ nLcBullets: Int)
 	{
@@ -179,12 +206,12 @@ class SpaceWar: UIViewController
 		
 		switch dificultyMode
 		{
-		case "captain":
+		case "captain"://********************************************** THIS MODE OK
 			//------ Mothership's modes -------
 			nMsBullets = 5; mothershipLife = 15
 			mothershipProbabilityShot = 1; sampleSpace = 300
 			mothershipSpeed = 0.01; mothershipSpeedShot = 0.008
-			minAngle = 230; maxAngle = 315
+			minAngle = 235; maxAngle = 315
 			
 			//------ Lackey's modes -------
 			nLcBullets = 3; lackeysLifes = 1
