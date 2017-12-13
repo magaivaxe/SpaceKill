@@ -8,10 +8,10 @@ Class to save and load files
 import Foundation
 //---------------
 
-class SaveLoadMenager
+class SaveAndLoad
 {
 	//-- If exist the file --
-	func checkExistingSaves(fileName: String) -> Bool
+	func checkExistingData(fileName: String) -> Bool
 	{
 		if UserDefaults.standard.object(forKey: fileName) == nil
 		{
@@ -27,7 +27,7 @@ class SaveLoadMenager
 	}
 	//-----------------------
 	//----- Delete file -----
-	func deleteFile(fileName: String)
+	func deleteData(fileName: String)
 	{
 		UserDefaults.standard.removeObject(forKey: fileName)
 	}

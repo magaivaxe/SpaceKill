@@ -72,11 +72,13 @@ class SpaceWar: UIViewController
 	@IBOutlet weak var button_startGame: UIButton!
 	
 	//-----------------------------------
-	//------------ Variables ------------
+	//------------ Constants ------------
 	let normandy = "normandy"
 	let lackey = "lackey"
 	let mothership = "mothership"
 	let mothershipBullet = "mothership bullet"
+	//-----------------------------------
+	//------------ Variables ------------
 	var shotX, msShotX, msShotY, shotY: Float!
 	var animationX, animationY, animationLackeysY: CGFloat!								/* Distance on pixels to animate */
 	var maxAngle, minAngle, anglesDivised: Double!
@@ -90,6 +92,7 @@ class SpaceWar: UIViewController
 	var distanceBullet = 0												/* Incremental distance to animate normandy's shot */
 	var distanceMsBullet = 0											/* Incremental distance to animate mothership's shot */
 	var distanceLcBullet = 0
+	var dificultyMode: String!
 	
 	var arrayMothershipBullets = [UIView]()
 	var arrayBullets = [UIView]()
@@ -110,8 +113,12 @@ class SpaceWar: UIViewController
 	var aniBulletTimer, aniBulletLackey, aniBulletMothership: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
 	var aniRightLackeysTimer, aniLeftLackeysTimer: Timer!
-
 	//-----------------------------------
+
+	//------------- Classes -------------
+	let object_saveLoad = SaveAndLoad()
+	//-----------------------------------
+	
 	//============================ The loader =============================
     override func viewDidLoad()
 	{
@@ -160,6 +167,7 @@ class SpaceWar: UIViewController
 	//-------------- Mods choiced ---------------
 	func gameMode()
 	{
+		
 		//------ Normandy's modes -------
 		nBullets = 1
 		animationY = 1; animationX = 1

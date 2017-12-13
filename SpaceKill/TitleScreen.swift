@@ -27,8 +27,14 @@ class TitleScreen: UIViewController
 	var audioClickStart = AVAudioPlayer()
 	var audioMode = AVAudioPlayer()
 	//-----------------------------------
+	//------------ Constants ------------
+	let modeCaptain = "captain"
+	let modeHero = "hero"
+	let modeGod = "god"
+	//-----------------------------------
 	//------------- Classes -------------
 	let object_style = Styles()
+	let object_saveLoad = SaveAndLoad()
 	//-----------------------------------
 	//============================ viewDidLoad ============================
     override func viewDidLoad()
@@ -40,6 +46,65 @@ class TitleScreen: UIViewController
 		
 		
     }
+	//=====================================================================
+	//========================== Action Buttons ===========================
+	@IBAction func start_game(_ sender: UIButton)
+	{
+		audioClickStart.play()
+		
+		if (button_captainMode.alpha == 1 && button_heroWar.alpha == 1 &&
+			button_godWar.alpha == 1)
+		{
+			object_saveLoad.saveData(theData: modeCaptain as AnyObject,
+									 fileName: "fileMode")
+		}
+		else if button_captainMode.alpha == 1
+		{
+			object_saveLoad.saveData(theData: modeCaptain as AnyObject,
+									 fileName: "fileMode")
+		}
+		else if button_heroWar.alpha == 1
+		{
+			object_saveLoad.saveData(theData: modeHero as AnyObject,
+									 fileName: "fileMode")
+		}
+		else
+		{
+			object_saveLoad.saveData(theData: modeGod as AnyObject,
+									 fileName: "fileMode")
+		}
+		
+		audioBgMusic.stop(); timerMusic.invalidate(); timerMusic = nil
+		
+		performSegue(withIdentifier: "segueGame", sender: nil)
+		
+	}
+	
+	@IBAction func game_mode(_ sender: UIButton)
+	{
+		audioMode.play()
+		
+		if sender.tag == 1			/* mode captain */
+		{
+			button_captainMode.alpha = 1
+			button_heroWar.alpha = 0.5
+			button_godWar.alpha = 0.5
+		}
+		else if sender.tag == 2		/* mode hero of war */
+		{
+			button_captainMode.alpha = 0.5
+			button_heroWar.alpha = 1
+			button_godWar.alpha = 0.5
+		}
+		else						/* mode god of war */
+		{
+			button_captainMode.alpha = 0.5
+			button_heroWar.alpha = 0.5
+			button_godWar.alpha = 1
+		}
+	}
+	
+	
 	//=====================================================================
 	//========================== Load functions ===========================
 	//---- Play background music
