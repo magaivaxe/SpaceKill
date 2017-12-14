@@ -160,7 +160,7 @@ class SpaceWar: UIViewController
 		spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets); setStyles()
 		
 		//----- Play Functions
-		playMusic(); score(); moveChoice(); moveMothership(); moveLackeys()
+		playMusic(); score(); moveLackeys(); moveChoice(); moveMothership()
 		//-----
     }
 	//=====================================================================
@@ -293,7 +293,7 @@ class SpaceWar: UIViewController
 			//------ Lackey's modes -------
 			nLcBullets = 3; lackeysLifes = 1
 			lackeysProbabilityShot = 1; sampleSpaceLc = 300
-			lackeySpeed = 0.01; lackeysSpeedShot = 0.005
+			lackeySpeed = 0.1; lackeysSpeedShot = 0.005
 			minAngleLc = 245; maxAngleLc = 320
 			animationLackeysY = 5; multipleShotLc = true
 			
@@ -319,7 +319,7 @@ class SpaceWar: UIViewController
 			//------ Lackey's modes -------
 			nLcBullets = 6; lackeysLifes = 2
 			lackeysProbabilityShot = 1; sampleSpaceLc = 200
-			lackeySpeed = 0.01; lackeysSpeedShot = 0.004
+			lackeySpeed = 0.1; lackeysSpeedShot = 0.004
 			minAngleLc = 230; maxAngleLc = 315
 			animationLackeysY = 5; multipleShotLc = false
 			
@@ -346,7 +346,7 @@ class SpaceWar: UIViewController
 			//------ Lackey's modes -------
 			nLcBullets = 9; lackeysLifes = 3
 			lackeysProbabilityShot = 1; sampleSpaceLc = 100
-			lackeySpeed = 0.01; lackeysSpeedShot = 0.0035
+			lackeySpeed = 0.1; lackeysSpeedShot = 0.0035
 			minAngleLc = 230; maxAngleLc = 315
 			animationLackeysY = 5; multipleShotLc = true
 			
@@ -470,7 +470,7 @@ class SpaceWar: UIViewController
 	//=====================================================================
 	/*********************************************************************************************************
 	*																										 *
-	*												PLAY FUNCTIONS											 *
+	*										NORMANDY'S PLAY FUNCTIONS										 *
 	*																										 *
 	**********************************************************************************************************/
 	//---- Normandy Shot ----
@@ -566,7 +566,11 @@ class SpaceWar: UIViewController
 		}
 	}
     //=====================================================================
-    //===================== Enemies's Actions moves =======================
+	/*********************************************************************************************************
+	*																										 *
+	*										MOTHERSHIP'S PLAY FUNCTIONS										 *
+	*																										 *
+	**********************************************************************************************************/
 	//--------- MothershipShot ----------
 	func shotOfMothership()
 	{
@@ -726,6 +730,12 @@ class SpaceWar: UIViewController
 		shotOfLackeys()
 	}
 	//--------------------------------------------
+	/*********************************************************************************************************
+	*																										 *
+	*										LACKEYS'S PLAY FUNCTIONS										 *
+	*																										 *
+	**********************************************************************************************************/
+	
 	func moveLackeys()
 	{
 		UIView.animate(withDuration: lackeySpeed,
@@ -733,7 +743,7 @@ class SpaceWar: UIViewController
 					   options: [.autoreverse, .repeat], animations: {
 		for (tc, _) in self.tupleLackeys
 		{
-			tc.center.y += self.animationLackeysY
+			tc.frame.origin.y += self.animationLackeysY
 		}
 		})
 	}
@@ -827,6 +837,8 @@ class SpaceWar: UIViewController
 		
 		let chosen = Int(arc4random_uniform(UInt32(arrayLackeysToShot.count)))
 		
+		if arrayLackeysToShot == [] { return arrayLackeysDisplaced[chosen] }
+		
 		return arrayLackeysToShot[chosen]
 	}
 	func placeLackeyShot(_ theChosen: UIView)
@@ -852,6 +864,12 @@ class SpaceWar: UIViewController
 			angle += anglesDivisedLc
 		}
 	}
+	/*********************************************************************************************************
+	*																										 *
+	*										LIFE, DEATH AND MUSIC FUNCTIONS									 *
+	*																										 *
+	**********************************************************************************************************/
+	
     //=====================================================================
     func lifes()
 	{
