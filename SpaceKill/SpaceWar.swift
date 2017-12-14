@@ -46,7 +46,8 @@ class SpaceWar: UIViewController
 	@IBOutlet weak var label_resetOrMenu: UILabel!
 	@IBOutlet weak var button_menu: UIButton!
 	@IBOutlet weak var button_reset: UIButton!
-	
+	@IBOutlet weak var label_score: UILabel!
+	@IBOutlet weak var label_bestScore: UILabel!
 	
 	@IBOutlet weak var imgView_lackey1: UIImageView!
 	@IBOutlet weak var imgView_lackey2: UIImageView!
@@ -94,11 +95,12 @@ class SpaceWar: UIViewController
 	//------------ Variables ------------
 	var shotX, msShotX, msShotY, shotY: Float!
 	var animationX, animationY, animationLackeysY: CGFloat!								/* Distance on pixels to animate */
+	var realTime: Double = 0.0; var bestTime: Double!
 	var maxAngle, minAngle, anglesDivised: Double!
 	var maxAngleLc, minAngleLc, anglesDivisedLc: Double!
 	var mothershipProbabilityShot, mothershipSpeedShot: Double!
 	var lackeysProbabilityShot, lackeysSpeedShot: Double!
-	var shotSpeed, mothershipSpeed, lackeySpeed : Double!
+	var shotSpeed, mothershipSpeed, lackeySpeed: Double!
 	var maxDistance, maxMsDistance, rightOrLeftMS, rightOrLeftLC: Int!									/* Max distance to animate by screen */
 	var nBullets, nMsBullets, nLcBullets: Int!										/* Bullets number to shot, the game can change the value */
 	var mothershipLife, lackeysLifes, normandyLife: Int!
@@ -141,7 +143,7 @@ class SpaceWar: UIViewController
 	
 	var aniBulletTimer, aniBulletLackey, aniBulletMothership: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
-	var aniMusicTimer: Timer!
+	var aniMusicTimer, aniScoreTimer: Timer!
 	//-----------------------------------
 
 	//------------- Classes -------------
@@ -158,7 +160,7 @@ class SpaceWar: UIViewController
 		spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets); setStyles()
 		
 		//----- Play Functions
-		playMusic(); moveChoice(); moveMothership(); moveLackeys()
+		playMusic(); score(); moveChoice(); moveMothership(); moveLackeys()
 		//-----
     }
 	//=====================================================================
@@ -177,6 +179,8 @@ class SpaceWar: UIViewController
 		arrayLabels = [label_gameOver, label_resetOrMenu]
 		object_style.styleArrayOfUILabel(arrayLabels, UIFont.init(name: "Space Age", size: 20), NSTextAlignment.center,
 										 0, 0, UIColor.black.cgColor, UIColor.white, UIColor.black.cgColor)
+		object_style.styleUILabel(label_score, UIFont.init(name: "Space Age", size: 20), NSTextAlignment.center, "\(bestTime)", 0, 0, UIColor.black.cgColor, UIColor.black.cgColor)
+		object_style.styleUILabel(label_bestScore, UIFont.init(name: "Space Age", size: 20), NSTextAlignment.center, "\(bestTime)", 0, 0, UIColor.black.cgColor, UIColor.black.cgColor)
 		
 		//-- Set the life's images on the screen
 		for i in 0..<normandyLife { arrayLifes[i].image = UIImage(named: "ship0") }
@@ -293,10 +297,18 @@ class SpaceWar: UIViewController
 			minAngleLc = 245; maxAngleLc = 320
 			animationLackeysY = 5; multipleShotLc = true
 			
+			if object_saveLoad.checkExistingData(fileName: dificultyMode) == false
+			{
+				bestTime = 100; object_saveLoad.saveData(theData: bestTime as AnyObject,
+														 fileName: dificultyMode)
+			}
+			else
+			{bestTime = object_saveLoad.loadData(fileName: dificultyMode) as! Double}
+		
 			break
 		case "hero":
 			//------- Normandy's modes --------
-			shotSpeed = 0.003; normandyLife = 3
+			shotSpeed = 0.001; normandyLife = 3
 			
 			//------ Mothership's modes -------
 			nMsBullets = 10; mothershipLife = 15
@@ -310,11 +322,20 @@ class SpaceWar: UIViewController
 			lackeySpeed = 0.01; lackeysSpeedShot = 0.004
 			minAngleLc = 230; maxAngleLc = 315
 			animationLackeysY = 5; multipleShotLc = false
+			
+			if object_saveLoad.checkExistingData(fileName: dificultyMode) == false
+			{
+				bestTime = 100; object_saveLoad.saveData(theData: bestTime as AnyObject,
+														 fileName: dificultyMode)
+			}
+			else
+			{bestTime = object_saveLoad.loadData(fileName: dificultyMode) as! Double}
+			
 			break
 			
 		case "god":
 			//------- Normandy's modes --------
-			shotSpeed = 0.006; normandyLife = 1
+			shotSpeed = 0.001; normandyLife = 1
 			
 			//------ Mothership's modes -------
 			nMsBullets = 15; mothershipLife = 20
@@ -328,6 +349,15 @@ class SpaceWar: UIViewController
 			lackeySpeed = 0.01; lackeysSpeedShot = 0.0035
 			minAngleLc = 230; maxAngleLc = 315
 			animationLackeysY = 5; multipleShotLc = true
+			
+			if object_saveLoad.checkExistingData(fileName: dificultyMode) == false
+			{
+				bestTime = 100; object_saveLoad.saveData(theData: bestTime as AnyObject,
+														 fileName: dificultyMode)
+			}
+			else
+			{bestTime = object_saveLoad.loadData(fileName: dificultyMode) as! Double}
+
 			break
 			
 		default:
@@ -936,8 +966,8 @@ class SpaceWar: UIViewController
 	{
 		//--- Stop animations
 		aniMusicTimer.invalidate(); aniMusicTimer = nil
-		//if aniBulletTimer != nil
-		//{ aniBulletTimer.invalidate(); aniBulletTimer = nil }
+		if aniScoreTimer != nil
+		{ aniScoreTimer.invalidate(); aniScoreTimer = nil }
 		if aniBulletLackey != nil
 		{ aniBulletLackey.invalidate(); aniBulletLackey = nil }
 		if aniBulletMothership != nil
@@ -955,14 +985,24 @@ class SpaceWar: UIViewController
 		//--- Play game over music
 		mus_endgame.play()
 	}
+	func score()
+	{
+		aniScoreTimer = Timer.scheduledTimer(timeInterval: 0.01,
+											 target: self,
+											 selector: #selector(scoreTime),
+											 userInfo: nil,
+											 repeats: true)
+	}
+	@objc func scoreTime() { realTime += 0.01; label_score.text = "\(realTime)" }
+	
 	@IBAction func menu_gameOver(_ sender: UIButton)
 	{
 		if mus_endgame.isPlaying == true { mus_endgame.stop() }
 		if mus_gameover.isPlaying == true { mus_gameover.stop() }
+		
+		if realTime < bestTime
+		{ object_saveLoad.saveData(theData: realTime as AnyObject, fileName: dificultyMode) }
 	}
-	
-	
-	
 }
 
 

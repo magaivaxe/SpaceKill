@@ -365,10 +365,17 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tSk-Hy-s1O">
-                                <rect key="frame" x="347" y="972" width="74" height="32"/>
+                                <rect key="frame" x="397" y="972" width="100" height="32"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lXx-Fj-m2j">
+                                <rect key="frame" x="270" y="972" width="100" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
@@ -410,8 +417,10 @@
                         <outlet property="img_life5" destination="GlJ-gJ-mCb" id="Ymp-2W-LSm"/>
                         <outlet property="img_mothership" destination="f8N-gU-krg" id="vVf-p5-wPw"/>
                         <outlet property="img_normandy" destination="pNd-dU-Drf" id="8DW-Ev-LHk"/>
+                        <outlet property="label_bestScore" destination="lXx-Fj-m2j" id="Q0P-Li-8oD"/>
                         <outlet property="label_gameOver" destination="dCg-9Q-U9B" id="M1B-to-49V"/>
                         <outlet property="label_resetOrMenu" destination="OpD-0C-rmq" id="FoO-JN-qaL"/>
+                        <outlet property="label_score" destination="tSk-Hy-s1O" id="iCt-g0-4KG"/>
                         <outlet property="slider_normandy" destination="jRc-8N-a2w" id="S9m-lg-9dZ"/>
                         <outlet property="view_gameOver" destination="T3K-1C-3tz" id="DgL-c1-hJH"/>
                         <outlet property="view_lackey1" destination="w47-b9-YmY" id="oGQ-3v-7XJ"/>
