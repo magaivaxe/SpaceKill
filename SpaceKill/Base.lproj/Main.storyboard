@@ -301,11 +301,56 @@
                                     </imageView>
                                 </subviews>
                             </view>
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T3K-1C-3tz">
+                                <rect key="frame" x="196" y="549" width="377" height="209"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Game Over" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dCg-9Q-U9B">
+                                        <rect key="frame" x="8" y="8" width="361" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Reset game or menu?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OpD-0C-rmq">
+                                        <rect key="frame" x="8" y="66" width="361" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" tag="1" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3rp-N9-a3a">
+                                        <rect key="frame" x="25" y="124" width="150" height="65"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="menu">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="menu_gameOver:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0nA-39-pKO"/>
+                                            <segue destination="4OL-uA-26e" kind="presentation" id="Mk7-oH-N4W"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" tag="2" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gcJ-4l-kbO">
+                                        <rect key="frame" x="202" y="124" width="150" height="65"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="reset">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="menu_gameOver:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KaM-Gx-iwD"/>
+                                            <segue destination="BYZ-38-t0r" kind="presentation" id="P5J-fU-IOL"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="button_menu" destination="3rp-N9-a3a" id="FbS-N0-152"/>
+                        <outlet property="button_reset" destination="gcJ-4l-kbO" id="ZSz-oe-p8u"/>
                         <outlet property="button_startGame" destination="Yc7-id-bUH" id="CeT-bv-sqD"/>
                         <outlet property="imgView_lackey1" destination="nnT-ZS-q3x" id="FjX-cU-Afx"/>
                         <outlet property="imgView_lackey10" destination="W7z-2g-d7W" id="bil-MV-uFc"/>
@@ -333,7 +378,10 @@
                         <outlet property="imgView_lackey9" destination="0NU-dj-M7x" id="2wF-7Y-BoZ"/>
                         <outlet property="img_mothership" destination="f8N-gU-krg" id="vVf-p5-wPw"/>
                         <outlet property="img_normandy" destination="pNd-dU-Drf" id="8DW-Ev-LHk"/>
+                        <outlet property="label_gameOver" destination="dCg-9Q-U9B" id="M1B-to-49V"/>
+                        <outlet property="label_resetOrMenu" destination="OpD-0C-rmq" id="FoO-JN-qaL"/>
                         <outlet property="slider_normandy" destination="jRc-8N-a2w" id="S9m-lg-9dZ"/>
+                        <outlet property="view_gameOver" destination="T3K-1C-3tz" id="DgL-c1-hJH"/>
                         <outlet property="view_lackey1" destination="w47-b9-YmY" id="oGQ-3v-7XJ"/>
                         <outlet property="view_lackey10" destination="DZ4-h7-oJs" id="aM2-1Q-Buj"/>
                         <outlet property="view_lackey11" destination="dO1-sl-pCr" id="26F-eM-IQB"/>
@@ -364,7 +412,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="888" y="-829"/>
+            <point key="canvasLocation" x="663.28125" y="-829.1015625"/>
         </scene>
         <!--Title Screen-->
         <scene sceneID="MVK-r9-fYP">

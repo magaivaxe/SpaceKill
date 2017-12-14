@@ -35,6 +35,7 @@
 		BF625AC91FE1C19100FB3450 /* shotMothership.wav in Resources */ = {isa = PBXBuildFile; fileRef = BF625AC51FE1C19100FB3450 /* shotMothership.wav */; };
 		BF625ACA1FE1C19100FB3450 /* shotLackey.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF625AC61FE1C19100FB3450 /* shotLackey.mp3 */; };
 		BF625ACC1FE218B800FB3450 /* touchMothership.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF625ACB1FE218B800FB3450 /* touchMothership.mp3 */; };
+		BF625ACE1FE2404300FB3450 /* touchNormandy.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BF625ACD1FE2404300FB3450 /* touchNormandy.mp3 */; };
 		BF8F6E411FDA7443009D07BC /* lackey.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8F6E3F1FDA7443009D07BC /* lackey.png */; };
 		BF8F6E421FDA7443009D07BC /* mothership.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8F6E401FDA7443009D07BC /* mothership.png */; };
 /* End PBXBuildFile section */
@@ -70,6 +71,7 @@
 		BF625AC51FE1C19100FB3450 /* shotMothership.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = shotMothership.wav; sourceTree = "<group>"; };
 		BF625AC61FE1C19100FB3450 /* shotLackey.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = shotLackey.mp3; sourceTree = "<group>"; };
 		BF625ACB1FE218B800FB3450 /* touchMothership.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = touchMothership.mp3; sourceTree = "<group>"; };
+		BF625ACD1FE2404300FB3450 /* touchNormandy.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = touchNormandy.mp3; sourceTree = "<group>"; };
 		BF8F6E3F1FDA7443009D07BC /* lackey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lackey.png; sourceTree = "<group>"; };
 		BF8F6E401FDA7443009D07BC /* mothership.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mothership.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -174,6 +176,7 @@
 		BF625AA51FE1730A00FB3450 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				BF625ACD1FE2404300FB3450 /* touchNormandy.mp3 */,
 				BF625ACB1FE218B800FB3450 /* touchMothership.mp3 */,
 				BF625AC31FE1C19100FB3450 /* deathLackey.wav */,
 				BF625AC41FE1C19100FB3450 /* explosion.wav */,
@@ -278,6 +281,7 @@
 				9B9C8D2C1FD58CBF000F16E5 /* Assets.xcassets in Resources */,
 				BF625AC91FE1C19100FB3450 /* shotMothership.wav in Resources */,
 				BF625AC81FE1C19100FB3450 /* explosion.wav in Resources */,
+				BF625ACE1FE2404300FB3450 /* touchNormandy.mp3 in Resources */,
 				BF625AC11FE1BCA500FB3450 /* gameover.mp3 in Resources */,
 				BF625ABE1FE1BCA500FB3450 /* music3.mp3 in Resources */,
 				BF625AB91FE1BCA500FB3450 /* music6.mp3 in Resources */,

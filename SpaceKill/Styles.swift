@@ -180,24 +180,30 @@ class Styles
 		label.layer.backgroundColor = bgroundColor!
 	}
 	
+	func styleUILabelSetText(_ label: UILabel,
+							 _ textN: String)
+	{
+		label.text = textN
+	}
+	
 	func styleArrayOfUILabel(_ label: [UILabel],
 							 _ fontN: UIFont?,
-							 _ textAlignmentT: NSTextAlignment?,
-							 _ radius: CGFloat?,
-							 _ borderWidthN: CGFloat?,
-							 _ borderColorN: CGColor?,
-							 _ textColor: UIColor?,
+							 _ textAlignmentT: NSTextAlignment,
+							 _ radius: CGFloat,
+							 _ borderWidthN: CGFloat,
+							 _ borderColorN: CGColor,
+							 _ textColor: UIColor,
 							 _ bgroundColor: CGColor?)
 	{
 		for l in label
 		{
 			l.clipsToBounds = true
 			l.font = fontN!
-			l.textAlignment = textAlignmentT!
-			l.layer.cornerRadius = radius!
-			l.layer.borderWidth = borderWidthN!
-			l.textColor = textColor!
-			l.layer.borderColor = borderColorN!
+			l.textAlignment = textAlignmentT
+			l.layer.cornerRadius = radius
+			l.layer.borderWidth = borderWidthN
+			l.textColor = textColor
+			l.layer.borderColor = borderColorN
 			l.layer.backgroundColor = bgroundColor!
 		}
 	}

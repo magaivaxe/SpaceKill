@@ -41,6 +41,13 @@ class SpaceWar: UIViewController
 	@IBOutlet weak var view_mothership: UIView!
 	@IBOutlet weak var view_normandy: UIView!
 	
+	@IBOutlet weak var view_gameOver: UIView!
+	@IBOutlet weak var label_gameOver: UILabel!
+	@IBOutlet weak var label_resetOrMenu: UILabel!
+	@IBOutlet weak var button_menu: UIButton!
+	@IBOutlet weak var button_reset: UIButton!
+	
+	
 	@IBOutlet weak var imgView_lackey1: UIImageView!
 	@IBOutlet weak var imgView_lackey2: UIImageView!
 	@IBOutlet weak var imgView_lackey3: UIImageView!
@@ -88,7 +95,7 @@ class SpaceWar: UIViewController
 	var shotSpeed, mothershipSpeed, lackeySpeed : Double!
 	var maxDistance, maxMsDistance, rightOrLeftMS, rightOrLeftLC: Int!									/* Max distance to animate by screen */
 	var nBullets, nMsBullets, nLcBullets: Int!										/* Bullets number to shot, the game can change the value */
-	var mothershipLife, lackeysLifes: Int!
+	var mothershipLife, lackeysLifes, normandyLife: Int!
 	var distanceBullet = 0												/* Incremental distance to animate normandy's shot */
 	var distanceMsBullet = 0											/* Incremental distance to animate mothership's shot */
 	var distanceLcBullet = 0
@@ -105,6 +112,7 @@ class SpaceWar: UIViewController
 	var arrayImgLackeys = [UIImageView]()
 	var tupleMotherShip = [(ms: UIView, life: Int)]()
 	var tupleLackeys = [(lc: UIView, life: Int)]()
+	var tupleNormandy = [(nd: UIView, life: Int)]()
 	var arrayCos = [Double]()
 	var arraySin = [Double]()
 	var arrayAngles = [Double]()
@@ -112,20 +120,22 @@ class SpaceWar: UIViewController
 	var arraySinLc = [Double]()
 	var arrayAnglesLc = [Double]()
 	var arrayMusics = [AVAudioPlayer]()
-
+	var arrayButtons = [UIButton](); var arrayLabels = [UILabel]()
+	
 	var mus_endgame = AVAudioPlayer(); var mus_gameover = AVAudioPlayer()
 	var sound_deathLackey = AVAudioPlayer(); var sound_explosion = AVAudioPlayer()
 	var sound_shotLackey = AVAudioPlayer(); var sound_shotMothership = AVAudioPlayer()
 	var sound_shot = AVAudioPlayer(); var sound_touchMothership = AVAudioPlayer()
+	var sound_touchNormandy = AVAudioPlayer()
 	
 	var aniBulletTimer, aniBulletLackey, aniBulletMothership: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
-	var aniRightLackeysTimer, aniLeftLackeysTimer: Timer!
 	var aniMusicTimer: Timer!
 	//-----------------------------------
 
 	//------------- Classes -------------
 	let object_saveLoad = SaveAndLoad()
+	let object_style = Styles()
 	//-----------------------------------
 	
 	//============================ The loader =============================
@@ -133,8 +143,8 @@ class SpaceWar: UIViewController
 	{
         super.viewDidLoad()
 		//----- Loading Functions
-		gameConfig(); gameMode(); startPlaceEnemies(); setMusicsAndSounds()
-		spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets)
+		gameMode(); gameConfig(); startPlaceEnemies(); setMusicsAndSounds()
+		spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets); setStyles()
 		
 		//----- Play Functions
 		playMusic(); moveChoice(); moveMothership(); moveLackeys()
@@ -146,6 +156,18 @@ class SpaceWar: UIViewController
 	*											LOADING FUNCTIONS											 *
 	*																										 *
 	**********************************************************************************************************/
+	//----------------- Styles ------------------
+	func setStyles()
+	{
+		object_style.styleUIView(view_gameOver, 15, 5, UIColor.white.cgColor, UIColor.black, 1)
+		arrayButtons = [button_menu, button_reset]
+		object_style.styleArrayOfUIButtons(arrayButtons, UIFont.init(name: "Space Age", size: 25), UIColor.white,
+										   15, 5, UIColor.white.cgColor, UIColor.black.cgColor, 1)
+		arrayLabels = [label_gameOver, label_resetOrMenu]
+		object_style.styleArrayOfUILabel(arrayLabels, UIFont.init(name: "Space Age", size: 20), NSTextAlignment.center,
+										 0, 0, UIColor.black.cgColor, UIColor.white, UIColor.black.cgColor)
+	}
+	//-------------------------------------------
 	//------------- Musics creation	-------------
 	func setMusicsAndSounds()
 	{
@@ -170,6 +192,12 @@ class SpaceWar: UIViewController
 			
 			mus_gameover = try AVAudioPlayer(contentsOf: .init(fileURLWithPath: Bundle.main.path(forResource: "gameover", ofType: "mp3")!))
 			mus_gameover.prepareToPlay()
+			
+			sound_touchMothership = try AVAudioPlayer(contentsOf: .init(fileURLWithPath: Bundle.main.path(forResource: "touchMothership", ofType: "mp3")!))
+			sound_touchMothership.prepareToPlay()
+			
+			sound_touchNormandy = try AVAudioPlayer(contentsOf: .init(fileURLWithPath: Bundle.main.path(forResource: "touchNormandy", ofType: "mp3")!))
+			sound_touchNormandy.prepareToPlay()
 			
 			sound_deathLackey = try AVAudioPlayer(contentsOf: .init(fileURLWithPath: Bundle.main.path(forResource: "deathLackey", ofType: "wav")!))
 			sound_deathLackey.prepareToPlay()
@@ -231,7 +259,6 @@ class SpaceWar: UIViewController
 		//------ Normandy's modes -------
 		nBullets = 1
 		animationY = 1; animationX = 1
-		shotSpeed = 0.001
 		//-------------------------------
 		
 		dificultyMode = object_saveLoad.loadData(fileName: "fileMode") as! String /* load the mode */
@@ -239,8 +266,11 @@ class SpaceWar: UIViewController
 		switch dificultyMode
 		{
 		case "captain"://********************************************** THIS MODE OK
+			//------- Normandy's modes --------
+			shotSpeed = 0.001; normandyLife = 5
+			
 			//------ Mothership's modes -------
-			nMsBullets = 5; mothershipLife = 15
+			nMsBullets = 5; mothershipLife = 1//15
 			mothershipProbabilityShot = 1; sampleSpace = 300
 			mothershipSpeed = 0.01; mothershipSpeedShot = 0.008
 			minAngle = 235; maxAngle = 315
@@ -254,6 +284,9 @@ class SpaceWar: UIViewController
 			
 			break
 		case "hero":
+			//------- Normandy's modes --------
+			shotSpeed = 0.003; normandyLife = 3
+			
 			//------ Mothership's modes -------
 			nMsBullets = 10; mothershipLife = 20
 			mothershipProbabilityShot = 1; sampleSpace = 200
@@ -269,6 +302,9 @@ class SpaceWar: UIViewController
 			break
 			
 		case "god":
+			//------- Normandy's modes --------
+			shotSpeed = 0.006; normandyLife = 1
+			
 			//------ Mothership's modes -------
 			nMsBullets = 15; mothershipLife = 25
 			mothershipProbabilityShot = 1; sampleSpace = 100
@@ -311,9 +347,8 @@ class SpaceWar: UIViewController
 		{
 			tupleLackeys.append((lac, lackeysLifes))
 		}
-		
+		//-- Set mothership's tuple
 		tupleMotherShip = [(ms: view_mothership, life: mothershipLife)]
-		
 		//-- Set images to imgViews lackeys
 		for element in arrayImgLackeys { element.image = UIImage.init(named: "lackey.png") }
 		//-- Set image to mothership
@@ -323,12 +358,14 @@ class SpaceWar: UIViewController
 	//----------- Game configuration ------------ 	
 	func gameConfig()
 	{
+		//-- Set normandy's tuple
+		tupleNormandy = [(nd: view_normandy, life: normandyLife)]
 		//-- Slider loader --
 		slider_normandy.value = Float(view.frame.width * 0.5)	/* Initial value to slider */
 		//-------------------
 		//-- Initial position --
-		view_normandy.center.x = view.frame.width * 0.5			/* To position in x mid frame */
-		view_normandy.center.y = view.frame.height * 0.9017		/* To position in y frame proportional position */
+		tupleNormandy[0].nd.center.x = view.frame.width * 0.5			/* To position in x mid frame */
+		tupleNormandy[0].nd.center.y = view.frame.height * 0.9017		/* To position in y frame proportional position */
 		//----------------------
 		//-- Shot's start --
 		shotX = slider_normandy.value							/* Initial shot X value */
@@ -384,7 +421,7 @@ class SpaceWar: UIViewController
 	@IBAction func shifting_normandy(_ sender: UISlider) //touches move au lieu du slider
 	{
 		shotX = sender.value							/* Dinamics values to shotX */
-		view_normandy.center.x = CGFloat(shotX)			/* Dinamics values to move the normandy */
+		tupleNormandy[0].nd.center.x = CGFloat(shotX)			/* Dinamics values to move the normandy */
 	}
 	//-------------------------------------------
 	//=====================================================================
@@ -457,14 +494,13 @@ class SpaceWar: UIViewController
 					bullet.removeFromSuperview()			/* Remove the bullet from the main view */
 				}
 			}
-			//-- Bullet kill the mothership --
 			//-- Frames intersections conditions --
 			if bullet.frame.intersects(tupleMotherShip[0].ms.frame)
 			{
 				tupleMotherShip[0].life -= 1		/* Mothership life dedremantation */
-				//---- Bullet touch sound
-				
-				
+				//---- Bullet mothership touch sound
+				sound_touchMothership.play()
+				//---- Condition to die
 				if tupleMotherShip[0].life == 0
 				{
 					death(mothership, tupleMotherShip[0].ms, bullet)
@@ -566,6 +602,24 @@ class SpaceWar: UIViewController
 			//--- animation
 			arrayMothershipBullets[i].center.x -= CGFloat(arrayCos[i])
 			arrayMothershipBullets[i].center.y -= CGFloat(arraySin[i])
+		}
+		//---- Condition to kill Normandy
+		for bullet in arrayMothershipBullets
+		{
+			if bullet.frame.intersects(tupleNormandy[0].nd.frame)
+			{
+				//--- Damage Normandy
+				tupleNormandy[0].life -= 1
+				//--- Touch normandy's sound
+				sound_touchNormandy.play()
+				//--- Remove Bullet and phantom
+				bullet.removeFromSuperview(); bullet.frame.origin.x = -500
+				//--- Death's condition
+				if tupleNormandy[0].life == 0
+				{
+					death(normandy, tupleNormandy[0].nd, bullet)
+				}
+			}
 		}
 	}
 	//-----------------------------------
@@ -747,7 +801,6 @@ class SpaceWar: UIViewController
 			//---- Death's sound
 			sound_deathLackey.play()
 			//----
-			
 			theDead.removeFromSuperview()			/* Remove the lackey from the main view */
             theDead.frame.origin.x = -500			/* Remove the phanton to position -500 */
 			arrayLackeysDisplaced.append(theDead)	/* Add the dead lackeys to conditions */
@@ -757,7 +810,9 @@ class SpaceWar: UIViewController
 			//---- Death's sound
 			sound_explosion.play()
 			//----
-			
+			theDead.removeFromSuperview()
+			button_startGame.isEnabled = false
+			gameOver()
 			break
 			
 		case mothership:
@@ -766,6 +821,7 @@ class SpaceWar: UIViewController
 			//----
 			theDead.removeFromSuperview()
             theDead.frame.origin.x = -500
+			victory()
 			break
 			
 		default:
@@ -788,11 +844,67 @@ class SpaceWar: UIViewController
 		{
 			if arrayMusics[j].isPlaying == true { return }
 		}
-			
+		
 		let randomMusic = Int(arc4random_uniform(UInt32(arrayMusics.count)))
 		arrayMusics[randomMusic].play()
 	}
 	//=====================================================================
+	/*********************************************************************************************************
+	*																										 *
+	*											END OF GAME FUNCTIONS										 *
+	*																										 *
+	**********************************************************************************************************/
+	func gameOver()
+	{
+		//--- Stop animations
+		aniMusicTimer.invalidate(); aniMusicTimer = nil
+		if aniBulletTimer != nil
+		{ aniBulletTimer.invalidate(); aniBulletTimer = nil }
+		if aniBulletLackey != nil
+		{ aniBulletLackey.invalidate(); aniBulletLackey = nil }
+		if aniBulletMothership != nil
+		{ aniBulletMothership.invalidate(); aniBulletMothership = nil }
+		if aniRightMothershipTimer != nil
+		{ aniRightMothershipTimer.invalidate(); aniRightMothershipTimer = nil }
+		if aniLeftMothershipTimer != nil
+		{ aniLeftMothershipTimer.invalidate(); aniLeftMothershipTimer = nil }
+		//--- Stop music
+		for mus in arrayMusics { if mus.isPlaying == true { mus.stop() } }
+		//--- Show menu game over
+		view_gameOver.isHidden = false
+		//--- Play game over music
+		mus_gameover.play()
+	}
+	func victory()
+	{
+		//--- Stop animations
+		aniMusicTimer.invalidate(); aniMusicTimer = nil
+		//if aniBulletTimer != nil
+		//{ aniBulletTimer.invalidate(); aniBulletTimer = nil }
+		if aniBulletLackey != nil
+		{ aniBulletLackey.invalidate(); aniBulletLackey = nil }
+		if aniBulletMothership != nil
+		{ aniBulletMothership.invalidate(); aniBulletMothership = nil }
+		if aniRightMothershipTimer != nil
+		{ aniRightMothershipTimer.invalidate(); aniRightMothershipTimer = nil }
+		if aniLeftMothershipTimer != nil
+		{ aniLeftMothershipTimer.invalidate(); aniLeftMothershipTimer = nil }
+		//--- Stop music
+		for mus in arrayMusics { if mus.isPlaying == true { mus.stop() } }
+		//--- Change text
+		object_style.styleUILabelSetText(label_gameOver, "Victory!")
+		//--- Show menu game over
+		view_gameOver.isHidden = false
+		//--- Play game over music
+		mus_endgame.play()
+	}
+	@IBAction func menu_gameOver(_ sender: UIButton)
+	{
+		if mus_endgame.isPlaying == true { mus_endgame.stop() }
+		if mus_gameover.isPlaying == true { mus_gameover.stop() }
+	}
+	
+	
 	
 }
 
