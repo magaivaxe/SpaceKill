@@ -344,6 +344,26 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="q9J-ii-nve">
+                                <rect key="frame" x="20" y="964" width="20" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Bkp-iR-c0C">
+                                <rect key="frame" x="48" y="964" width="20" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mMF-9K-ufW">
+                                <rect key="frame" x="76" y="964" width="20" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AcH-NX-pax">
+                                <rect key="frame" x="104" y="964" width="20" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GlJ-gJ-mCb">
+                                <rect key="frame" x="132" y="964" width="20" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -376,6 +396,11 @@
                         <outlet property="imgView_lackey7" destination="14r-mL-xVV" id="ese-QD-QgA"/>
                         <outlet property="imgView_lackey8" destination="MVJ-AG-R6F" id="gcy-Em-xkG"/>
                         <outlet property="imgView_lackey9" destination="0NU-dj-M7x" id="2wF-7Y-BoZ"/>
+                        <outlet property="img_life1" destination="q9J-ii-nve" id="79G-b1-2NN"/>
+                        <outlet property="img_life2" destination="Bkp-iR-c0C" id="Gxg-1A-vgg"/>
+                        <outlet property="img_life3" destination="mMF-9K-ufW" id="f9v-ti-cbK"/>
+                        <outlet property="img_life4" destination="AcH-NX-pax" id="F38-kj-vjS"/>
+                        <outlet property="img_life5" destination="GlJ-gJ-mCb" id="Ymp-2W-LSm"/>
                         <outlet property="img_mothership" destination="f8N-gU-krg" id="vVf-p5-wPw"/>
                         <outlet property="img_normandy" destination="pNd-dU-Drf" id="8DW-Ev-LHk"/>
                         <outlet property="label_gameOver" destination="dCg-9Q-U9B" id="M1B-to-49V"/>

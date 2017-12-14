@@ -73,6 +73,12 @@ class SpaceWar: UIViewController
 	@IBOutlet weak var imgView_lackey23: UIImageView!
 	@IBOutlet weak var imgView_lackey24: UIImageView!
 	
+	@IBOutlet weak var img_life1: UIImageView!
+	@IBOutlet weak var img_life2: UIImageView!
+	@IBOutlet weak var img_life3: UIImageView!
+	@IBOutlet weak var img_life4: UIImageView!
+	@IBOutlet weak var img_life5: UIImageView!
+	
 	@IBOutlet weak var img_mothership: UIImageView!
 	@IBOutlet weak var img_normandy: UIImageView!
 	
@@ -121,6 +127,11 @@ class SpaceWar: UIViewController
 	var arrayAnglesLc = [Double]()
 	var arrayMusics = [AVAudioPlayer]()
 	var arrayButtons = [UIButton](); var arrayLabels = [UILabel]()
+	var arrayLifes = [UIImageView]()
+	
+	//teste multipleshots
+	var distanceLcBullet2 = 0; var aniBulletLackey2: Timer!; var arrayLackeysToShot2 = [UIView]()
+	
 	
 	var mus_endgame = AVAudioPlayer(); var mus_gameover = AVAudioPlayer()
 	var sound_deathLackey = AVAudioPlayer(); var sound_explosion = AVAudioPlayer()
@@ -166,6 +177,9 @@ class SpaceWar: UIViewController
 		arrayLabels = [label_gameOver, label_resetOrMenu]
 		object_style.styleArrayOfUILabel(arrayLabels, UIFont.init(name: "Space Age", size: 20), NSTextAlignment.center,
 										 0, 0, UIColor.black.cgColor, UIColor.white, UIColor.black.cgColor)
+		
+		//-- Set the life's images on the screen
+		for i in 0..<normandyLife { arrayLifes[i].image = UIImage(named: "ship0") }
 	}
 	//-------------------------------------------
 	//------------- Musics creation	-------------
@@ -216,9 +230,6 @@ class SpaceWar: UIViewController
 		}
 		catch { print(error) }
 	}
-	
-	
-	
 	//-------------------------------------------
 	//------------- Shots creations -------------
 	func spaceshipsBulletsCreation(_ nBullets: Int,_ nMsBullets: Int,_ nLcBullets: Int)
@@ -265,12 +276,12 @@ class SpaceWar: UIViewController
 		
 		switch dificultyMode
 		{
-		case "captain"://********************************************** THIS MODE OK
+		case "captain":
 			//------- Normandy's modes --------
 			shotSpeed = 0.001; normandyLife = 5
 			
 			//------ Mothership's modes -------
-			nMsBullets = 5; mothershipLife = 1//15
+			nMsBullets = 5; mothershipLife = 10
 			mothershipProbabilityShot = 1; sampleSpace = 300
 			mothershipSpeed = 0.01; mothershipSpeedShot = 0.008
 			minAngle = 235; maxAngle = 315
@@ -280,7 +291,7 @@ class SpaceWar: UIViewController
 			lackeysProbabilityShot = 1; sampleSpaceLc = 300
 			lackeySpeed = 0.01; lackeysSpeedShot = 0.005
 			minAngleLc = 245; maxAngleLc = 320
-			animationLackeysY = 5; multipleShotLc = false
+			animationLackeysY = 5; multipleShotLc = true
 			
 			break
 		case "hero":
@@ -288,17 +299,17 @@ class SpaceWar: UIViewController
 			shotSpeed = 0.003; normandyLife = 3
 			
 			//------ Mothership's modes -------
-			nMsBullets = 10; mothershipLife = 20
+			nMsBullets = 10; mothershipLife = 15
 			mothershipProbabilityShot = 1; sampleSpace = 200
-			mothershipSpeed = 0.005; mothershipSpeedShot = 0.004		//FAIRE LE MULTIPLE SHOT
+			mothershipSpeed = 0.008; mothershipSpeedShot = 0.006
 			minAngle = 230; maxAngle = 315
 			
 			//------ Lackey's modes -------
 			nLcBullets = 6; lackeysLifes = 2
 			lackeysProbabilityShot = 1; sampleSpaceLc = 200
-			lackeySpeed = 0.01; lackeysSpeedShot = 0.003
+			lackeySpeed = 0.01; lackeysSpeedShot = 0.004
 			minAngleLc = 230; maxAngleLc = 315
-			animationLackeysY = 5; multipleShotLc = true
+			animationLackeysY = 5; multipleShotLc = false
 			break
 			
 		case "god":
@@ -306,15 +317,15 @@ class SpaceWar: UIViewController
 			shotSpeed = 0.006; normandyLife = 1
 			
 			//------ Mothership's modes -------
-			nMsBullets = 15; mothershipLife = 25
+			nMsBullets = 15; mothershipLife = 20
 			mothershipProbabilityShot = 1; sampleSpace = 100
-			mothershipSpeed = 0.002; mothershipSpeedShot = 0.002
+			mothershipSpeed = 0.006; mothershipSpeedShot = 0.005
 			minAngle = 230; maxAngle = 315
 			
 			//------ Lackey's modes -------
 			nLcBullets = 9; lackeysLifes = 3
 			lackeysProbabilityShot = 1; sampleSpaceLc = 100
-			lackeySpeed = 0.01; lackeysSpeedShot = 0.001
+			lackeySpeed = 0.01; lackeysSpeedShot = 0.0035
 			minAngleLc = 230; maxAngleLc = 315
 			animationLackeysY = 5; multipleShotLc = true
 			break
@@ -358,6 +369,8 @@ class SpaceWar: UIViewController
 	//----------- Game configuration ------------ 	
 	func gameConfig()
 	{
+		//-- set life's array
+		arrayLifes = [img_life1, img_life2, img_life3, img_life4, img_life5]
 		//-- Set normandy's tuple
 		tupleNormandy = [(nd: view_normandy, life: normandyLife)]
 		//-- Slider loader --
@@ -612,6 +625,8 @@ class SpaceWar: UIViewController
 				tupleNormandy[0].life -= 1
 				//--- Touch normandy's sound
 				sound_touchNormandy.play()
+				//--- Func to show lifes
+				lifes()
 				//--- Remove Bullet and phantom
 				bullet.removeFromSuperview(); bullet.frame.origin.x = -500
 				//--- Death's condition
@@ -663,8 +678,6 @@ class SpaceWar: UIViewController
 		msShotX = Float(view_mothership.center.x)
 		shotOfMothership()
 		shotOfLackeys()
-		
-		if multipleShotLc == true { shotOfLackeys() }
 	}
 	//----- Mothership's animations to left ------
 	@objc func animationMothershipToLeft()
@@ -681,8 +694,6 @@ class SpaceWar: UIViewController
 		msShotX = Float(view_mothership.center.x)
 		shotOfMothership()
 		shotOfLackeys()
-		
-		if multipleShotLc == true { shotOfLackeys() }
 	}
 	//--------------------------------------------
 	func moveLackeys()
@@ -750,6 +761,26 @@ class SpaceWar: UIViewController
 			arrayLackeyBullets[i].center.x -= CGFloat(arrayCosLc[i])
 			arrayLackeyBullets[i].center.y -= CGFloat(arraySinLc[i])
 		}
+		//---- Condition to kill Normandy
+		for bullet in arrayLackeyBullets
+		{
+			if bullet.frame.intersects(tupleNormandy[0].nd.frame)
+			{
+				//--- Damage Normandy
+				tupleNormandy[0].life -= 1
+				//--- Touch normandy's sound
+				sound_touchNormandy.play()
+				//--- Show current lifes
+				lifes()
+				//--- Remove Bullet and phantom
+				bullet.removeFromSuperview(); bullet.frame.origin.x = -500
+				//--- Death's condition
+				if tupleNormandy[0].life == 0
+				{
+					death(normandy, tupleNormandy[0].nd, bullet)
+				}
+			}
+		}
 	}
 	
 	func theChosenLackey() -> UIView
@@ -792,7 +823,33 @@ class SpaceWar: UIViewController
 		}
 	}
     //=====================================================================
-    
+    func lifes()
+	{
+		switch tupleNormandy[0].life
+		{
+		case 0:
+			img_life5.isHidden = true; img_life4.isHidden = true
+			img_life3.isHidden = true; img_life2.isHidden = true
+			img_life1.isHidden = true
+			break
+		case 1:
+			img_life5.isHidden = true; img_life4.isHidden = true
+			img_life3.isHidden = true; img_life2.isHidden = true
+			break
+		case 2:
+			img_life5.isHidden = true; img_life4.isHidden = true
+			img_life3.isHidden = true
+			break
+		case 3:
+			img_life5.isHidden = true; img_life4.isHidden = true
+			break
+		case 4:
+			img_life5.isHidden = true
+			break
+		default:
+			break
+		}
+	}
     func death(_ whoIsDead: String,_ theDead: UIView,_ theBullet: UIView)
 	{
 		switch whoIsDead							//Do and call the animations before remove

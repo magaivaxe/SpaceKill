@@ -121,7 +121,7 @@ class TitleScreen: UIViewController
 	//----
 	func elementsStyles()
 	{
-		object_style.styleArrayOfUIButtons(arrayButtons, UIFont.init(name: "Space Age", size: 25), UIColor.white,
+		object_style.styleArrayOfUIButtons(arrayButtons, UIFont.init(name: "Space Age", size: 20), UIColor.white,
 										   15, 5, UIColor.white.cgColor, UIColor.black.cgColor, 1)
 		
 	}
