@@ -77,7 +77,6 @@ class SpaceWar: UIViewController
 	let normandy = "normandy"
 	let lackey = "lackey"
 	let mothership = "mothership"
-	let mothershipBullet = "mothership bullet"
 	//-----------------------------------
 	//------------ Variables ------------
 	var shotX, msShotX, msShotY, shotY: Float!
@@ -112,20 +111,17 @@ class SpaceWar: UIViewController
 	var arrayCosLc = [Double]()
 	var arraySinLc = [Double]()
 	var arrayAnglesLc = [Double]()
-	var arrayMusics = [AVFileType]()
-	
-	var music1 = AVAudioPlayer(); var music2 = AVAudioPlayer()
-	var music3 = AVAudioPlayer(); var music4 = AVAudioPlayer()
-	var music5 = AVAudioPlayer(); var music6 = AVAudioPlayer()
-	var music7 = AVAudioPlayer(); var music8 = AVAudioPlayer()
+	var arrayMusics = [AVAudioPlayer]()
+
 	var mus_endgame = AVAudioPlayer(); var mus_gameover = AVAudioPlayer()
 	var sound_deathLackey = AVAudioPlayer(); var sound_explosion = AVAudioPlayer()
 	var sound_shotLackey = AVAudioPlayer(); var sound_shotMothership = AVAudioPlayer()
-	var sound_shot = AVAudioPlayer()
+	var sound_shot = AVAudioPlayer(); var sound_touchMothership = AVAudioPlayer()
 	
 	var aniBulletTimer, aniBulletLackey, aniBulletMothership: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
 	var aniRightLackeysTimer, aniLeftLackeysTimer: Timer!
+	var aniMusicTimer: Timer!
 	//-----------------------------------
 
 	//------------- Classes -------------
@@ -136,10 +132,12 @@ class SpaceWar: UIViewController
     override func viewDidLoad()
 	{
         super.viewDidLoad()
-		//-----
-		gameConfig(); gameMode()
-		startPlaceEnemies(); spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets)
-		moveChoice(); moveMothership(); moveLackeys()
+		//----- Loading Functions
+		gameConfig(); gameMode(); startPlaceEnemies(); setMusicsAndSounds()
+		spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets)
+		
+		//----- Play Functions
+		playMusic(); moveChoice(); moveMothership(); moveLackeys()
 		//-----
     }
 	//=====================================================================
@@ -149,14 +147,48 @@ class SpaceWar: UIViewController
 	*																										 *
 	**********************************************************************************************************/
 	//------------- Musics creation	-------------
-	func musics()
+	func setMusicsAndSounds()
 	{
+		//---- Loop to create and fill music array
+		for i in 1...8
+		{
+			do
+			{	//---- Dynamic musics creation ----
+				let music = try AVAudioPlayer(contentsOf: .init(fileURLWithPath: Bundle.main.path(forResource: "music\(i)", ofType: "mp3")!))
+				
+				music.prepareToPlay()		/* prepare all musics to play */
+				arrayMusics.append(music)	/* Add to array to random play */
+			
+			}
+			catch { print(error) }
+		}
+		//---- Prepare the others sounds
 		do
 		{
-			try
+			mus_endgame = try AVAudioPlayer(contentsOf: .init(fileURLWithPath: Bundle.main.path(forResource: "endgame", ofType: "mp3")!))
+			mus_endgame.prepareToPlay()
+			
+			mus_gameover = try AVAudioPlayer(contentsOf: .init(fileURLWithPath: Bundle.main.path(forResource: "gameover", ofType: "mp3")!))
+			mus_gameover.prepareToPlay()
+			
+			sound_deathLackey = try AVAudioPlayer(contentsOf: .init(fileURLWithPath: Bundle.main.path(forResource: "deathLackey", ofType: "wav")!))
+			sound_deathLackey.prepareToPlay()
+			
+			sound_explosion = try AVAudioPlayer(contentsOf: .init(fileURLWithPath: Bundle.main.path(forResource: "explosion", ofType: "wav")!))
+			sound_explosion.prepareToPlay()
+			
+			sound_shotLackey = try AVAudioPlayer(contentsOf: .init(fileURLWithPath: Bundle.main.path(forResource: "shotLackey", ofType: "mp3")!))
+			sound_shotLackey.prepareToPlay()
+			
+			sound_shotMothership = try AVAudioPlayer(contentsOf: .init(fileURLWithPath: Bundle.main.path(forResource: "shotMothership", ofType: "wav")!))
+			sound_shotMothership.prepareToPlay()
+			
+			sound_shot = try AVAudioPlayer(contentsOf: .init(fileURLWithPath: Bundle.main.path(forResource: "shot", ofType: "wav")!))
+			sound_shot.prepareToPlay()
 		}
 		catch { print(error) }
 	}
+	
 	
 	
 	//-------------------------------------------
@@ -330,7 +362,11 @@ class SpaceWar: UIViewController
 		}
 	}
 	//=====================================================================
-	//=========================== Game Actions ============================
+	/*********************************************************************************************************
+	*																										 *
+	*												GAME ACTIONS											 *
+	*																										 *
+	**********************************************************************************************************/
 	//------------ Normandy's shifting ----------
 	@IBAction func start_game(_ sender: UIButton)
 	{
@@ -339,6 +375,8 @@ class SpaceWar: UIViewController
 		{ return }
 		//-- Shot --
 		shot()
+		//-- Shot's sound  --
+		sound_shot.play()
     }
 	
 	//-------------------------------------------
@@ -350,7 +388,12 @@ class SpaceWar: UIViewController
 	}
 	//-------------------------------------------
 	//=====================================================================
-	//========================== Game Fonctions ===========================
+	/*********************************************************************************************************
+	*																										 *
+	*												PLAY FUNCTIONS											 *
+	*																										 *
+	**********************************************************************************************************/
+	//---- Normandy Shot ----
 	func shot()
 	{
 		placeBulletsForShot(arrayBullets)
@@ -419,6 +462,8 @@ class SpaceWar: UIViewController
 			if bullet.frame.intersects(tupleMotherShip[0].ms.frame)
 			{
 				tupleMotherShip[0].life -= 1		/* Mothership life dedremantation */
+				//---- Bullet touch sound
+				
 				
 				if tupleMotherShip[0].life == 0
 				{
@@ -451,7 +496,10 @@ class SpaceWar: UIViewController
 		if (shot <= mothershipProbabilityShot && aniBulletMothership == nil)
 		{
 			placeMothershipShot(arrayMothershipBullets)
+			//---- Shot
 			animatedMothershipShot()
+			//---- Shot's sound
+			sound_shotMothership.play()
 		}
 		else {return}
 	}
@@ -521,11 +569,10 @@ class SpaceWar: UIViewController
 		}
 	}
 	//-----------------------------------
-	//------- Lackey's animations -------
+	//------- Choice to move -------
 	func moveChoice()
 	{
 		rightOrLeftMS = Int(arc4random_uniform(2))
-		rightOrLeftLC = Int(arc4random_uniform(2))
 	}
 	//----- Mothership's animations -----
     func moveMothership()
@@ -606,7 +653,10 @@ class SpaceWar: UIViewController
 		{
 			theChosenOne = theChosenLackey()
 			placeLackeyShot(theChosenOne)
+			//---- Shot
 			lackeyShot()
+			//---- Shot's sound
+			sound_shotLackey.play()
 		}
 	}
 	func lackeyShot()
@@ -694,6 +744,9 @@ class SpaceWar: UIViewController
 		switch whoIsDead							//Do and call the animations before remove
 		{
 		case lackey:
+			//---- Death's sound
+			sound_deathLackey.play()
+			//----
 			
 			theDead.removeFromSuperview()			/* Remove the lackey from the main view */
             theDead.frame.origin.x = -500			/* Remove the phanton to position -500 */
@@ -701,22 +754,18 @@ class SpaceWar: UIViewController
 			break
 			
 		case normandy:
+			//---- Death's sound
+			sound_explosion.play()
+			//----
 			
 			break
 			
 		case mothership:
-			
+			//---- Death's sound
+			sound_explosion.play()
+			//----
 			theDead.removeFromSuperview()
             theDead.frame.origin.x = -500
-			break
-			
-		case mothershipBullet:
-			
-			theDead.removeFromSuperview()
-			theDead.frame.origin.x = -500
-			aniBulletTimer.invalidate()
-			aniBulletTimer = nil
-			theBullet.removeFromSuperview()
 			break
 			
 		default:
@@ -724,6 +773,27 @@ class SpaceWar: UIViewController
 		}
 	}
 	//=====================================================================
+	//======================= Background music ============================
+	func playMusic()
+	{
+		aniMusicTimer = Timer.scheduledTimer(timeInterval: 1,
+											 target: self,
+											 selector: #selector(music),
+											 userInfo: nil,
+											 repeats: true)
+	}
+	@objc func music()
+	{
+		for j in 0..<arrayMusics.count
+		{
+			if arrayMusics[j].isPlaying == true { return }
+		}
+			
+		let randomMusic = Int(arc4random_uniform(UInt32(arrayMusics.count)))
+		arrayMusics[randomMusic].play()
+	}
+	//=====================================================================
+	
 }
 
 
