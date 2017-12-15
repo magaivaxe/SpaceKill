@@ -156,7 +156,7 @@ class SpaceWar: UIViewController
 	{
         super.viewDidLoad()
 		//----- Loading Functions
-		gameMode(); gameConfig(); startPlaceEnemies(); setMusicsAndSounds()
+		gameMode(); loadBestTime(); gameConfig(); startPlaceEnemies(); setMusicsAndSounds()
 		spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets); setStyles()
 		
 		//----- Play Functions
@@ -173,14 +173,19 @@ class SpaceWar: UIViewController
 	func setStyles()
 	{
 		object_style.styleUIView(view_gameOver, 15, 5, UIColor.white.cgColor, UIColor.black, 1)
+		
 		arrayButtons = [button_menu, button_reset]
 		object_style.styleArrayOfUIButtons(arrayButtons, UIFont.init(name: "Space Age", size: 25), UIColor.white,
 										   15, 5, UIColor.white.cgColor, UIColor.black.cgColor, 1)
+		
 		arrayLabels = [label_gameOver, label_resetOrMenu]
 		object_style.styleArrayOfUILabel(arrayLabels, UIFont.init(name: "Space Age", size: 20), NSTextAlignment.center,
 										 0, 0, UIColor.black.cgColor, UIColor.white, UIColor.black.cgColor)
-		object_style.styleUILabel(label_score, UIFont.init(name: "Space Age", size: 20), NSTextAlignment.center, "\(bestTime)", 0, 0, UIColor.black.cgColor, UIColor.black.cgColor)
-		object_style.styleUILabel(label_bestScore, UIFont.init(name: "Space Age", size: 20), NSTextAlignment.center, "\(bestTime)", 0, 0, UIColor.black.cgColor, UIColor.black.cgColor)
+		
+		object_style.styleUILabel(label_score, UIFont.init(name: "Space Age", size: 20), NSTextAlignment.center, "",
+								  0, 0, UIColor.black.cgColor, UIColor.black.cgColor)
+		
+		object_style.styleUILabel(label_bestScore, UIFont.init(name: "Space Age", size: 20), NSTextAlignment.center, "\((bestTime * 100).rounded()/100)", 0, 0, UIColor.black.cgColor, UIColor.black.cgColor)
 		
 		//-- Set the life's images on the screen
 		for i in 0..<normandyLife { arrayLifes[i].image = UIImage(named: "ship0") }
@@ -296,16 +301,8 @@ class SpaceWar: UIViewController
 			lackeySpeed = 0.1; lackeysSpeedShot = 0.005
 			minAngleLc = 245; maxAngleLc = 320
 			animationLackeysY = 5; multipleShotLc = true
-			
-			if object_saveLoad.checkExistingData(fileName: dificultyMode) == false
-			{
-				bestTime = 100; object_saveLoad.saveData(theData: bestTime as AnyObject,
-														 fileName: dificultyMode)
-			}
-			else
-			{bestTime = object_saveLoad.loadData(fileName: dificultyMode) as! Double}
-		
 			break
+			
 		case "hero":
 			//------- Normandy's modes --------
 			shotSpeed = 0.001; normandyLife = 3
@@ -322,15 +319,6 @@ class SpaceWar: UIViewController
 			lackeySpeed = 0.1; lackeysSpeedShot = 0.004
 			minAngleLc = 230; maxAngleLc = 315
 			animationLackeysY = 5; multipleShotLc = false
-			
-			if object_saveLoad.checkExistingData(fileName: dificultyMode) == false
-			{
-				bestTime = 100; object_saveLoad.saveData(theData: bestTime as AnyObject,
-														 fileName: dificultyMode)
-			}
-			else
-			{bestTime = object_saveLoad.loadData(fileName: dificultyMode) as! Double}
-			
 			break
 			
 		case "god":
@@ -349,22 +337,27 @@ class SpaceWar: UIViewController
 			lackeySpeed = 0.1; lackeysSpeedShot = 0.0035
 			minAngleLc = 230; maxAngleLc = 315
 			animationLackeysY = 5; multipleShotLc = true
-			
-			if object_saveLoad.checkExistingData(fileName: dificultyMode) == false
-			{
-				bestTime = 100; object_saveLoad.saveData(theData: bestTime as AnyObject,
-														 fileName: dificultyMode)
-			}
-			else
-			{bestTime = object_saveLoad.loadData(fileName: dificultyMode) as! Double}
-
 			break
 			
 		default:
 			break
 		}
-		
 	}
+	//-------------------------------------------
+	//------------- Load best times -------------
+	func loadBestTime()
+	{
+		if object_saveLoad.checkExistingData(fileName: dificultyMode) == true
+		{
+			bestTime = object_saveLoad.loadData(fileName: dificultyMode) as! Double
+		}
+		else
+		{
+			bestTime = 100
+			object_saveLoad.saveData(theData: bestTime as AnyObject, fileName: dificultyMode)
+		}
+	}
+	
 	//-------------------------------------------
 	//----------- Start place enemies -----------
 	func startPlaceEnemies()
@@ -754,7 +747,7 @@ class SpaceWar: UIViewController
 		let shot = Double(arc4random_uniform(sampleSpaceLc))
 		let theChosenOne: UIView!
 		//----- Condition to call the fonction
-		if shot <= lackeysProbabilityShot && aniBulletLackey == nil
+		if shot <= lackeysProbabilityShot && aniBulletLackey == nil && arrayLackeysDisplaced.count < 24
 		{
 			theChosenOne = theChosenLackey()
 			placeLackeyShot(theChosenOne)
@@ -836,8 +829,6 @@ class SpaceWar: UIViewController
 		}
 		
 		let chosen = Int(arc4random_uniform(UInt32(arrayLackeysToShot.count)))
-		
-		if arrayLackeysToShot == [] { return arrayLackeysDisplaced[chosen] }
 		
 		return arrayLackeysToShot[chosen]
 	}
@@ -1011,7 +1002,7 @@ class SpaceWar: UIViewController
 											 userInfo: nil,
 											 repeats: true)
 	}
-	@objc func scoreTime() { realTime += 0.01; label_score.text = "\(realTime)" }
+	@objc func scoreTime() { realTime += 0.01; label_score.text = "\((realTime * 100).rounded()/100)" }
 	
 	@IBAction func menu_gameOver(_ sender: UIButton)
 	{

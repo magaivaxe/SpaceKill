@@ -170,6 +170,7 @@ class Styles
 					  _ borderColorN: CGColor?,
 					  _ bgroundColor: CGColor?)
 	{
+		label.adjustsFontSizeToFitWidth = true
 		label.clipsToBounds = true
 		label.font = fontN!
 		label.textAlignment = textAlignmentT!
@@ -197,6 +198,7 @@ class Styles
 	{
 		for l in label
 		{
+			l.adjustsFontSizeToFitWidth = true
 			l.clipsToBounds = true
 			l.font = fontN!
 			l.textAlignment = textAlignmentT
