@@ -5,10 +5,11 @@
   Created by eleves on 17-12-04.
   Copyright © 2017 marcos. All rights reserved.
 */
-
+//------------ Libraries ------------
 import UIKit
 import Foundation
 import AVFoundation
+//-----------------------------------
 
 class SpaceWar: UIViewController
 {
@@ -40,14 +41,18 @@ class SpaceWar: UIViewController
 	
 	@IBOutlet weak var view_mothership: UIView!
 	@IBOutlet weak var view_normandy: UIView!
-	
 	@IBOutlet weak var view_gameOver: UIView!
+	
 	@IBOutlet weak var label_gameOver: UILabel!
 	@IBOutlet weak var label_resetOrMenu: UILabel!
-	@IBOutlet weak var button_menu: UIButton!
-	@IBOutlet weak var button_reset: UIButton!
 	@IBOutlet weak var label_score: UILabel!
 	@IBOutlet weak var label_bestScore: UILabel!
+	
+	@IBOutlet weak var button_menu: UIButton!
+	@IBOutlet weak var button_reset: UIButton!
+	@IBOutlet weak var button_startGame: UIButton!
+	
+	@IBOutlet weak var slider_normandy: UISlider!
 	
 	@IBOutlet weak var imgView_lackey1: UIImageView!
 	@IBOutlet weak var imgView_lackey2: UIImageView!
@@ -74,18 +79,14 @@ class SpaceWar: UIViewController
 	@IBOutlet weak var imgView_lackey23: UIImageView!
 	@IBOutlet weak var imgView_lackey24: UIImageView!
 	
+	@IBOutlet weak var img_mothership: UIImageView!
+	@IBOutlet weak var img_normandy: UIImageView!
+	
 	@IBOutlet weak var img_life1: UIImageView!
 	@IBOutlet weak var img_life2: UIImageView!
 	@IBOutlet weak var img_life3: UIImageView!
 	@IBOutlet weak var img_life4: UIImageView!
 	@IBOutlet weak var img_life5: UIImageView!
-	
-	@IBOutlet weak var img_mothership: UIImageView!
-	@IBOutlet weak var img_normandy: UIImageView!
-	
-	@IBOutlet weak var slider_normandy: UISlider!
-	@IBOutlet weak var button_startGame: UIButton!
-	
 	//-----------------------------------
 	//------------ Constants ------------
 	let normandy = "normandy"
@@ -93,66 +94,60 @@ class SpaceWar: UIViewController
 	let mothership = "mothership"
 	//-----------------------------------
 	//------------ Variables ------------
+	//-- Coordinates
 	var shotX, shotY, msShotX, msShotY, lcShotX, lcShoty: Float!
-	var animationX, animationY, animationLackeysY: CGFloat!								/* Distance on pixels to animate */
-	var realTime: Double = 0.0; var bestTime: Double!
+	var animationX, animationY, animationLackeysY: CGFloat!			/* Distance on pixels to animate */
+	//-- Trigonometry
 	var maxAngle, minAngle, anglesDivised: Double!
 	var maxAngleLc, minAngleLc, anglesDivisedLc: Double!
-	var mothershipProbabilityShot, mothershipSpeedShot: Double!
-	var lackeysProbabilityShot, lackeysSpeedShot: Double!
+	var arrayCos = [Double](); var arraySin = [Double]()
+	var arrayAngles = [Double]()
+	var arrayCosLc = [Double](); var arraySinLc = [Double]()
+	var arrayAnglesLc = [Double]()
+	//-- Game Mode
+	var mothershipProbabilityShot, lackeysProbabilityShot: Double!
+	var sampleSpace, sampleSpaceLc: UInt32!
+	var rightOrLeftMS, rightOrLeftLC: Int!
+	var mothershipSpeedShot, lackeysSpeedShot: Double!
 	var shotSpeed, mothershipSpeed, lackeySpeed: Double!
 	var maxDistance, maxMsDistance, maxAniLcDistance: Int!				/* Max distance to animate by screen */
 	var distanceAniLc = 0												/* Initial distance to animate lackeys */
-	var distanceBullet = 0												/* Initial distance to animate normandy's shot */
-	var distanceMsBullet = 0											/* Initial distance to animate mothership's shot */
-	var distanceLcBullet = 0											/* Initial distance to animate lackey's shot */
-	var rightOrLeftMS, rightOrLeftLC: Int!
-	var nBullets, nMsBullets, nLcBullets: Int!								/* Bullets number to shot, the game can change the value */
-	var mothershipLife, lackeysLifes, normandyLife: Int!
+	var distanceBullet = 0; var distanceMsBullet = 0					/* Initial distance to animate shot */
+	var distanceLcBullet = 0
+	var nBullets, nMsBullets, nLcBullets: Int!							/* Number of bullets to shot */
+	var mothershipLife, lackeysLifes, normandyLife: Int!				/* Ships Lifes */
 	var dificultyMode: String!
-	var sampleSpace, sampleSpaceLc: UInt32!
-	
-	var arrayMothershipBullets = [UIView]()
-	var arrayBullets = [UIView]()
+	//-- Arrays of game elements
+	var arrayMothershipBullets = [UIView](); var arrayBullets = [UIView]()
 	var arrayLackeyBullets = [UIView]()
-	var arrayLackeys = [UIView]()
+	var arrayLackeys = [UIView](); var arrayLackeysDisplaced = [UIView]()
 	var arrayLackeysToShot = [UIView]()
-	var arrayLackeysDisplaced = [UIView]()
+	//-- Arrays meta games
 	var arrayImgLackeys = [UIImageView]()
+	var arrayButtons = [UIButton](); var arrayLabels = [UILabel]()
+	var arrayLifes = [UIImageView]()
+	//-- Tuples of vessels
 	var tupleMotherShip = [(ms: UIView, life: Int)]()
 	var tupleLackeys = [(lc: UIView, life: Int)]()
 	var tupleNormandy = [(nd: UIView, life: Int)]()
-	var arrayCos = [Double]()
-	var arraySin = [Double]()
-	var arrayAngles = [Double]()
-	var arrayCosLc = [Double]()
-	var arraySinLc = [Double]()
-	var arrayAnglesLc = [Double]()
+	//-- Sounds and musics
 	var arrayMusics = [AVAudioPlayer]()
-	var arrayButtons = [UIButton](); var arrayLabels = [UILabel]()
-	var arrayLifes = [UIImageView]()
-	
-	//teste multipleshots
-	var distanceLcBullet2 = 0; var aniBulletLackey2: Timer!; var arrayLackeysToShot2 = [UIView]()
-	
-	
 	var mus_endgame = AVAudioPlayer(); var mus_gameover = AVAudioPlayer()
 	var sound_deathLackey = AVAudioPlayer(); var sound_explosion = AVAudioPlayer()
 	var sound_shotLackey = AVAudioPlayer(); var sound_shotMothership = AVAudioPlayer()
 	var sound_shot = AVAudioPlayer(); var sound_touchMothership = AVAudioPlayer()
 	var sound_touchNormandy = AVAudioPlayer()
-	
+	//-- Timers to animation and score
+	var realTime: Double = 0.0; var bestTime: Double!
 	var aniBulletTimer, aniBulletLackey, aniBulletMothership: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
 	var aniRightLackeysTimer, aniLeftLackeysTimer: Timer!
 	var aniMusicTimer, aniScoreTimer: Timer!
 	//-----------------------------------
-
 	//------------- Classes -------------
 	let object_saveLoad = SaveAndLoad()
 	let object_style = Styles()
 	//-----------------------------------
-	
 	//============================ The loader =============================
     override func viewDidLoad()
 	{
@@ -275,14 +270,14 @@ class SpaceWar: UIViewController
 			arrayLackeyBullets.append(lcBullet)
 		}
 	}
-	//-------------- Mods choiced ---------------
+	//-------------- Mods choice ---------------
 	func gameMode()
 	{
 		//------ Normandy's modes -------
 		nBullets = 1
 		animationY = 1; animationX = 1
 		//-------------------------------
-		
+		//------ Dificult mode load
 		dificultyMode = object_saveLoad.loadData(fileName: "fileMode") as! String /* load the mode */
 		
 		switch dificultyMode
@@ -340,7 +335,6 @@ class SpaceWar: UIViewController
 			minAngleLc = 230; maxAngleLc = 315
 			animationLackeysY = 5
 			break
-			
 		default:
 			break
 		}
@@ -359,7 +353,6 @@ class SpaceWar: UIViewController
 			object_saveLoad.saveData(theData: bestTime as AnyObject, fileName: dificultyMode)
 		}
 	}
-	
 	//-------------------------------------------
 	//----------- Start place enemies -----------
 	func startPlaceEnemies()
@@ -379,10 +372,7 @@ class SpaceWar: UIViewController
 						   imgView_lackey21,imgView_lackey22,imgView_lackey23,imgView_lackey24]
 		
 		//--- Set the tuple of lackeys
-		for lac in arrayLackeys
-		{
-			tupleLackeys.append((lac, lackeysLifes))
-		}
+		for lac in arrayLackeys { tupleLackeys.append((lac, lackeysLifes)) }
 		//-- Set mothership's tuple
 		tupleMotherShip = [(ms: view_mothership, life: mothershipLife)]
 		//-- Set images to imgViews lackeys
@@ -454,7 +444,6 @@ class SpaceWar: UIViewController
 		//-- Shot's sound  --
 		sound_shot.play()
     }
-	
 	//-------------------------------------------
 	//------------ Normandy's shifting ----------
 	@IBAction func shifting_normandy(_ sender: UISlider) //touches move au lieu du slider
@@ -582,7 +571,7 @@ class SpaceWar: UIViewController
 		}
 		else {return}
 	}
-	
+	//- Place mothership bullets to shot -
 	func placeMothershipShot(_ arrayMsBullets: [UIView])
 	{
 		for msBullet in arrayMsBullets
@@ -605,7 +594,7 @@ class SpaceWar: UIViewController
 			angle += anglesDivised
 		}
 	}
-	
+	//---- Mothership shot animation ----
 	func animatedMothershipShot()
 	{
 		aniBulletMothership = Timer.scheduledTimer(timeInterval: mothershipSpeedShot,
@@ -614,7 +603,7 @@ class SpaceWar: UIViewController
 												   userInfo: nil,
 												   repeats: true)
 	}
-	
+	//---- object to animate ----
 	@objc func animationMS()
 	{
 		distanceMsBullet += 1
@@ -729,6 +718,7 @@ class SpaceWar: UIViewController
 	*											LACKEYS'S FUNCTIONS											 *
 	*																										 *
 	**********************************************************************************************************/
+	//---------- Lackeys animations -----
 	func moveLackeys()
 	{
 		if rightOrLeftLC == 0			/* move to right */
@@ -748,6 +738,7 @@ class SpaceWar: UIViewController
 													   repeats: true)
 		}
 	}
+	//----- object to animation ------
 	@objc func animationLackeysToRight()
 	{
 		if distanceAniLc > maxAniLcDistance
@@ -765,7 +756,7 @@ class SpaceWar: UIViewController
 		distanceAniLc += 1
 		shotOfLackeys()
 	}
-	
+	//----- object to animation ------
 	@objc func animationLackeysToLeft()
 	{
 		if distanceAniLc > maxAniLcDistance
@@ -800,6 +791,7 @@ class SpaceWar: UIViewController
 			sound_shotLackey.play()
 		}
 	}
+	//--------- Lackeys shots --------
 	func lackeyShot()
 	{
 		aniBulletLackey = Timer.scheduledTimer(timeInterval: lackeysSpeedShot,
@@ -808,6 +800,7 @@ class SpaceWar: UIViewController
 											   userInfo: nil,
 											   repeats: true)
 	}
+	//----- object to animation ------
 	@objc func animationLackeyShot()
 	{
 		distanceLcBullet += 1
@@ -858,7 +851,7 @@ class SpaceWar: UIViewController
 			}
 		}
 	}
-	
+	//------ Choose the lackey to shot -------
 	func theChosenLackey() -> UIView
 	{
 		arrayLackeysToShot = []
@@ -875,6 +868,7 @@ class SpaceWar: UIViewController
 		
 		return arrayLackeysToShot[chosen]
 	}
+	//------ Place the bullet to shot -------
 	func placeLackeyShot(_ theChosen: UIView)
 	{
 		for bullet in arrayLackeyBullets
@@ -898,13 +892,13 @@ class SpaceWar: UIViewController
 			angle += anglesDivisedLc
 		}
 	}
+	//=====================================================================
 	/*********************************************************************************************************
 	*																										 *
 	*										LIFE, DEATH AND MUSIC FUNCTIONS									 *
 	*																										 *
 	**********************************************************************************************************/
-	
-    //=====================================================================
+    //======================== Life's countdown ===========================
     func lifes()
 	{
 		switch tupleNormandy[0].life
@@ -932,6 +926,7 @@ class SpaceWar: UIViewController
 			break
 		}
 	}
+	//======================== Death's function ===========================
     func death(_ whoIsDead: String,_ theDead: UIView,_ theBullet: UIView)
 	{
 		switch whoIsDead							//Do and call the animations before remove
