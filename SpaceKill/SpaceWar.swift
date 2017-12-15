@@ -953,6 +953,8 @@ class SpaceWar: UIViewController
 	{
 		//--- Stop animations
 		aniMusicTimer.invalidate(); aniMusicTimer = nil
+		if aniScoreTimer != nil
+		{ aniScoreTimer.invalidate(); aniScoreTimer = nil }
 		if aniBulletTimer != nil
 		{ aniBulletTimer.invalidate(); aniBulletTimer = nil }
 		if aniBulletLackey != nil
@@ -992,6 +994,9 @@ class SpaceWar: UIViewController
 		view_gameOver.isHidden = false
 		//--- Play game over music
 		mus_endgame.play()
+		
+		if realTime < bestTime
+		{ object_saveLoad.saveData(theData: realTime as AnyObject, fileName: dificultyMode) }
 	}
 	func score()
 	{
@@ -1007,9 +1012,6 @@ class SpaceWar: UIViewController
 	{
 		if mus_endgame.isPlaying == true { mus_endgame.stop() }
 		if mus_gameover.isPlaying == true { mus_gameover.stop() }
-		
-		if realTime < bestTime
-		{ object_saveLoad.saveData(theData: realTime as AnyObject, fileName: dificultyMode) }
 	}
 }
 
