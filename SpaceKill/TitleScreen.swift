@@ -19,6 +19,7 @@ class TitleScreen: UIViewController
 	@IBOutlet weak var button_heroWar: UIButton!
 	@IBOutlet weak var button_godWar: UIButton!
 	@IBOutlet weak var label_gameMode: UILabel!
+	@IBOutlet weak var label_title: UILabel!
 	//-----------------------------------
 	//------------ Variables ------------
 	var arrayButtons: [UIButton]!
@@ -123,6 +124,12 @@ class TitleScreen: UIViewController
 	{
 		object_style.styleArrayOfUIButtons(arrayButtons, UIFont.init(name: "Space Age", size: 20), UIColor.white,
 										   15, 5, UIColor.white.cgColor, UIColor.black.cgColor, 1)
+		
+		object_style.styleUILabel(label_title, UIFont.init(name: "Space Age", size: 60), NSTextAlignment.center,
+								  "SPACE KILL", 0, 0, UIColor.black.cgColor, UIColor.black.cgColor)
+		
+		object_style.styleUILabel(label_gameMode, UIFont.init(name: "Space Age", size: 25), NSTextAlignment.center,
+								  "YOUR DESTINY", 0, 0, UIColor.black.cgColor, UIColor.black.cgColor)
 		
 	}
 	//----

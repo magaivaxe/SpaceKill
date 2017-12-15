@@ -1002,7 +1002,7 @@ class SpaceWar: UIViewController
 											 userInfo: nil,
 											 repeats: true)
 	}
-	@objc func scoreTime() { realTime += 0.01; label_score.text = "\((realTime * 100).rounded()/100)" }
+	@objc func scoreTime() { realTime += 0.01; label_score.text = "\((realTime * 10).rounded()/10)" }
 	
 	@IBAction func menu_gameOver(_ sender: UIButton)
 	{
