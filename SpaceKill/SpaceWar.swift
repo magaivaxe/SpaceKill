@@ -172,11 +172,11 @@ class SpaceWar: UIViewController
 	//----------------- Styles ------------------
 	func setStyles()
 	{
-		object_style.styleUIView(view_gameOver, 15, 5, UIColor.white.cgColor, UIColor.black, 1)
+		object_style.styleUIView(view_gameOver, 15, 1, UIColor.white.cgColor, UIColor.black, 1)
 		
 		arrayButtons = [button_menu, button_reset]
 		object_style.styleArrayOfUIButtons(arrayButtons, UIFont.init(name: "Space Age", size: 25), UIColor.white,
-										   15, 5, UIColor.white.cgColor, UIColor.black.cgColor, 1)
+										   15, 1, UIColor.white.cgColor, UIColor.black.cgColor, 1)
 		
 		arrayLabels = [label_gameOver, label_resetOrMenu]
 		object_style.styleArrayOfUILabel(arrayLabels, UIFont.init(name: "Space Age", size: 20), NSTextAlignment.center,
@@ -601,7 +601,6 @@ class SpaceWar: UIViewController
 			arrayAngles.append(minAngle + angle)
 			angle += anglesDivised
 		}
-		
 	}
 	
 	func animatedMothershipShot()

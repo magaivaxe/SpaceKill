@@ -123,7 +123,7 @@ class TitleScreen: UIViewController
 	func elementsStyles()
 	{
 		object_style.styleArrayOfUIButtons(arrayButtons, UIFont.init(name: "Space Age", size: 20), UIColor.white,
-										   15, 5, UIColor.white.cgColor, UIColor.black.cgColor, 1)
+										   15, 1, UIColor.white.cgColor, UIColor.black.cgColor, 1)
 		
 		object_style.styleUILabel(label_title, UIFont.init(name: "Space Age", size: 60), NSTextAlignment.center,
 								  "SPACE KILL", 0, 0, UIColor.black.cgColor, UIColor.black.cgColor)
