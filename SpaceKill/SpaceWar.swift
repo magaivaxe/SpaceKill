@@ -93,7 +93,7 @@ class SpaceWar: UIViewController
 	let mothership = "mothership"
 	//-----------------------------------
 	//------------ Variables ------------
-	var shotX, msShotX, msShotY, shotY: Float!
+	var shotX, shotY, msShotX, msShotY, lcShotX, lcShoty: Float!
 	var animationX, animationY, animationLackeysY: CGFloat!								/* Distance on pixels to animate */
 	var realTime: Double = 0.0; var bestTime: Double!
 	var maxAngle, minAngle, anglesDivised: Double!
@@ -101,15 +101,16 @@ class SpaceWar: UIViewController
 	var mothershipProbabilityShot, mothershipSpeedShot: Double!
 	var lackeysProbabilityShot, lackeysSpeedShot: Double!
 	var shotSpeed, mothershipSpeed, lackeySpeed: Double!
-	var maxDistance, maxMsDistance, rightOrLeftMS, rightOrLeftLC: Int!									/* Max distance to animate by screen */
-	var nBullets, nMsBullets, nLcBullets: Int!										/* Bullets number to shot, the game can change the value */
+	var maxDistance, maxMsDistance, maxAniLcDistance: Int!				/* Max distance to animate by screen */
+	var distanceAniLc = 0												/* Initial distance to animate lackeys */
+	var distanceBullet = 0												/* Initial distance to animate normandy's shot */
+	var distanceMsBullet = 0											/* Initial distance to animate mothership's shot */
+	var distanceLcBullet = 0											/* Initial distance to animate lackey's shot */
+	var rightOrLeftMS, rightOrLeftLC: Int!
+	var nBullets, nMsBullets, nLcBullets: Int!								/* Bullets number to shot, the game can change the value */
 	var mothershipLife, lackeysLifes, normandyLife: Int!
-	var distanceBullet = 0												/* Incremental distance to animate normandy's shot */
-	var distanceMsBullet = 0											/* Incremental distance to animate mothership's shot */
-	var distanceLcBullet = 0
 	var dificultyMode: String!
 	var sampleSpace, sampleSpaceLc: UInt32!
-	var multipleShotLc: Bool!
 	
 	var arrayMothershipBullets = [UIView]()
 	var arrayBullets = [UIView]()
@@ -143,6 +144,7 @@ class SpaceWar: UIViewController
 	
 	var aniBulletTimer, aniBulletLackey, aniBulletMothership: Timer!							/* Variable of time animation */
 	var aniRightMothershipTimer, aniLeftMothershipTimer: Timer!
+	var aniRightLackeysTimer, aniLeftLackeysTimer: Timer!
 	var aniMusicTimer, aniScoreTimer: Timer!
 	//-----------------------------------
 
@@ -160,7 +162,7 @@ class SpaceWar: UIViewController
 		spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets); setStyles()
 		
 		//----- Play Functions
-		playMusic(); score(); moveLackeys(); moveChoice(); moveMothership()
+		playMusic(); score(); moveChoice(); moveMothership(); moveLackeys();
 		//-----
     }
 	//=====================================================================
@@ -298,9 +300,9 @@ class SpaceWar: UIViewController
 			//------ Lackey's modes -------
 			nLcBullets = 3; lackeysLifes = 1
 			lackeysProbabilityShot = 1; sampleSpaceLc = 300
-			lackeySpeed = 0.1; lackeysSpeedShot = 0.005
+			lackeySpeed = 0.008; lackeysSpeedShot = 0.005
 			minAngleLc = 245; maxAngleLc = 320
-			animationLackeysY = 5; multipleShotLc = true
+			animationLackeysY = 5
 			break
 			
 		case "hero":
@@ -316,9 +318,9 @@ class SpaceWar: UIViewController
 			//------ Lackey's modes -------
 			nLcBullets = 6; lackeysLifes = 2
 			lackeysProbabilityShot = 1; sampleSpaceLc = 200
-			lackeySpeed = 0.1; lackeysSpeedShot = 0.004
+			lackeySpeed = 0.006; lackeysSpeedShot = 0.004
 			minAngleLc = 230; maxAngleLc = 315
-			animationLackeysY = 5; multipleShotLc = false
+			animationLackeysY = 5
 			break
 			
 		case "god":
@@ -334,9 +336,9 @@ class SpaceWar: UIViewController
 			//------ Lackey's modes -------
 			nLcBullets = 9; lackeysLifes = 3
 			lackeysProbabilityShot = 1; sampleSpaceLc = 100
-			lackeySpeed = 0.1; lackeysSpeedShot = 0.0035
+			lackeySpeed = 0.004; lackeysSpeedShot = 0.0035
 			minAngleLc = 230; maxAngleLc = 315
-			animationLackeysY = 5; multipleShotLc = true
+			animationLackeysY = 5
 			break
 			
 		default:
@@ -411,6 +413,7 @@ class SpaceWar: UIViewController
 		//-- Animations config -
 		maxDistance = Int(view.frame.height - view.frame.height * 0.0983)
 		maxMsDistance = Int(1.2 * view.frame.height)
+		maxAniLcDistance = Int(UIScreen.main.bounds.width * 218/768)
 		//----------------------
 		/* Actualization of max and min slider values by mobiles screen sizes */
 		if view.frame.width <= 414				/* All iPhones*/
@@ -668,11 +671,12 @@ class SpaceWar: UIViewController
 	func moveChoice()
 	{
 		rightOrLeftMS = Int(arc4random_uniform(2))
+		rightOrLeftLC = 0
 	}
 	//----- Mothership's animations -----
     func moveMothership()
 	{
-		if rightOrLeftMS == 0
+		if rightOrLeftMS == 0		/* move to right */
 		{
 			aniRightMothershipTimer = Timer.scheduledTimer(timeInterval: mothershipSpeed,
 														   target: self,
@@ -680,7 +684,7 @@ class SpaceWar: UIViewController
 													  	   userInfo: nil,
 													  	   repeats: true)
 		}
-		if rightOrLeftMS == 1
+		if rightOrLeftMS == 1		/* move to left */
 		{
 			aniLeftMothershipTimer = Timer.scheduledTimer(timeInterval: mothershipSpeed,
 														  target: self,
@@ -692,7 +696,7 @@ class SpaceWar: UIViewController
 	//---- Mothership's animations to right -----
 	@objc func animationMothershipToRight()
 	{
-		if view_mothership.center.x == self.view.frame.width - view_mothership.frame.width / 2
+		if view_mothership.center.x >= UIScreen.main.bounds.width - (248 / 768 * UIScreen.main.bounds.width) / 2
 		{
 			aniRightMothershipTimer.invalidate()
 			aniRightMothershipTimer = nil
@@ -703,12 +707,11 @@ class SpaceWar: UIViewController
 		
 		msShotX = Float(view_mothership.center.x)
 		shotOfMothership()
-		shotOfLackeys()
 	}
 	//----- Mothership's animations to left ------
 	@objc func animationMothershipToLeft()
 	{
-		if view_mothership.center.x == view_mothership.frame.width / 2
+		if view_mothership.center.x <= (248 / 768 * UIScreen.main.bounds.width) / 2
 		{
 			aniLeftMothershipTimer.invalidate()
 			aniLeftMothershipTimer = nil
@@ -719,25 +722,66 @@ class SpaceWar: UIViewController
 		
 		msShotX = Float(view_mothership.center.x)
 		shotOfMothership()
-		shotOfLackeys()
 	}
 	//--------------------------------------------
 	/*********************************************************************************************************
 	*																										 *
-	*										LACKEYS'S PLAY FUNCTIONS										 *
+	*											LACKEYS'S FUNCTIONS											 *
 	*																										 *
 	**********************************************************************************************************/
-	
 	func moveLackeys()
 	{
-		UIView.animate(withDuration: lackeySpeed,
-					   delay: 0,
-					   options: [.autoreverse, .repeat], animations: {
-		for (tc, _) in self.tupleLackeys
+		if rightOrLeftLC == 0			/* move to right */
 		{
-			tc.frame.origin.y += self.animationLackeysY
+			aniRightLackeysTimer = Timer.scheduledTimer(timeInterval: lackeySpeed,
+														target: self,
+														selector: #selector(animationLackeysToRight),
+														userInfo: nil,
+														repeats: true)
 		}
-		})
+		if rightOrLeftLC == 1			/* move to left */
+		{
+			aniLeftLackeysTimer = Timer.scheduledTimer(timeInterval: lackeySpeed,
+													   target: self,
+													   selector: #selector(animationLackeysToLeft),
+													   userInfo: nil,
+													   repeats: true)
+		}
+	}
+	@objc func animationLackeysToRight()
+	{
+		if distanceAniLc > maxAniLcDistance
+		{
+			aniRightLackeysTimer.invalidate()
+			aniRightLackeysTimer = nil
+			distanceAniLc = 0
+			rightOrLeftLC = 1
+			moveLackeys()
+		}
+		for (lck,_) in tupleLackeys
+		{
+			lck.center.x += animationX
+		}
+		distanceAniLc += 1
+		shotOfLackeys()
+	}
+	
+	@objc func animationLackeysToLeft()
+	{
+		if distanceAniLc > maxAniLcDistance
+		{
+			aniLeftLackeysTimer.invalidate()
+			aniLeftLackeysTimer = nil
+			distanceAniLc = 0
+			rightOrLeftLC = 0
+			moveLackeys()
+		}
+		for (lck,_) in tupleLackeys
+		{
+			lck.center.x -= animationX
+		}
+		distanceAniLc += 1
+		shotOfLackeys()
 	}
 	
 	//---- Lackeys Fonctions ----
@@ -965,6 +1009,10 @@ class SpaceWar: UIViewController
 		{ aniRightMothershipTimer.invalidate(); aniRightMothershipTimer = nil }
 		if aniLeftMothershipTimer != nil
 		{ aniLeftMothershipTimer.invalidate(); aniLeftMothershipTimer = nil }
+		if aniRightLackeysTimer != nil
+		{ aniRightLackeysTimer.invalidate(); aniRightLackeysTimer = nil }
+		if aniLeftLackeysTimer != nil
+		{ aniLeftLackeysTimer.invalidate(); aniLeftLackeysTimer = nil }
 		//--- Stop music
 		for mus in arrayMusics { if mus.isPlaying == true { mus.stop() } }
 		//--- Show menu game over
@@ -986,6 +1034,10 @@ class SpaceWar: UIViewController
 		{ aniRightMothershipTimer.invalidate(); aniRightMothershipTimer = nil }
 		if aniLeftMothershipTimer != nil
 		{ aniLeftMothershipTimer.invalidate(); aniLeftMothershipTimer = nil }
+		if aniRightLackeysTimer != nil
+		{ aniRightLackeysTimer.invalidate(); aniRightLackeysTimer = nil }
+		if aniLeftLackeysTimer != nil
+		{ aniLeftLackeysTimer.invalidate(); aniLeftLackeysTimer = nil }
 		//--- Stop music
 		for mus in arrayMusics { if mus.isPlaying == true { mus.stop() } }
 		//--- Change text
