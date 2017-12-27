@@ -23,13 +23,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yc7-id-bUH">
-                                <rect key="frame" x="20" y="19" width="728" height="945"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                                <connections>
-                                    <action selector="start_game:" destination="BYZ-38-t0r" eventType="touchUpInside" id="h6u-Nx-cXb"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AwK-63-SqR" userLabel="mothership">
                                 <rect key="frame" x="260" y="19" width="248" height="78"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -50,17 +43,6 @@
                                     </imageView>
                                 </subviews>
                             </view>
-                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="40" minValue="40" maxValue="728" translatesAutoresizingMaskIntoConstraints="NO" id="jRc-8N-a2w">
-                                <rect key="frame" x="549" y="955" width="200" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <color key="minimumTrackTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <color key="maximumTrackTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <color key="thumbTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <connections>
-                                    <action selector="shifting_normandy:" destination="BYZ-38-t0r" eventType="valueChanged" id="c0w-Jy-2FX"/>
-                                </connections>
-                            </slider>
                             <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="T3K-1C-3tz">
                                 <rect key="frame" x="197" y="550" width="376" height="208"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" widthSizable="YES" flexibleMaxX="YES" flexibleMinY="YES" heightSizable="YES" flexibleMaxY="YES"/>
@@ -385,7 +367,6 @@
                     <connections>
                         <outlet property="button_menu" destination="3rp-N9-a3a" id="FbS-N0-152"/>
                         <outlet property="button_reset" destination="gcJ-4l-kbO" id="ZSz-oe-p8u"/>
-                        <outlet property="button_startGame" destination="Yc7-id-bUH" id="CeT-bv-sqD"/>
                         <outlet property="imgView_lackey1" destination="nnT-ZS-q3x" id="FjX-cU-Afx"/>
                         <outlet property="imgView_lackey10" destination="W7z-2g-d7W" id="bil-MV-uFc"/>
                         <outlet property="imgView_lackey11" destination="xZd-bb-Vtk" id="CQg-wm-6Dw"/>
@@ -421,7 +402,6 @@
                         <outlet property="label_gameOver" destination="dCg-9Q-U9B" id="M1B-to-49V"/>
                         <outlet property="label_resetOrMenu" destination="OpD-0C-rmq" id="FoO-JN-qaL"/>
                         <outlet property="label_score" destination="tSk-Hy-s1O" id="iCt-g0-4KG"/>
-                        <outlet property="slider_normandy" destination="jRc-8N-a2w" id="S9m-lg-9dZ"/>
                         <outlet property="view_gameOver" destination="T3K-1C-3tz" id="DgL-c1-hJH"/>
                         <outlet property="view_lackey1" destination="w47-b9-YmY" id="oGQ-3v-7XJ"/>
                         <outlet property="view_lackey10" destination="DZ4-h7-oJs" id="aM2-1Q-Buj"/>

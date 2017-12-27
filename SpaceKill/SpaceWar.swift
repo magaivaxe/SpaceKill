@@ -50,9 +50,6 @@ class SpaceWar: UIViewController
 	
 	@IBOutlet weak var button_menu: UIButton!
 	@IBOutlet weak var button_reset: UIButton!
-	@IBOutlet weak var button_startGame: UIButton!
-	
-	@IBOutlet weak var slider_normandy: UISlider!
 	
 	@IBOutlet weak var imgView_lackey1: UIImageView!
 	@IBOutlet weak var imgView_lackey2: UIImageView!
@@ -389,14 +386,14 @@ class SpaceWar: UIViewController
 		//-- Set normandy's tuple
 		tupleNormandy = [(nd: view_normandy, life: normandyLife)]
 		//-- Slider loader --
-		slider_normandy.value = Float(view.frame.width * 0.5)	/* Initial value to slider */
+		//slider_normandy.value = Float(view.frame.width * 0.5)	/* Initial value to slider */
 		//-------------------
 		//-- Initial position --
 		tupleNormandy[0].nd.center.x = view.frame.width * 0.5			/* To position in x mid frame */
 		tupleNormandy[0].nd.center.y = view.frame.height * 0.9017		/* To position in y frame proportional position */
 		//----------------------
 		//-- Shot's start --
-		shotX = slider_normandy.value							/* Initial shot X value */
+		shotX = Float(tupleNormandy[0].nd.center.x)				/* Initial shot X value */
 		shotY = Float(view.frame.height * 0.9017)				/* Initial shot Y value */
 		msShotY = Float(view.frame.height * 0.09472)			/* Initial shot Y mothership */
 		//------------------
@@ -406,7 +403,7 @@ class SpaceWar: UIViewController
 		maxAniLcDistance = Int(UIScreen.main.bounds.width * 218/768)
 		//----------------------
 		/* Actualization of max and min slider values by mobiles screen sizes */
-		if view.frame.width <= 414				/* All iPhones*/
+		/*if view.frame.width <= 414				/* All iPhones*/
 		{
 			slider_normandy.maximumValue = Float(view.frame.width - 18)
 			slider_normandy.minimumValue = Float(18)
@@ -425,7 +422,7 @@ class SpaceWar: UIViewController
 		{
 			slider_normandy.maximumValue = Float(view.frame.width - 54)
 			slider_normandy.minimumValue = Float(54)
-		}
+		}*/
 	}
 	//=====================================================================
 	/*********************************************************************************************************
@@ -433,23 +430,25 @@ class SpaceWar: UIViewController
 	*												GAME ACTIONS											 *
 	*																										 *
 	**********************************************************************************************************/
+	//-------------------------------------------
 	//------------ Normandy's shifting ----------
-	@IBAction func start_game(_ sender: UIButton)
+	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
 	{
-		//-- One shot condition --
-		if aniBulletTimer != nil
+		super.touchesMoved(touches, with: event)
+		let touch: UITouch = touches.first!
+		
+		if touch.view == tupleNormandy[0].nd
+		{
+			tupleNormandy[0].nd.center.x = touch.location(in: self.view).x
+			shotX = Float(tupleNormandy[0].nd.center.x)
+		}
+		//-- Normandy's shot --
+		if aniBulletTimer != nil 		/* One shot condition */
 		{ return }
 		//-- Shot --
 		shot()
 		//-- Shot's sound  --
 		sound_shot.play()
-    }
-	//-------------------------------------------
-	//------------ Normandy's shifting ----------
-	@IBAction func shifting_normandy(_ sender: UISlider) //touches move au lieu du slider
-	{
-		shotX = sender.value							/* Dinamics values to shotX */
-		tupleNormandy[0].nd.center.x = CGFloat(shotX)			/* Dinamics values to move the normandy */
 	}
 	//-------------------------------------------
 	//=====================================================================
@@ -945,7 +944,7 @@ class SpaceWar: UIViewController
 			sound_explosion.play()
 			//----
 			theDead.removeFromSuperview()
-			button_startGame.isEnabled = false
+			//button_startGame.isEnabled = false
 			gameOver()
 			break
 			
@@ -1018,7 +1017,8 @@ class SpaceWar: UIViewController
 	func victory()
 	{
 		//--- Stop animations
-		aniMusicTimer.invalidate(); aniMusicTimer = nil
+		if aniMusicTimer != nil
+		{aniMusicTimer.invalidate(); aniMusicTimer = nil}
 		if aniScoreTimer != nil
 		{ aniScoreTimer.invalidate(); aniScoreTimer = nil }
 		if aniBulletLackey != nil
