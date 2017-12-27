@@ -281,7 +281,7 @@ class SpaceWar: UIViewController
 		{
 		case "captain":
 			//------- Normandy's modes --------
-			shotSpeed = 0.001; normandyLife = 5
+			shotSpeed = 0.003; normandyLife = 5
 			
 			//------ Mothership's modes -------
 			nMsBullets = 5; mothershipLife = 10
@@ -299,7 +299,7 @@ class SpaceWar: UIViewController
 			
 		case "hero":
 			//------- Normandy's modes --------
-			shotSpeed = 0.001; normandyLife = 3
+			shotSpeed = 0.0035; normandyLife = 3
 			
 			//------ Mothership's modes -------
 			nMsBullets = 10; mothershipLife = 15
@@ -317,7 +317,7 @@ class SpaceWar: UIViewController
 			
 		case "god":
 			//------- Normandy's modes --------
-			shotSpeed = 0.001; normandyLife = 1
+			shotSpeed = 0.0035; normandyLife = 2
 			
 			//------ Mothership's modes -------
 			nMsBullets = 15; mothershipLife = 20
