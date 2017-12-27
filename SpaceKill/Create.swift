@@ -19,6 +19,7 @@ import UIKit
 *		shs = Screen heigth size																		 *
 *		dvx = Distance between views on x																 *
 *		dvy = Distance between views on y																 *
+*		lb = Lackeys by line																			 *
 **********************************************************************************************************/
 class Create
 {
@@ -42,21 +43,21 @@ class Create
 	it do the constants and variables importations from MainViewController */
 	init(mainView mv: UIView,
 		 numberOfLackeys nl: Int,
-		 lackeysByLine lb: Int,
-		 initialPositionX ipx: CGFloat,
-		 initialPositionY ipy: CGFloat)
+		 lcInitialPositionX ipx: CGFloat,
+		 lcInitialPositionY ipy: CGFloat)
 	{
 		//-- Vars to import
 		self.mv = mv					/* Self do the class assignments variables for the imported variables */
 		self.nl = nl
-		self.lb = lb
 		self.ipx = ipx
-		self.ipy = ipy
+		self.ipy = mv.frame.height * (ipy / 1024)
 		//-- Vars to load --
 		sws = mv.frame.width
 		shs = mv.frame.height
+		lb = nl / 3
 		dvx = CGFloat(Int(sws)/(lb + 1))
 		dvy = dvx
+		
 	}
 	
 	//================================= FUNCTIONS =================================
@@ -66,8 +67,7 @@ class Create
 		let constIncrementationY: CGFloat = dvy
 		var incX: CGFloat = 0
 		var incY: CGFloat = 0
-		let imageView = inside.createArrayOfImgViewsLackeys(screenWidthSize: sws,
-															screemHeightSize: shs)
+		let img =  inside.createImgViewsLackeys(screenWidthSize: sws, screenHeightSize: shs)
 		
 		for i in 1...nl
 		{
@@ -109,8 +109,7 @@ class Create
 											  width: sws * 50/768,
 											  height: shs * 50/1024))
 			}
-			aUIView.addSubview(imageView)							/* UIImgView addiction */
-			
+			aUIView.addSubview(img)							/* UIImgView addiction */
 			arrayUIView.append(aUIView)
 			//-- X incrementations
 			incX = incX + constIncrementationX
@@ -130,9 +129,10 @@ class Create
 class Inside
 {
 
-	func createArrayOfImgViewsLackeys(screenWidthSize sws: CGFloat,
-									  screemHeightSize shs: CGFloat) -> UIImageView
+	func createImgViewsLackeys(screenWidthSize sws: CGFloat,
+							   screenHeightSize shs: CGFloat) -> UIImageView
 	{
+		
 		let aUIImgView = UIImageView(frame: .init(x: 0,
 												  y: 0,
 												  width: sws * 50/768,
