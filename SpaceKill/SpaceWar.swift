@@ -129,7 +129,48 @@ class SpaceWar: UIViewController
 		// Lackeys's modes
 		tupleLackeysMode = object_gameMode.dificultyGameLackeys()
 	}
-	//-------------------------------------------
+	//--Enemies Creation and set initial config--
+	func creationAndGameConfig()
+	{
+		//------ Lackeys -------
+		arrayLackeys = object_create.createArrayOfLackeys()
+		arrayImgLackeys = object_create.createArrayImgViewsLackeys()
+		//Set images to views
+		var i = 0; while i < arrayLackeys.count
+		{ arrayLackeys[i].addSubview(arrayImgLackeys[i]); i += 1}
+		//Add views + images to main view
+		for lc in arrayLackeys { self.view.addSubview(lc) }
+		//--- Set the tuple of lackeys
+		lackeysLifes = tupleLackeysMode.lackeysLifes
+		for lac in arrayLackeys { tupleLackeys.append((lac, lackeysLifes)) }
+		//----- Mothership -----
+		//-- Set mothership's tuple
+		mothershipLife = tupleMothershipMode.mothershipLife
+		tupleMotherShip = [(ms: view_mothership, life: mothershipLife)]
+		//-- Set image to mothership
+		img_mothership.image = UIImage(named: "mothership.png")
+		//----- Normandy ------
+		//-- set life's array
+		arrayLifes = [img_life1, img_life2, img_life3, img_life4, img_life5]
+		//-- Set normandy's tuple
+		normandyLife = tupleNormandyMode.normandyLife
+		tupleNormandy = [(nd: view_normandy, life: normandyLife)]
+		//-- Initial position --
+		tupleNormandy[0].nd.center.x = view.frame.width * 0.5			/* To position in x mid frame */
+		tupleNormandy[0].nd.center.y = view.frame.height * 0.9017		/* To position in y frame proportional position */
+		//----------------------
+		//-- Shot's start --
+		shotX = Float(tupleNormandy[0].nd.center.x)				/* Initial shot X value */
+		shotY = Float(view.frame.height * 0.9017)				/* Initial shot Y value */
+		msShotY = Float(view.frame.height * 0.09472)			/* Initial shot Y mothership */
+		//------------------
+		//-- Animations config -
+		maxDistance = Int(view.frame.height - view.frame.height * 0.0983)
+		maxMsDistance = Int(1.2 * view.frame.height)
+		maxAniLcDistance = Int(UIScreen.main.bounds.width * 218/768)
+		//distance to animations add
+		animationY = 1; animationX = 1
+	}
 	//----------------- Styles ------------------
 	func setStyles()
 	{
@@ -254,48 +295,7 @@ class SpaceWar: UIViewController
 	}
 	//-------------------------------------------
 	//----------- Start place enemies -----------
-	func creationAndGameConfig()
-	{
-		//------ Lackeys -------
-		//Call the class to create the lackeys arrays
-		arrayLackeys = object_create.createArrayOfLackeys()
-		arrayImgLackeys = object_create.createArrayImgViewsLackeys()
-		//Set images to views
-		var i = 0; while i < arrayLackeys.count
-		{ arrayLackeys[i].addSubview(arrayImgLackeys[i]); i += 1}
-		//Add views + images to main view
-		for lc in arrayLackeys { self.view.addSubview(lc) }
-		//--- Set the tuple of lackeys
-		lackeysLifes = tupleLackeysMode.lackeysLifes
-		for lac in arrayLackeys { tupleLackeys.append((lac, lackeysLifes)) }
-		//----- Mothership -----
-		//-- Set mothership's tuple
-		mothershipLife = tupleMothershipMode.mothershipLife
-		tupleMotherShip = [(ms: view_mothership, life: mothershipLife)]
-		//-- Set image to mothership
-		img_mothership.image = UIImage(named: "mothership.png")
-		//----- Normandy ------
-		//-- set life's array
-		arrayLifes = [img_life1, img_life2, img_life3, img_life4, img_life5]
-		//-- Set normandy's tuple
-		normandyLife = tupleNormandyMode.normandyLife
-		tupleNormandy = [(nd: view_normandy, life: normandyLife)]
-		//-- Initial position --
-		tupleNormandy[0].nd.center.x = view.frame.width * 0.5			/* To position in x mid frame */
-		tupleNormandy[0].nd.center.y = view.frame.height * 0.9017		/* To position in y frame proportional position */
-		//----------------------
-		//-- Shot's start --
-		shotX = Float(tupleNormandy[0].nd.center.x)				/* Initial shot X value */
-		shotY = Float(view.frame.height * 0.9017)				/* Initial shot Y value */
-		msShotY = Float(view.frame.height * 0.09472)			/* Initial shot Y mothership */
-		//------------------
-		//-- Animations config -
-		maxDistance = Int(view.frame.height - view.frame.height * 0.0983)
-		maxMsDistance = Int(1.2 * view.frame.height)
-		maxAniLcDistance = Int(UIScreen.main.bounds.width * 218/768)
-		//distance to animations add
-		animationY = 1; animationX = 1
-	}
+	
 	//-------------------------------------------
 	//----------- Game configuration ------------ 	
 	//func gameConfig()
