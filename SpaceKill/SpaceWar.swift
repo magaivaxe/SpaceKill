@@ -88,12 +88,15 @@ class SpaceWar: UIViewController
 	var aniRightLackeysTimer, aniLeftLackeysTimer: Timer!
 	var aniMusicTimer, aniScoreTimer: Timer!
 	//-----------------------------------
-	//------------- Classes -------------
+	//------------- Obj/Clas ------------
 	let object_saveLoad = SaveAndLoad()
 	let object_style = Styles()
 	var object_create: Create!
 	var object_gameMode: GameMode!
 	var object_musicSounds: MusicSounds!
+	
+	//NEXT CLASS WILL BE SPACESHIPS BULLETS CREATIONS
+	
 	//-----------------------------------
 	//============================ The loader =============================
     override func viewDidLoad()
