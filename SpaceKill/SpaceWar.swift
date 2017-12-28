@@ -45,23 +45,22 @@ class SpaceWar: UIViewController
 	var shotX, shotY, msShotX, msShotY, lcShotX, lcShoty: Float!
 	var animationX, animationY : CGFloat!			/* Distance on pixels to animate */
 	//-- Trigonometry
-	var maxAngle, minAngle, anglesDivised: Double!
-	var maxAngleLc, minAngleLc, anglesDivisedLc: Double!
+	var anglesDivised, anglesDivisedLc: Double!
 	var arrayCos = [Double](); var arraySin = [Double]()
 	var arrayAngles = [Double]()
 	var arrayCosLc = [Double](); var arraySinLc = [Double]()
 	var arrayAnglesLc = [Double]()
 	//-- Game Mode
-	var mothershipProbabilityShot, lackeysProbabilityShot: Double!
-	var sampleSpace, sampleSpaceLc: UInt32!
+	var tupleNormandyMode: (nBullets: Int, shotSpeed: Double, normandyLife: Int)!
+	var tupleMothershipMode: (nMsBullets: Int, mothershipLife: Int, mothershipProbabilityShot: Double,
+	sampleSpace: UInt32, mothershipSpeed: Double, mothershipSpeedShot: Double, minAngle: Double, maxAngle: Double)!
+	var tupleLackeysMode: (nLcBullets: Int, lackeysLifes: Int, lackeysProbabilityShot: Double,
+	sampleSpaceLc: UInt32, lackeySpeed: Double, lackeysSpeedShot: Double, minAngleLc: Double, maxAngleLc: Double)!
 	var rightOrLeftMS, rightOrLeftLC: Int!
-	var mothershipSpeedShot, lackeysSpeedShot: Double!
-	var shotSpeed, mothershipSpeed, lackeySpeed: Double!
 	var maxDistance, maxMsDistance, maxAniLcDistance: Int!				/* Max distance to animate by screen */
 	var distanceAniLc = 0												/* Initial distance to animate lackeys */
 	var distanceBullet = 0; var distanceMsBullet = 0					/* Initial distance to animate shot */
 	var distanceLcBullet = 0
-	var nBullets, nMsBullets, nLcBullets: Int!							/* Number of bullets to shot */
 	var mothershipLife, lackeysLifes, normandyLife: Int!				/* Ships Lifes */
 	var dificultyMode: String!
 	//-- Arrays of game elements
@@ -101,11 +100,14 @@ class SpaceWar: UIViewController
     override func viewDidLoad()
 	{
         super.viewDidLoad()
+		//----- Load Function
+		loads()
 		//----- Loading Objects
 		object_create = Create(mainView: self.view, numberOfLackeys: 24, numberOfLackeysLines: 4, lcInitialPositionX: 0, lcInitialPositionY: 147)
+		object_gameMode = GameMode(dificultyMode: dificultyMode)
 		//----- Loading Functions
-		gameMode(); loadBestTime(); gameConfig(); createAndPlaceEnemies(); setMusicsAndSounds()
-		spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets); setStyles()
+		gameMode(); creationAndGameConfig(); setMusicsAndSounds()
+		spaceshipsBulletsCreation(tupleNormandyMode.nBullets, tupleMothershipMode.nMsBullets, tupleLackeysMode.nLcBullets); setStyles()
 		
 		//----- Play Functions
 		playMusic(); score(); moveChoice(); moveMothership(); moveLackeys();
@@ -117,6 +119,17 @@ class SpaceWar: UIViewController
 	*											LOADING FUNCTIONS											 *
 	*																										 *
 	**********************************************************************************************************/
+	//-------------- Mods choice ---------------
+	func gameMode()
+	{
+		// Normandy's modes
+		tupleNormandyMode = object_gameMode.dificultyGameNormandy()
+		// Mothership's modes
+		tupleMothershipMode = object_gameMode.dificultyGameMothership()
+		// Lackeys's modes
+		tupleLackeysMode = object_gameMode.dificultyGameLackeys()
+	}
+	//-------------------------------------------
 	//----------------- Styles ------------------
 	func setStyles()
 	{
@@ -137,7 +150,7 @@ class SpaceWar: UIViewController
 								  "\((bestTime * 100).rounded()/100)", 0, 0, UIColor.black.cgColor, UIColor.black.cgColor)
 		
 		//-- Set the life's images on the screen
-		for i in 0..<normandyLife { arrayLifes[i].image = UIImage(named: "ship0") }
+		for i in 0..<tupleNormandyMode.normandyLife { arrayLifes[i].image = UIImage(named: "ship0") }
 	}
 	//-------------------------------------------
 	//------------- Musics creation	-------------
@@ -222,75 +235,13 @@ class SpaceWar: UIViewController
 			arrayLackeyBullets.append(lcBullet)
 		}
 	}
-	//-------------- Mods choice ---------------
-	func gameMode()
-	{
-		//------ Normandy's modes -------
-		
-		//-------------------------------
-		//------ Dificult mode load
-		dificultyMode = object_saveLoad.loadData(fileName: "fileMode") as! String /* load the mode */
-		
-		switch dificultyMode
-		{
-		case "captain":
-			//------- Normandy's modes --------
-			nBullets = 1; shotSpeed = 0.003; normandyLife = 5
-			
-			//------ Mothership's modes -------
-			nMsBullets = 5; mothershipLife = 10
-			mothershipProbabilityShot = 1; sampleSpace = 300
-			mothershipSpeed = 0.01; mothershipSpeedShot = 0.008
-			minAngle = 235; maxAngle = 315
-			
-			//------ Lackey's modes -------
-			nLcBullets = 3; lackeysLifes = 1
-			lackeysProbabilityShot = 1; sampleSpaceLc = 300
-			lackeySpeed = 0.008; lackeysSpeedShot = 0.005
-			minAngleLc = 245; maxAngleLc = 320
-			break
-			
-		case "hero":
-			//------- Normandy's modes --------
-			nBullets = 1; shotSpeed = 0.0035; normandyLife = 3
-			
-			//------ Mothership's modes -------
-			nMsBullets = 10; mothershipLife = 15
-			mothershipProbabilityShot = 1; sampleSpace = 200
-			mothershipSpeed = 0.008; mothershipSpeedShot = 0.006
-			minAngle = 230; maxAngle = 315
-			
-			//------ Lackey's modes -------
-			nLcBullets = 6; lackeysLifes = 2
-			lackeysProbabilityShot = 1; sampleSpaceLc = 200
-			lackeySpeed = 0.006; lackeysSpeedShot = 0.004
-			minAngleLc = 230; maxAngleLc = 315
-			break
-			
-		case "god":
-			//------- Normandy's modes --------
-			nBullets = 1; shotSpeed = 0.0035; normandyLife = 2
-			
-			//------ Mothership's modes -------
-			nMsBullets = 15; mothershipLife = 20
-			mothershipProbabilityShot = 1; sampleSpace = 100
-			mothershipSpeed = 0.006; mothershipSpeedShot = 0.005
-			minAngle = 230; maxAngle = 315
-			
-			//------ Lackey's modes -------
-			nLcBullets = 9; lackeysLifes = 3
-			lackeysProbabilityShot = 1; sampleSpaceLc = 100
-			lackeySpeed = 0.004; lackeysSpeedShot = 0.0035
-			minAngleLc = 230; maxAngleLc = 315
-			break
-		default:
-			break
-		}
-	}
-	//-------------------------------------------
+	
 	//------------- Load best times -------------
-	func loadBestTime()
+	func loads()
 	{
+		//------ Dificult mode load
+		dificultyMode = object_saveLoad.loadData(fileName: "fileMode") as! String
+		//------ Load Best Time by dificult mode
 		if object_saveLoad.checkExistingData(fileName: dificultyMode) == true
 		{
 			bestTime = object_saveLoad.loadData(fileName: dificultyMode) as! Double
@@ -303,7 +254,7 @@ class SpaceWar: UIViewController
 	}
 	//-------------------------------------------
 	//----------- Start place enemies -----------
-	func createAndPlaceEnemies()
+	func creationAndGameConfig()
 	{
 		//------ Lackeys -------
 		//Call the class to create the lackeys arrays
@@ -315,24 +266,20 @@ class SpaceWar: UIViewController
 		//Add views + images to main view
 		for lc in arrayLackeys { self.view.addSubview(lc) }
 		//--- Set the tuple of lackeys
+		lackeysLifes = tupleLackeysMode.lackeysLifes
 		for lac in arrayLackeys { tupleLackeys.append((lac, lackeysLifes)) }
 		//----- Mothership -----
 		//-- Set mothership's tuple
+		mothershipLife = tupleMothershipMode.mothershipLife
 		tupleMotherShip = [(ms: view_mothership, life: mothershipLife)]
 		//-- Set image to mothership
 		img_mothership.image = UIImage(named: "mothership.png")
-	}
-	//-------------------------------------------
-	//----------- Game configuration ------------ 	
-	func gameConfig()
-	{
+		//----- Normandy ------
 		//-- set life's array
 		arrayLifes = [img_life1, img_life2, img_life3, img_life4, img_life5]
 		//-- Set normandy's tuple
+		normandyLife = tupleNormandyMode.normandyLife
 		tupleNormandy = [(nd: view_normandy, life: normandyLife)]
-		//-- Slider loader --
-		//slider_normandy.value = Float(view.frame.width * 0.5)	/* Initial value to slider */
-		//-------------------
 		//-- Initial position --
 		tupleNormandy[0].nd.center.x = view.frame.width * 0.5			/* To position in x mid frame */
 		tupleNormandy[0].nd.center.y = view.frame.height * 0.9017		/* To position in y frame proportional position */
@@ -348,6 +295,16 @@ class SpaceWar: UIViewController
 		maxAniLcDistance = Int(UIScreen.main.bounds.width * 218/768)
 		//distance to animations add
 		animationY = 1; animationX = 1
+	}
+	//-------------------------------------------
+	//----------- Game configuration ------------ 	
+	//func gameConfig()
+	//{
+		
+		//-- Slider loader --
+		//slider_normandy.value = Float(view.frame.width * 0.5)	/* Initial value to slider */
+		//-------------------
+		
 		//----------------------
 		/* Actualization of max and min slider values by mobiles screen sizes */
 		/*if view.frame.width <= 414				/* All iPhones*/
@@ -370,7 +327,7 @@ class SpaceWar: UIViewController
 			slider_normandy.maximumValue = Float(view.frame.width - 54)
 			slider_normandy.minimumValue = Float(54)
 		}*/
-	}
+	//}
 	//=====================================================================
 	/*********************************************************************************************************
 	*																										 *
@@ -432,7 +389,7 @@ class SpaceWar: UIViewController
 		//- Inicial distace for shot animation
 		distanceBullet = 0
 		//- Animation timer execution -
-		aniBulletTimer = Timer.scheduledTimer(timeInterval: shotSpeed,
+		aniBulletTimer = Timer.scheduledTimer(timeInterval: tupleNormandyMode.shotSpeed,
 											  target: self,
 											  selector: #selector(animationNS),
 											  userInfo: nil,
@@ -504,9 +461,9 @@ class SpaceWar: UIViewController
 	//--------- MothershipShot ----------
 	func shotOfMothership()
 	{
-		let shot = Double(arc4random_uniform(sampleSpace))
+		let shot = Double(arc4random_uniform(tupleMothershipMode.sampleSpace))
 		
-		if (shot <= mothershipProbabilityShot && aniBulletMothership == nil)
+		if (shot <= tupleMothershipMode.mothershipProbabilityShot && aniBulletMothership == nil)
 		{
 			placeMothershipShot(arrayMothershipBullets)
 			//---- Shot
@@ -526,23 +483,23 @@ class SpaceWar: UIViewController
 			
 			self.view.addSubview(msBullet)
 		}
-		anglesDivised = (maxAngle - minAngle) / Double(arrayMsBullets.count)		/* it is the incremantations for each bullet */
+		anglesDivised = (tupleMothershipMode.maxAngle - tupleMothershipMode.minAngle) / Double(arrayMsBullets.count)		/* it is the incremantations for each bullet */
 		var angle: Double = 0
 		
 		arraySin = []; arrayCos = []
 		while arrayCos.count != arrayMsBullets.count
 		{
-			let cos = __cospi((minAngle + angle)/180); arrayCos.append(cos)
-			let sin = __sinpi((minAngle + angle)/180); arraySin.append(sin)
+			let cos = __cospi((tupleMothershipMode.minAngle + angle)/180); arrayCos.append(cos)
+			let sin = __sinpi((tupleMothershipMode.minAngle + angle)/180); arraySin.append(sin)
 			//---- Angles to reflection
-			arrayAngles.append(minAngle + angle)
+			arrayAngles.append(tupleMothershipMode.minAngle + angle)
 			angle += anglesDivised
 		}
 	}
 	//---- Mothership shot animation ----
 	func animatedMothershipShot()
 	{
-		aniBulletMothership = Timer.scheduledTimer(timeInterval: mothershipSpeedShot,
+		aniBulletMothership = Timer.scheduledTimer(timeInterval: tupleMothershipMode.mothershipSpeedShot,
 												   target: self,
 												   selector: #selector(animationMS),
 												   userInfo: nil,
@@ -612,7 +569,7 @@ class SpaceWar: UIViewController
 	{
 		if rightOrLeftMS == 0		/* move to right */
 		{
-			aniRightMothershipTimer = Timer.scheduledTimer(timeInterval: mothershipSpeed,
+			aniRightMothershipTimer = Timer.scheduledTimer(timeInterval: tupleMothershipMode.mothershipSpeed,
 														   target: self,
 													  	   selector: #selector(animationMothershipToRight),
 													  	   userInfo: nil,
@@ -620,7 +577,7 @@ class SpaceWar: UIViewController
 		}
 		if rightOrLeftMS == 1		/* move to left */
 		{
-			aniLeftMothershipTimer = Timer.scheduledTimer(timeInterval: mothershipSpeed,
+			aniLeftMothershipTimer = Timer.scheduledTimer(timeInterval: tupleMothershipMode.mothershipSpeed,
 														  target: self,
 														  selector: #selector(animationMothershipToLeft),
 														  userInfo: nil,
@@ -668,7 +625,7 @@ class SpaceWar: UIViewController
 	{
 		if rightOrLeftLC == 0			/* move to right */
 		{
-			aniRightLackeysTimer = Timer.scheduledTimer(timeInterval: lackeySpeed,
+			aniRightLackeysTimer = Timer.scheduledTimer(timeInterval: tupleLackeysMode.lackeySpeed,
 														target: self,
 														selector: #selector(animationLackeysToRight),
 														userInfo: nil,
@@ -676,7 +633,7 @@ class SpaceWar: UIViewController
 		}
 		if rightOrLeftLC == 1			/* move to left */
 		{
-			aniLeftLackeysTimer = Timer.scheduledTimer(timeInterval: lackeySpeed,
+			aniLeftLackeysTimer = Timer.scheduledTimer(timeInterval: tupleLackeysMode.lackeySpeed,
 													   target: self,
 													   selector: #selector(animationLackeysToLeft),
 													   userInfo: nil,
@@ -723,10 +680,10 @@ class SpaceWar: UIViewController
 	//---- Lackeys Fonctions ----
 	func shotOfLackeys()
 	{
-		let shot = Double(arc4random_uniform(sampleSpaceLc))
+		let shot = Double(arc4random_uniform(tupleLackeysMode.sampleSpaceLc))
 		let theChosenOne: UIView!
 		//----- Condition to call the fonction
-		if shot <= lackeysProbabilityShot && aniBulletLackey == nil && arrayLackeysDisplaced.count < 24
+		if shot <= tupleLackeysMode.lackeysProbabilityShot && aniBulletLackey == nil && arrayLackeysDisplaced.count < 24
 		{
 			theChosenOne = theChosenLackey()
 			placeLackeyShot(theChosenOne)
@@ -739,7 +696,7 @@ class SpaceWar: UIViewController
 	//--------- Lackeys shots --------
 	func lackeyShot()
 	{
-		aniBulletLackey = Timer.scheduledTimer(timeInterval: lackeysSpeedShot,
+		aniBulletLackey = Timer.scheduledTimer(timeInterval: tupleLackeysMode.lackeysSpeedShot,
 											   target: self,
 											   selector: #selector(animationLackeyShot),
 											   userInfo: nil,
@@ -824,16 +781,16 @@ class SpaceWar: UIViewController
 			self.view.addSubview(bullet)
 		}
 		
-		anglesDivisedLc = (maxAngleLc - minAngleLc) / Double(arrayLackeyBullets.count)		/* it is the incremantations for each bullet */
+		anglesDivisedLc = (tupleLackeysMode.maxAngleLc - tupleLackeysMode.minAngleLc) / Double(arrayLackeyBullets.count)		/* it is the incremantations for each bullet */
 		var angle: Double = 0
 		
 		arraySinLc = []; arrayCosLc = []
 		while arrayCosLc.count != arrayLackeyBullets.count
 		{
-			let cos = __cospi((minAngleLc + angle)/180); arrayCosLc.append(cos)
-			let sin = __sinpi((minAngleLc + angle)/180); arraySinLc.append(sin)
+			let cos = __cospi((tupleLackeysMode.minAngleLc + angle)/180); arrayCosLc.append(cos)
+			let sin = __sinpi((tupleLackeysMode.minAngleLc + angle)/180); arraySinLc.append(sin)
 			//---- Angles to reflection
-			arrayAnglesLc.append(minAngleLc + angle)
+			arrayAnglesLc.append(tupleLackeysMode.minAngleLc + angle)
 			angle += anglesDivisedLc
 		}
 	}

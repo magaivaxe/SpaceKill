@@ -21,8 +21,10 @@ class GameMode
 {
 	//------- Variables -------
 	var tupleNormandyMode: (nBullets: Int, shotSpeed: Double, normandyLife: Int)!
-	var tupleMothershipMode: (nMsBullets: Int, mothershipLife: Int, mothershipProbabilityShot: Double, sampleSpace: UInt32, mothershipSpeed: Double, mothershipSpeedShot: Double, minAngle: Double, maxAngle: Double)!
-	var tupleLackeysMode: (nLcBullets: Int, lackeysLifes: Int, lackeysProbabilityShot: Double, sampleSpaceLc: UInt32, lackeySpeed: Double, lackeysSpeedShot: Double, minAngleLc: Double, maxAngleLc: Double)!
+	var tupleMothershipMode: (nMsBullets: Int, mothershipLife: Int, mothershipProbabilityShot: Double,
+	sampleSpace: UInt32, mothershipSpeed: Double, mothershipSpeedShot: Double, minAngle: Double, maxAngle: Double)!
+	var tupleLackeysMode: (nLcBullets: Int, lackeysLifes: Int, lackeysProbabilityShot: Double,
+	sampleSpaceLc: UInt32, lackeySpeed: Double, lackeysSpeedShot: Double, minAngleLc: Double, maxAngleLc: Double)!
 	var dm: String!
 	//------- Constants -------
 	
@@ -39,11 +41,11 @@ class GameMode
 	{
 		switch dm
 		{
-		case "captain": tupleNormandyMode = (1, 000.3, 5)
+		case "captain": tupleNormandyMode = (1, 0.003, 5)
 			break
-		case "hero": tupleNormandyMode = (1, 000.35, 3)
+		case "hero": tupleNormandyMode = (1, 0.0035, 3)
 			break
-		case "god": tupleNormandyMode = (1, 000.35, 2)
+		case "god": tupleNormandyMode = (1, 0.0035, 2)
 			break
 		default:
 			break

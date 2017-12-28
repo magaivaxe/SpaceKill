@@ -63,6 +63,7 @@ class Create
 	}
 	
 	//================================= FUNCTIONS =================================
+	//Creation of the lackeys UIViews
 	func createArrayOfLackeys() -> [UIView]
 	{
 		let constIncrementationX: CGFloat = dvx
@@ -119,7 +120,7 @@ class Create
 		}
 		return arrayUIView
 	}
-	
+	// Creation of Lackeys UIImageViews for add to views
 	func createArrayImgViewsLackeys() -> [UIImageView]
 	{
 		for _ in 0...nl
