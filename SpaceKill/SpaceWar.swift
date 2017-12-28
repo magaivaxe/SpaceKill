@@ -43,7 +43,7 @@ class SpaceWar: UIViewController
 	//------------ Variables ------------
 	//-- Coordinates
 	var shotX, shotY, msShotX, msShotY, lcShotX, lcShoty: Float!
-	var animationX, animationY, animationLackeysY: CGFloat!			/* Distance on pixels to animate */
+	var animationX, animationY : CGFloat!			/* Distance on pixels to animate */
 	//-- Trigonometry
 	var maxAngle, minAngle, anglesDivised: Double!
 	var maxAngleLc, minAngleLc, anglesDivisedLc: Double!
@@ -95,6 +95,7 @@ class SpaceWar: UIViewController
 	let object_saveLoad = SaveAndLoad()
 	let object_style = Styles()
 	var object_create: Create!
+	var object_gameMode: GameMode!
 	//-----------------------------------
 	//============================ The loader =============================
     override func viewDidLoad()
@@ -225,8 +226,7 @@ class SpaceWar: UIViewController
 	func gameMode()
 	{
 		//------ Normandy's modes -------
-		nBullets = 1
-		animationY = 1; animationX = 1
+		
 		//-------------------------------
 		//------ Dificult mode load
 		dificultyMode = object_saveLoad.loadData(fileName: "fileMode") as! String /* load the mode */
@@ -235,7 +235,7 @@ class SpaceWar: UIViewController
 		{
 		case "captain":
 			//------- Normandy's modes --------
-			shotSpeed = 0.003; normandyLife = 5
+			nBullets = 1; shotSpeed = 0.003; normandyLife = 5
 			
 			//------ Mothership's modes -------
 			nMsBullets = 5; mothershipLife = 10
@@ -248,12 +248,11 @@ class SpaceWar: UIViewController
 			lackeysProbabilityShot = 1; sampleSpaceLc = 300
 			lackeySpeed = 0.008; lackeysSpeedShot = 0.005
 			minAngleLc = 245; maxAngleLc = 320
-			animationLackeysY = 5
 			break
 			
 		case "hero":
 			//------- Normandy's modes --------
-			shotSpeed = 0.0035; normandyLife = 3
+			nBullets = 1; shotSpeed = 0.0035; normandyLife = 3
 			
 			//------ Mothership's modes -------
 			nMsBullets = 10; mothershipLife = 15
@@ -266,12 +265,11 @@ class SpaceWar: UIViewController
 			lackeysProbabilityShot = 1; sampleSpaceLc = 200
 			lackeySpeed = 0.006; lackeysSpeedShot = 0.004
 			minAngleLc = 230; maxAngleLc = 315
-			animationLackeysY = 5
 			break
 			
 		case "god":
 			//------- Normandy's modes --------
-			shotSpeed = 0.0035; normandyLife = 2
+			nBullets = 1; shotSpeed = 0.0035; normandyLife = 2
 			
 			//------ Mothership's modes -------
 			nMsBullets = 15; mothershipLife = 20
@@ -284,7 +282,6 @@ class SpaceWar: UIViewController
 			lackeysProbabilityShot = 1; sampleSpaceLc = 100
 			lackeySpeed = 0.004; lackeysSpeedShot = 0.0035
 			minAngleLc = 230; maxAngleLc = 315
-			animationLackeysY = 5
 			break
 		default:
 			break
@@ -349,6 +346,8 @@ class SpaceWar: UIViewController
 		maxDistance = Int(view.frame.height - view.frame.height * 0.0983)
 		maxMsDistance = Int(1.2 * view.frame.height)
 		maxAniLcDistance = Int(UIScreen.main.bounds.width * 218/768)
+		//distance to animations add
+		animationY = 1; animationX = 1
 		//----------------------
 		/* Actualization of max and min slider values by mobiles screen sizes */
 		/*if view.frame.width <= 414				/* All iPhones*/

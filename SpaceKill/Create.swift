@@ -39,7 +39,7 @@ class Create
 	let nl: Int!
 	let lb: Int!
 	let nll: Int!
-	//------ Initiation ------
+	//------ Initiation -------
 	/* The init perform the viewDidLoad's role and
 	it do the constants and variables importations from MainViewController */
 	init(mainView mv: UIView,

@@ -69,6 +69,7 @@
 		BF625B0D1FE24AB900FB3450 /* Icon-152.png in Resources */ = {isa = PBXBuildFile; fileRef = BF625AEF1FE24AB900FB3450 /* Icon-152.png */; };
 		BF625B0E1FE24AB900FB3450 /* Icon-58.png in Resources */ = {isa = PBXBuildFile; fileRef = BF625AF01FE24AB900FB3450 /* Icon-58.png */; };
 		BF625B0F1FE24AB900FB3450 /* Icon-88.png in Resources */ = {isa = PBXBuildFile; fileRef = BF625AF11FE24AB900FB3450 /* Icon-88.png */; };
+		BF8E68CB1FF55AAE00174699 /* GameMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8E68CA1FF55AAE00174699 /* GameMode.swift */; };
 		BF8F6E411FDA7443009D07BC /* lackey.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8F6E3F1FDA7443009D07BC /* lackey.png */; };
 		BF8F6E421FDA7443009D07BC /* mothership.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8F6E401FDA7443009D07BC /* mothership.png */; };
 /* End PBXBuildFile section */
@@ -138,6 +139,7 @@
 		BF625AEF1FE24AB900FB3450 /* Icon-152.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-152.png"; sourceTree = "<group>"; };
 		BF625AF01FE24AB900FB3450 /* Icon-58.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-58.png"; sourceTree = "<group>"; };
 		BF625AF11FE24AB900FB3450 /* Icon-88.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-88.png"; sourceTree = "<group>"; };
+		BF8E68CA1FF55AAE00174699 /* GameMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameMode.swift; sourceTree = "<group>"; };
 		BF8F6E3F1FDA7443009D07BC /* lackey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lackey.png; sourceTree = "<group>"; };
 		BF8F6E401FDA7443009D07BC /* mothership.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mothership.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -212,6 +214,7 @@
 				BF2A6B281FF4167400C4DAEC /* Create.swift */,
 				BF625AA21FE16EF500FB3450 /* SaveAndLoad.swift */,
 				BF625AA01FE16E4A00FB3450 /* Styles.swift */,
+				BF8E68CA1FF55AAE00174699 /* GameMode.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -440,6 +443,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF8E68CB1FF55AAE00174699 /* GameMode.swift in Sources */,
 				9B9C8D251FD58CBF000F16E5 /* AppDelegate.swift in Sources */,
 				BF625AA31FE16EF500FB3450 /* SaveAndLoad.swift in Sources */,
 				BF625A9F1FE16B1A00FB3450 /* TitleScreen.swift in Sources */,
