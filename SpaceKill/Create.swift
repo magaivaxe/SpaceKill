@@ -38,23 +38,26 @@ class Create
 	//------- Constants -------
 	let nl: Int!
 	let lb: Int!
+	let nll: Int!
 	//------ Initiation ------
 	/* The init perform the viewDidLoad's role and
 	it do the constants and variables importations from MainViewController */
 	init(mainView mv: UIView,
 		 numberOfLackeys nl: Int,
+		 numberOfLackeysLines nll: Int,
 		 lcInitialPositionX ipx: CGFloat,
 		 lcInitialPositionY ipy: CGFloat)
 	{
 		//-- Vars to import
 		self.mv = mv					/* Self do the class assignments variables for the imported variables */
 		self.nl = nl
+		self.nll = nll
 		self.ipx = ipx
 		self.ipy = mv.frame.height * (ipy / 1024)
 		//-- Vars to load --
 		sws = mv.frame.width
 		shs = mv.frame.height
-		lb = nl / 3
+		lb = nl / nll
 		dvx = CGFloat(Int(sws)/(lb + 1))
 		dvy = dvx
 	}

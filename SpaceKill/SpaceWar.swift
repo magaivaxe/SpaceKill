@@ -101,7 +101,7 @@ class SpaceWar: UIViewController
 	{
         super.viewDidLoad()
 		//----- Loading Objects
-		create = Create(mainView: self.view, numberOfLackeys: 24, lcInitialPositionX: 0, lcInitialPositionY: 147)
+		create = Create(mainView: self.view, numberOfLackeys: 24, numberOfLackeysLines: 4, lcInitialPositionX: 0, lcInitialPositionY: 147)
 		//----- Loading Functions
 		gameMode(); loadBestTime(); gameConfig(); createAndPlaceEnemies(); setMusicsAndSounds()
 		spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets); setStyles()
