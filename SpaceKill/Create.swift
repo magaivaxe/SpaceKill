@@ -25,7 +25,9 @@ class Create
 {
 	//------- Variables -------
 	var arrayUIView = [UIView]()
+	var arrayUIImgView = [UIImageView]()
 	var aUIView: UIView!
+	var aUIImgView: UIImageView!
 	var mv: UIView!
 	var sws: CGFloat!
 	var shs: CGFloat!
@@ -36,9 +38,7 @@ class Create
 	//------- Constants -------
 	let nl: Int!
 	let lb: Int!
-	//------- Objects --------
-	let inside = Inside()
-	//-------------------------
+	//------ Initiation ------
 	/* The init perform the viewDidLoad's role and
 	it do the constants and variables importations from MainViewController */
 	init(mainView mv: UIView,
@@ -57,7 +57,6 @@ class Create
 		lb = nl / 3
 		dvx = CGFloat(Int(sws)/(lb + 1))
 		dvy = dvx
-		
 	}
 	
 	//================================= FUNCTIONS =================================
@@ -67,7 +66,6 @@ class Create
 		let constIncrementationY: CGFloat = dvy
 		var incX: CGFloat = 0
 		var incY: CGFloat = 0
-		let img =  inside.createImgViewsLackeys(screenWidthSize: sws, screenHeightSize: shs)
 		
 		for i in 1...nl
 		{
@@ -109,7 +107,6 @@ class Create
 											  width: sws * 50/768,
 											  height: shs * 50/1024))
 			}
-			aUIView.addSubview(img)							/* UIImgView addiction */
 			arrayUIView.append(aUIView)
 			//-- X incrementations
 			incX = incX + constIncrementationX
@@ -119,6 +116,22 @@ class Create
 		}
 		return arrayUIView
 	}
+	
+	func createArrayImgViewsLackeys() -> [UIImageView]
+	{
+		for _ in 0...nl
+		{
+			aUIImgView = UIImageView(frame: .init(x: 0,
+												  y: 0,
+												  width: sws * 50/768,
+												  height: shs * 50/1024))
+			
+			aUIImgView.image = UIImage(named: "lackey.png")
+			
+			arrayUIImgView.append(aUIImgView)
+		}
+		return arrayUIImgView
+	}
 	//=============================================================================
 }
 /*********************************************************************************************************
@@ -126,24 +139,7 @@ class Create
 *												INTERNAL CLASS											 *
 *																										 *
 **********************************************************************************************************/
-class Inside
-{
 
-	func createImgViewsLackeys(screenWidthSize sws: CGFloat,
-							   screenHeightSize shs: CGFloat) -> UIImageView
-	{
-		
-		let aUIImgView = UIImageView(frame: .init(x: 0,
-												  y: 0,
-												  width: sws * 50/768,
-												  height: shs * 50/1024))
-			
-		aUIImgView.image = UIImage(named: "lackey.png")
-		
-		return aUIImgView
-	}
-	
-}
 
 
 

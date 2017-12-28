@@ -309,8 +309,13 @@ class SpaceWar: UIViewController
 	func createAndPlaceEnemies()
 	{
 		arrayLackeys = create.createArrayOfLackeys()
+		arrayImgLackeys = create.createArrayImgViewsLackeys()
 		
-		for lc in arrayLackeys { self.view.addSubview(lc)}
+		var i = 0; while i < arrayLackeys.count
+		{ arrayLackeys[i].addSubview(arrayImgLackeys[i]); i += 1}
+		
+		for lc in arrayLackeys
+		{ self.view.addSubview(lc) }
 		
 		//--- Set the tuple of lackeys
 		for lac in arrayLackeys { tupleLackeys.append((lac, lackeysLifes)) }
