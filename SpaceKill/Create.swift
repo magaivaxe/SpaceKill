@@ -129,7 +129,7 @@ class Create
 												  width: sws * 50/768,
 												  height: shs * 50/1024))
 			
-			aUIImgView.image = UIImage(named: "lackey.png")
+			aUIImgView.image = UIImage.init(named: "lackey.png")
 			
 			arrayUIImgView.append(aUIImgView)
 		}

@@ -94,14 +94,14 @@ class SpaceWar: UIViewController
 	//------------- Classes -------------
 	let object_saveLoad = SaveAndLoad()
 	let object_style = Styles()
-	var create: Create!
+	var object_create: Create!
 	//-----------------------------------
 	//============================ The loader =============================
     override func viewDidLoad()
 	{
         super.viewDidLoad()
 		//----- Loading Objects
-		create = Create(mainView: self.view, numberOfLackeys: 24, numberOfLackeysLines: 4, lcInitialPositionX: 0, lcInitialPositionY: 147)
+		object_create = Create(mainView: self.view, numberOfLackeys: 24, numberOfLackeysLines: 4, lcInitialPositionX: 0, lcInitialPositionY: 147)
 		//----- Loading Functions
 		gameMode(); loadBestTime(); gameConfig(); createAndPlaceEnemies(); setMusicsAndSounds()
 		spaceshipsBulletsCreation(nBullets, nMsBullets, nLcBullets); setStyles()
@@ -308,21 +308,20 @@ class SpaceWar: UIViewController
 	//----------- Start place enemies -----------
 	func createAndPlaceEnemies()
 	{
-		arrayLackeys = create.createArrayOfLackeys()
-		arrayImgLackeys = create.createArrayImgViewsLackeys()
-		
+		//------ Lackeys -------
+		//Call the class to create the lackeys arrays
+		arrayLackeys = object_create.createArrayOfLackeys()
+		arrayImgLackeys = object_create.createArrayImgViewsLackeys()
+		//Set images to views
 		var i = 0; while i < arrayLackeys.count
 		{ arrayLackeys[i].addSubview(arrayImgLackeys[i]); i += 1}
-		
-		for lc in arrayLackeys
-		{ self.view.addSubview(lc) }
-		
+		//Add views + images to main view
+		for lc in arrayLackeys { self.view.addSubview(lc) }
 		//--- Set the tuple of lackeys
 		for lac in arrayLackeys { tupleLackeys.append((lac, lackeysLifes)) }
+		//----- Mothership -----
 		//-- Set mothership's tuple
 		tupleMotherShip = [(ms: view_mothership, life: mothershipLife)]
-		//-- Set images to imgViews lackeys
-		for element in arrayImgLackeys { element.image = UIImage.init(named: "lackey.png") }
 		//-- Set image to mothership
 		img_mothership.image = UIImage(named: "mothership.png")
 	}
@@ -385,13 +384,13 @@ class SpaceWar: UIViewController
 	{
 		super.touchesMoved(touches, with: event)
 		let touch: UITouch = touches.first!
-		
+	
 		if touch.view == tupleNormandy[0].nd
 		{
 			tupleNormandy[0].nd.center.x = touch.location(in: self.view).x
 			shotX = Float(tupleNormandy[0].nd.center.x)
 		}
-		//-- Normandy's shot --
+		
 		if aniBulletTimer != nil 		/* One shot condition */
 		{ return }
 		//-- Shot --
@@ -400,7 +399,6 @@ class SpaceWar: UIViewController
 		sound_shot.play()
 	}
 	//-------------------------------------------
-	//=====================================================================
 	/*********************************************************************************************************
 	*																										 *
 	*										NORMANDY'S PLAY FUNCTIONS										 *
