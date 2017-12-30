@@ -102,19 +102,28 @@ class SpaceWar: UIViewController
     override func viewDidLoad()
 	{
         super.viewDidLoad()
-		//----- Load data Function
+		//----- Load Data
 		loads()
-		//----- Loading Objects
-		object_create = Create(mainView: self.view, numberOfLackeys: 24, numberOfLackeysLines: 4, lcInitialPositionX: 0, lcInitialPositionY: 147)
+		//----- Object Game Mode
 		object_gameMode = GameMode(dificultyMode: dificultyMode)
+		//----- Game Mode
+		gameMode()
+		//----- Object Creation
+		object_create = Create(mainView: self.view, numberOfLackeys: 24, numberOfLackeysLines: 4,
+							   lcInitialPositionX: 0, lcInitialPositionY: 147,
+							   nBullets: tupleNormandyMode.nBullets,
+							   nMsBullets: tupleMothershipMode.nMsBullets,
+							   nLcBullets: tupleLackeysMode.nLcBullets)
+		//----- Creation
+		creationAndGameConfig(); spaceshipsBulletsCreation()
+		//----- Object Music
 		object_musicSounds = MusicSounds()
+		//----- Set Musics
+		setMusicsAndSounds()
 		//----- Modes and Config Functions
-		gameMode(); creationAndGameConfig(); setMusicsAndSounds()
-		spaceshipsBulletsCreation(tupleNormandyMode.nBullets, tupleMothershipMode.nMsBullets, tupleLackeysMode.nLcBullets); setStyles()
-		
+		setStyles()
 		//----- Play Functions
-		playMusic(); score(); moveChoice(); moveMothership(); moveLackeys();
-		//-----
+		playMusic(); score(); moveChoice(); moveMothership(); moveLackeys(); shotOfNormandy()
     }
 	//=====================================================================
 	/*********************************************************************************************************
@@ -205,37 +214,14 @@ class SpaceWar: UIViewController
 	}
 	//-------------------------------------------
 	//------------- Shots creations -------------
-	func spaceshipsBulletsCreation(_ nBullets: Int,_ nMsBullets: Int,_ nLcBullets: Int)
+	func spaceshipsBulletsCreation()
 	{
 		//---- Normandy's bullets ----
-		for _ in 1...nBullets
-		{
-			let bullet = UIView(frame: CGRect(x: 0, y: 0, width: 5, height: 10))
-			
-			bullet.backgroundColor = UIColor.white
-			
-			arrayBullets.append(bullet)
-		}
+		arrayBullets = object_create.spaceshipsBulletsCreation()[0]
 		//---- Mothership's bullets ----
-		for _ in 1...nMsBullets
-		{
-			let msBullet = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: 15))
-			
-			msBullet.backgroundColor = UIColor.white
-			msBullet.layer.cornerRadius = msBullet.frame.width / 2
-			
-			arrayMothershipBullets.append(msBullet)
-		}
+		arrayMothershipBullets = object_create.spaceshipsBulletsCreation()[1]
 		//---- Lackey's bullets ----
-		for _ in 1...nLcBullets
-		{
-			let lcBullet = UIView(frame: .init(x: 0, y: 0, width: 10, height: 10))
-			
-			lcBullet.backgroundColor = UIColor.white
-			lcBullet.layer.cornerRadius = lcBullet.frame.width / 2
-			
-			arrayLackeyBullets.append(lcBullet)
-		}
+		arrayLackeyBullets = object_create.spaceshipsBulletsCreation()[2]
 	}
 	
 	//------------- Load best times -------------
@@ -254,9 +240,6 @@ class SpaceWar: UIViewController
 			object_saveLoad.saveData(theData: bestTime as AnyObject, fileName: dificultyMode)
 		}
 	}
-	//-------------------------------------------
-	//----------- Start place enemies -----------
-	
 	//-------------------------------------------
 	//----------- Game configuration ------------ 	
 	//func gameConfig()
@@ -307,13 +290,6 @@ class SpaceWar: UIViewController
 			tupleNormandy[0].nd.center.x = touch.location(in: self.view).x
 			shotX = Float(tupleNormandy[0].nd.center.x)
 		}
-		
-		if aniBulletTimer != nil 		/* One shot condition */
-		{ return }
-		//-- Shot --
-		shot()
-		//-- Shot's sound  --
-		tupleSounds.sound_shot.play()
 	}
 	//-------------------------------------------
 	/*********************************************************************************************************
@@ -322,8 +298,11 @@ class SpaceWar: UIViewController
 	*																										 *
 	**********************************************************************************************************/
 	//---- Normandy Shot ----
-	func shot()
+	func shotOfNormandy()
 	{
+		if aniBulletTimer != nil 		/* One shot condition */
+		{ return }
+		
 		placeBulletsForShot(arrayBullets)
 		
 		for shot in arrayBullets
@@ -332,7 +311,7 @@ class SpaceWar: UIViewController
 			
 			animateNormandyShot()
 		}
-		
+		tupleSounds.sound_shot.play()
 	}
 	//----------- Place bullets for shot ---------
 	func placeBulletsForShot(_ arrayBullets: [UIView])
@@ -362,7 +341,7 @@ class SpaceWar: UIViewController
 		//- distance incremental -
 		distanceBullet += 1
 		//-- Stop the animation --
-		if distanceBullet >= maxDistance { aniBulletTimer.invalidate(); aniBulletTimer = nil }
+		if distanceBullet >= maxDistance { aniBulletTimer.invalidate(); aniBulletTimer = nil; shotOfNormandy()}
 		//--- Bullet animation ---
 		for bullet in arrayBullets
 		{
@@ -383,6 +362,7 @@ class SpaceWar: UIViewController
 					aniBulletTimer.invalidate()				/* Stop animation */
 					aniBulletTimer = nil
 					bullet.removeFromSuperview()			/* Remove the bullet from the main view */
+					shotOfNormandy()
 				}
 			}
 			//-- Frames intersections conditions --
@@ -409,7 +389,8 @@ class SpaceWar: UIViewController
 				//--- Stop normandy bullet animation
 				aniBulletTimer.invalidate()
 				aniBulletTimer = nil
-				bullet.removeFromSuperview()					/* Remove the bullet from the main view if don't kill */
+				bullet.removeFromSuperview()	/* Remove the bullet from the main view if don't kill */
+				shotOfNormandy()
 			}
 		}
 	}
