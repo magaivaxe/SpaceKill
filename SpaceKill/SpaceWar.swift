@@ -94,6 +94,7 @@ class SpaceWar: UIViewController
 	var object_create: Create!
 	var object_gameMode: GameMode!
 	var object_musicSounds: MusicSounds!
+	var object_enemyShot: EnemyShot!
 	
 	//NEXT CLASS WILL BE SPACESHIPS BULLETS CREATIONS
 	

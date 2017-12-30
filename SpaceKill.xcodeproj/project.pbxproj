@@ -73,6 +73,8 @@
 		BF8E68CD1FF5837900174699 /* MusicSounds.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8E68CC1FF5837900174699 /* MusicSounds.swift */; };
 		BF8F6E411FDA7443009D07BC /* lackey.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8F6E3F1FDA7443009D07BC /* lackey.png */; };
 		BF8F6E421FDA7443009D07BC /* mothership.png in Resources */ = {isa = PBXBuildFile; fileRef = BF8F6E401FDA7443009D07BC /* mothership.png */; };
+		BFCCDA031FF85144003A7720 /* EnemyShot.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCCDA021FF85144003A7720 /* EnemyShot.swift */; };
+		BFCCDA051FF8546D003A7720 /* EnemyMoves.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFCCDA041FF8546D003A7720 /* EnemyMoves.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -144,6 +146,8 @@
 		BF8E68CC1FF5837900174699 /* MusicSounds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicSounds.swift; sourceTree = "<group>"; };
 		BF8F6E3F1FDA7443009D07BC /* lackey.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lackey.png; sourceTree = "<group>"; };
 		BF8F6E401FDA7443009D07BC /* mothership.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mothership.png; sourceTree = "<group>"; };
+		BFCCDA021FF85144003A7720 /* EnemyShot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnemyShot.swift; sourceTree = "<group>"; };
+		BFCCDA041FF8546D003A7720 /* EnemyMoves.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnemyMoves.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,6 +222,8 @@
 				BF625AA01FE16E4A00FB3450 /* Styles.swift */,
 				BF8E68CA1FF55AAE00174699 /* GameMode.swift */,
 				BF8E68CC1FF5837900174699 /* MusicSounds.swift */,
+				BFCCDA021FF85144003A7720 /* EnemyShot.swift */,
+				BFCCDA041FF8546D003A7720 /* EnemyMoves.swift */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -446,6 +452,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFCCDA031FF85144003A7720 /* EnemyShot.swift in Sources */,
 				BF8E68CB1FF55AAE00174699 /* GameMode.swift in Sources */,
 				BF8E68CD1FF5837900174699 /* MusicSounds.swift in Sources */,
 				9B9C8D251FD58CBF000F16E5 /* AppDelegate.swift in Sources */,
@@ -454,6 +461,7 @@
 				BF2A6B291FF4167400C4DAEC /* Create.swift in Sources */,
 				BF625AA11FE16E4A00FB3450 /* Styles.swift in Sources */,
 				9B9C8D371FD59287000F16E5 /* SpaceWar.swift in Sources */,
+				BFCCDA051FF8546D003A7720 /* EnemyMoves.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
