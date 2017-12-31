@@ -28,7 +28,7 @@ class EnemyMoves
 	
 	var mv: UIView!
 	var tv: [(view: UIView, life: Int)]!
-	var tvm: (bullets: Int, Life: Int, ProbabilityShot: Double, sampleSpace: UInt32, speed: Double, speedShot: Double, minAngle: Double, maxAngle: Double)
+	var tvm: (bullets: Int, life: Int, probabilityShot: Double, sampleSpace: UInt32, speed: Double, speedShot: Double, minAngle: Double, maxAngle: Double)
 	
 	var mX: CGFloat!
 
@@ -38,7 +38,7 @@ class EnemyMoves
 	
 	init(mainView mv: UIView,
 		 tupleOfViews tv: [(view: UIView, life: Int)],
-		 tupleOfViewsModes tvm: (bullets: Int, Life: Int, ProbabilityShot: Double, sampleSpace: UInt32, speed: Double, speedShot: Double, minAngle: Double, maxAngle: Double),
+		 tupleOfViewsModes tvm: (bullets: Int, life: Int, probabilityShot: Double, sampleSpace: UInt32, speed: Double, speedShot: Double, minAngle: Double, maxAngle: Double),
 		 moveX mX: CGFloat)
 	{
 		//-- Vars to import

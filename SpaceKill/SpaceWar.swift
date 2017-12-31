@@ -52,10 +52,8 @@ class SpaceWar: UIViewController
 	var arrayAnglesLc = [Double]()
 	//-- Game Mode
 	var tupleNormandyMode: (nBullets: Int, shotSpeed: Double, normandyLife: Int)!
-	var tupleMothershipMode: (nMsBullets: Int, mothershipLife: Int, mothershipProbabilityShot: Double,
-		sampleSpace: UInt32, mothershipSpeed: Double, mothershipSpeedShot: Double, minAngle: Double, maxAngle: Double)!
-	var tupleLackeysMode: (nLcBullets: Int, lackeysLifes: Int, lackeysProbabilityShot: Double,
-		sampleSpaceLc: UInt32, lackeySpeed: Double, lackeysSpeedShot: Double, minAngleLc: Double, maxAngleLc: Double)!
+	var tupleMothershipMode: (bullets: Int, life: Int, probabilityShot: Double, sampleSpace: UInt32, speed: Double, speedShot: Double, minAngle: Double, maxAngle: Double)!
+	var tupleLackeysMode: (bullets: Int, life: Int, probabilityShot: Double, sampleSpace: UInt32, speed: Double, speedShot: Double, minAngle: Double, maxAngle: Double)!
 	var rightOrLeftMS, rightOrLeftLC: Int!
 	var maxDistance, maxMsDistance, maxAniLcDistance: Int!				/* Max distance to animate by screen */
 	var distanceAniLc = 0												/* Initial distance to animate lackeys */
@@ -73,7 +71,7 @@ class SpaceWar: UIViewController
 	var arrayButtons = [UIButton](); var arrayLabels = [UILabel]()
 	var arrayLifes = [UIImageView]()
 	//-- Tuples of vessels
-	var tupleMotherShip = [(ms: UIView, life: Int)]()
+	var tupleMotherShip = [(view: UIView, life: Int)]()
 	var tupleLackeys = [(lc: UIView, life: Int)]()
 	var tupleNormandy = [(nd: UIView, life: Int)]()
 	//-- Sounds and musics
@@ -104,7 +102,7 @@ class SpaceWar: UIViewController
     override func viewDidLoad()
 	{
         super.viewDidLoad()
-		//----- Load Data
+		//----- Load Data and Styles
 		loads()
 		//----- Object Game Mode
 		object_gameMode = GameMode(dificultyMode: dificultyMode)
@@ -114,18 +112,18 @@ class SpaceWar: UIViewController
 		object_create = Create(mainView: self.view, numberOfLackeys: 24, numberOfLackeysLines: 4,
 							   lcInitialPositionX: 0, lcInitialPositionY: 147,
 							   nBullets: tupleNormandyMode.nBullets,
-							   nMsBullets: tupleMothershipMode.nMsBullets,
-							   nLcBullets: tupleLackeysMode.nLcBullets)
+							   nMsBullets: tupleMothershipMode.bullets,
+							   nLcBullets: tupleLackeysMode.bullets)
 		//----- Creation
-		creationAndGameConfig(); spaceshipsBulletsCreation()
+		creationAndGameConfig(); spaceshipsBulletsCreation(); setStyles()
 		//----- Object Music
 		object_musicSounds = MusicSounds()
 		//----- Set Musics
 		setMusicsAndSounds()
-		//----- Modes and Config Functions
-		setStyles()
+		//----- Object Mothership Moves
+		object_moveMotherShip = EnemyMoves(mainView: self.view, tupleOfViews: tupleMotherShip, tupleOfViewsModes: tupleMothershipMode, moveX: animationX)
 		//----- Play Functions
-		playMusic(); score(); moveChoice(); moveMothership(); moveLackeys(); shotOfNormandy()
+		playMusic(); score(); moveMothership(); moveLackeys(); shotOfNormandy()
     }
 	//=====================================================================
 	/*********************************************************************************************************
@@ -155,12 +153,12 @@ class SpaceWar: UIViewController
 		//Add views + images to main view
 		for lc in arrayLackeys { self.view.addSubview(lc) }
 		//--- Set the tuple of lackeys
-		lackeysLifes = tupleLackeysMode.lackeysLifes
+		lackeysLifes = tupleLackeysMode.life
 		for lac in arrayLackeys { tupleLackeys.append((lac, lackeysLifes)) }
 		//----- Mothership -----
 		//-- Set mothership's tuple
-		mothershipLife = tupleMothershipMode.mothershipLife
-		tupleMotherShip = [(ms: view_mothership, life: mothershipLife)]
+		mothershipLife = tupleMothershipMode.life
+		tupleMotherShip = [(view: view_mothership, life: mothershipLife)]
 		//-- Set image to mothership
 		img_mothership.image = UIImage(named: "mothership.png")
 		//----- Normandy ------
@@ -368,7 +366,7 @@ class SpaceWar: UIViewController
 				}
 			}
 			//-- Frames intersections conditions --
-			if bullet.frame.intersects(tupleMotherShip[0].ms.frame)
+			if bullet.frame.intersects(tupleMotherShip[0].view.frame)
 			{
 				tupleMotherShip[0].life -= 1		/* Mothership life dedremantation */
 				//---- Bullet mothership touch sound
@@ -376,7 +374,7 @@ class SpaceWar: UIViewController
 				//---- Condition to die
 				if tupleMotherShip[0].life == 0
 				{
-					death(mothership, tupleMotherShip[0].ms, bullet)
+					death(mothership, tupleMotherShip[0].view, bullet)
 					
 					//--- Stop mothership left animation
 					if aniLeftMothershipTimer != nil
@@ -407,7 +405,7 @@ class SpaceWar: UIViewController
 	{
 		let shot = Double(arc4random_uniform(tupleMothershipMode.sampleSpace))
 		
-		if (shot <= tupleMothershipMode.mothershipProbabilityShot && aniBulletMothership == nil)
+		if (shot <= tupleMothershipMode.probabilityShot && aniBulletMothership == nil)
 		{
 			placeMothershipShot(arrayMothershipBullets)
 			//---- Shot
@@ -443,7 +441,7 @@ class SpaceWar: UIViewController
 	//---- Mothership shot animation ----
 	func animatedMothershipShot()
 	{
-		aniBulletMothership = Timer.scheduledTimer(timeInterval: tupleMothershipMode.mothershipSpeedShot,
+		aniBulletMothership = Timer.scheduledTimer(timeInterval: tupleMothershipMode.speedShot,
 												   target: self,
 												   selector: #selector(animationMS),
 												   userInfo: nil,
@@ -501,35 +499,13 @@ class SpaceWar: UIViewController
 			}
 		}
 	}
-	//-----------------------------------
-	//------- Choice to move -------
-	func moveChoice()
-	{
-		rightOrLeftMS = Int(arc4random_uniform(2))
-		rightOrLeftLC = 0
-	}
 	//----- Mothership's animations -----
     func moveMothership()
 	{
-		if rightOrLeftMS == 0		/* move to right */
-		{
-			aniRightMothershipTimer = Timer.scheduledTimer(timeInterval: tupleMothershipMode.mothershipSpeed,
-														   target: self,
-													  	   selector: #selector(animationMothershipToRight),
-													  	   userInfo: nil,
-													  	   repeats: true)
-		}
-		if rightOrLeftMS == 1		/* move to left */
-		{
-			aniLeftMothershipTimer = Timer.scheduledTimer(timeInterval: tupleMothershipMode.mothershipSpeed,
-														  target: self,
-														  selector: #selector(animationMothershipToLeft),
-														  userInfo: nil,
-														  repeats: true)
-		}
+		object_moveMotherShip.timerMoves()
 	}
 	//---- Mothership's animations to right -----
-	@objc func animationMothershipToRight()
+	/*@objc func animationMothershipToRight()
 	{
 		if view_mothership.center.x >= UIScreen.main.bounds.width - (248 / 768 * UIScreen.main.bounds.width) / 2
 		{
@@ -557,7 +533,7 @@ class SpaceWar: UIViewController
 		
 		msShotX = Float(view_mothership.center.x)
 		shotOfMothership()
-	}
+	}*/
 	//--------------------------------------------
 	/*********************************************************************************************************
 	*																										 *
@@ -569,7 +545,7 @@ class SpaceWar: UIViewController
 	{
 		if rightOrLeftLC == 0			/* move to right */
 		{
-			aniRightLackeysTimer = Timer.scheduledTimer(timeInterval: tupleLackeysMode.lackeySpeed,
+			aniRightLackeysTimer = Timer.scheduledTimer(timeInterval: tupleLackeysMode.speed,
 														target: self,
 														selector: #selector(animationLackeysToRight),
 														userInfo: nil,
@@ -577,7 +553,7 @@ class SpaceWar: UIViewController
 		}
 		if rightOrLeftLC == 1			/* move to left */
 		{
-			aniLeftLackeysTimer = Timer.scheduledTimer(timeInterval: tupleLackeysMode.lackeySpeed,
+			aniLeftLackeysTimer = Timer.scheduledTimer(timeInterval: tupleLackeysMode.speed,
 													   target: self,
 													   selector: #selector(animationLackeysToLeft),
 													   userInfo: nil,
@@ -624,10 +600,10 @@ class SpaceWar: UIViewController
 	//---- Lackeys Fonctions ----
 	func shotOfLackeys()
 	{
-		let shot = Double(arc4random_uniform(tupleLackeysMode.sampleSpaceLc))
+		let shot = Double(arc4random_uniform(tupleLackeysMode.sampleSpace))
 		let theChosenOne: UIView!
 		//----- Condition to call the fonction
-		if shot <= tupleLackeysMode.lackeysProbabilityShot && aniBulletLackey == nil && arrayLackeysDisplaced.count < 24
+		if shot <= tupleLackeysMode.probabilityShot && aniBulletLackey == nil && arrayLackeysDisplaced.count < 24
 		{
 			theChosenOne = theChosenLackey()
 			placeLackeyShot(theChosenOne)
@@ -640,7 +616,7 @@ class SpaceWar: UIViewController
 	//--------- Lackeys shots --------
 	func lackeyShot()
 	{
-		aniBulletLackey = Timer.scheduledTimer(timeInterval: tupleLackeysMode.lackeysSpeedShot,
+		aniBulletLackey = Timer.scheduledTimer(timeInterval: tupleLackeysMode.speedShot,
 											   target: self,
 											   selector: #selector(animationLackeyShot),
 											   userInfo: nil,
@@ -725,16 +701,16 @@ class SpaceWar: UIViewController
 			self.view.addSubview(bullet)
 		}
 		
-		anglesDivisedLc = (tupleLackeysMode.maxAngleLc - tupleLackeysMode.minAngleLc) / Double(arrayLackeyBullets.count)		/* it is the incremantations for each bullet */
+		anglesDivisedLc = (tupleLackeysMode.maxAngle - tupleLackeysMode.minAngle) / Double(arrayLackeyBullets.count)		/* it is the incremantations for each bullet */
 		var angle: Double = 0
 		
 		arraySinLc = []; arrayCosLc = []
 		while arrayCosLc.count != arrayLackeyBullets.count
 		{
-			let cos = __cospi((tupleLackeysMode.minAngleLc + angle)/180); arrayCosLc.append(cos)
-			let sin = __sinpi((tupleLackeysMode.minAngleLc + angle)/180); arraySinLc.append(sin)
+			let cos = __cospi((tupleLackeysMode.minAngle + angle)/180); arrayCosLc.append(cos)
+			let sin = __sinpi((tupleLackeysMode.minAngle + angle)/180); arraySinLc.append(sin)
 			//---- Angles to reflection
-			arrayAnglesLc.append(tupleLackeysMode.minAngleLc + angle)
+			arrayAnglesLc.append(tupleLackeysMode.minAngle + angle)
 			angle += anglesDivisedLc
 		}
 	}
