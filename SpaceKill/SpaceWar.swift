@@ -72,8 +72,8 @@ class SpaceWar: UIViewController
 	var arrayLifes = [UIImageView]()
 	//-- Tuples of vessels
 	var tupleMotherShip = [(view: UIView, life: Int)]()
-	var tupleLackeys = [(lc: UIView, life: Int)]()
-	var tupleNormandy = [(nd: UIView, life: Int)]()
+	var tupleLackeys = [(view: UIView, life: Int)]()
+	var tupleNormandy = [(view: UIView, life: Int)]()
 	//-- Sounds and musics
 	var tupleSounds: (mus_endgame: AVAudioPlayer, mus_gameover: AVAudioPlayer, sound_touchMothership: AVAudioPlayer,
 		sound_touchNormandy: AVAudioPlayer, sound_deathLackey: AVAudioPlayer, sound_explosion: AVAudioPlayer,
@@ -166,15 +166,16 @@ class SpaceWar: UIViewController
 		arrayLifes = [img_life1, img_life2, img_life3, img_life4, img_life5]
 		//-- Set normandy's tuple
 		normandyLife = tupleNormandyMode.normandyLife
-		tupleNormandy = [(nd: view_normandy, life: normandyLife)]
+		tupleNormandy = [(view: view_normandy, life: normandyLife)]
 		//-- Initial position --
-		tupleNormandy[0].nd.center.x = view.frame.width * 0.5			/* To position in x mid frame */
-		tupleNormandy[0].nd.center.y = view.frame.height * 0.9017		/* To position in y frame proportional position */
+		tupleNormandy[0].view.center.x = view.frame.width * 0.5			/* To position in x mid frame */
+		tupleNormandy[0].view.center.y = view.frame.height * 0.9017		/* To position in y frame proportional position */
 		//----------------------
 		//-- Shot's start --
-		shotX = Float(tupleNormandy[0].nd.center.x)				/* Initial shot X value */
-		shotY = Float(view.frame.height * 0.9017)				/* Initial shot Y value */
-		msShotY = Float(view.frame.height * 0.09472)			/* Initial shot Y mothership */
+		shotX = Float(tupleNormandy[0].view.center.x)				/* Value shot X value */
+		shotY = Float(view.frame.height * 0.9017)				/* Value shot Y value */
+	
+		msShotY = Float(view.frame.height * 0.09472)			/* Value shot Y mothership */
 		//------------------
 		//-- Animations config -
 		maxDistance = Int(view.frame.height - view.frame.height * 0.0983)
@@ -285,10 +286,10 @@ class SpaceWar: UIViewController
 		super.touchesMoved(touches, with: event)
 		let touch: UITouch = touches.first!
 	
-		if touch.view == tupleNormandy[0].nd
+		if touch.view == tupleNormandy[0].view
 		{
-			tupleNormandy[0].nd.center.x = touch.location(in: self.view).x
-			shotX = Float(tupleNormandy[0].nd.center.x)
+			tupleNormandy[0].view.center.x = touch.location(in: self.view).x
+			shotX = Float(tupleNormandy[0].view.center.x)
 		}
 	}
 	//-------------------------------------------
@@ -350,13 +351,13 @@ class SpaceWar: UIViewController
 			for i in 0..<tupleLackeys.count
 			{
 				//-- Frames intersections conditions --
-				if bullet.frame.intersects(tupleLackeys[i].lc.frame) == true
+				if bullet.frame.intersects(tupleLackeys[i].view.frame) == true
 				{
 					tupleLackeys[i].life -= 1
 					
 					if tupleLackeys[i].life == 0
 					{
-						death(lackey, tupleLackeys[i].lc, bullet)	/* Call death's function */
+						death(lackey, tupleLackeys[i].view, bullet)	/* Call death's function */
 					}
 					
 					aniBulletTimer.invalidate()				/* Stop animation */
@@ -481,7 +482,7 @@ class SpaceWar: UIViewController
 		//---- Condition to kill Normandy
 		for bullet in arrayMothershipBullets
 		{
-			if bullet.frame.intersects(tupleNormandy[0].nd.frame)
+			if bullet.frame.intersects(tupleNormandy[0].view.frame)
 			{
 				//--- Damage Normandy
 				tupleNormandy[0].life -= 1
@@ -494,7 +495,7 @@ class SpaceWar: UIViewController
 				//--- Death's condition
 				if tupleNormandy[0].life == 0
 				{
-					death(normandy, tupleNormandy[0].nd, bullet)
+					death(normandy, tupleNormandy[0].view, bullet)
 				}
 			}
 		}
@@ -655,7 +656,7 @@ class SpaceWar: UIViewController
 		//---- Condition to kill Normandy
 		for bullet in arrayLackeyBullets
 		{
-			if bullet.frame.intersects(tupleNormandy[0].nd.frame)
+			if bullet.frame.intersects(tupleNormandy[0].view.frame)
 			{
 				//--- Damage Normandy
 				tupleNormandy[0].life -= 1
@@ -668,7 +669,7 @@ class SpaceWar: UIViewController
 				//--- Death's condition
 				if tupleNormandy[0].life == 0
 				{
-					death(normandy, tupleNormandy[0].nd, bullet)
+					death(normandy, tupleNormandy[0].view, bullet)
 				}
 			}
 		}
@@ -680,9 +681,9 @@ class SpaceWar: UIViewController
 		
 		for i in 0..<tupleLackeys.count
 		{
-			if tupleLackeys[i].lc.frame.origin.x != -500		/* Condition to remove the dead lackeys */
+			if tupleLackeys[i].view.frame.origin.x != -500		/* Condition to remove the dead lackeys */
 			{
-				arrayLackeysToShot.append(tupleLackeys[i].lc)
+				arrayLackeysToShot.append(tupleLackeys[i].view)
 			}
 		}
 		
